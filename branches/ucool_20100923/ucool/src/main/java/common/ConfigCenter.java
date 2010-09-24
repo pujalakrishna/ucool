@@ -26,7 +26,8 @@ public class ConfigCenter implements InitializingBean {
     public String ucoolOnlineIp;
 
     public String ucoolAssetsAutoClean;
-    public String ucoolAssetsCacheCleanPeriod;
+    public String ucoolCacheAutoClean;
+    public String ucoolCacheCleanPeriod;
     public String ucoolAssetsCleanPeriod;
 
     public String ucoolCacheRoot;
@@ -88,12 +89,20 @@ public class ConfigCenter implements InitializingBean {
         this.ucoolAssetsAutoClean = ucoolAssetsAutoClean;
     }
 
-    public String getUcoolAssetsCacheCleanPeriod() {
-        return ucoolAssetsCacheCleanPeriod;
+    public String getUcoolCacheAutoClean() {
+        return ucoolCacheAutoClean;
     }
 
-    public void setUcoolAssetsCacheCleanPeriod(String ucoolAssetsCacheCleanPeriod) {
-        this.ucoolAssetsCacheCleanPeriod = ucoolAssetsCacheCleanPeriod;
+    public void setUcoolCacheAutoClean(String ucoolCacheAutoClean) {
+        this.ucoolCacheAutoClean = ucoolCacheAutoClean;
+    }
+
+    public String getUcoolCacheCleanPeriod() {
+        return ucoolCacheCleanPeriod;
+    }
+
+    public void setUcoolCacheCleanPeriod(String ucoolCacheCleanPeriod) {
+        this.ucoolCacheCleanPeriod = ucoolCacheCleanPeriod;
     }
 
     public String getUcoolAssetsCleanPeriod() {

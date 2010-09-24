@@ -26,13 +26,18 @@ public class SuffixDispatcher {
      */
     public void dispatch(HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
-        String uri = request.getRequestURI();
-        if (uri.indexOf(".htm") != -1) {
+        String url = request.getRequestURL().toString() + "?" + request.getQueryString();
+        if (url.indexOf(".htm") != -1) {
             this.dispatchMapping.getMapping("htm").doHandler(request, response);
-        } else if (uri.indexOf(".png") != -1 || uri.indexOf(".gif") != -1) {
+        } else if (url.indexOf(".png") != -1 || url.indexOf(".gif") != -1) {
             this.dispatchMapping.getMapping("png").doHandler(request, response);
-        } else if (uri.indexOf(".js") != -1 || uri.indexOf(".css") != -1) {
-            this.dispatchMapping.getMapping("assets").doHandler(request, response);
+        } else if (url.indexOf(".js") != -1 || url.indexOf(".css") != -1) {
+            if(url.indexOf("??") != -1) {
+                //支持combo文件
+                this.dispatchMapping.getMapping("combo").doHandler(request, response);
+            } else {
+                this.dispatchMapping.getMapping("assets").doHandler(request, response);
+            }
         }
     }
 

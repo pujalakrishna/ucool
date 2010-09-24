@@ -23,7 +23,7 @@ public class AssetsHandler implements Handler {
     private String assetsRoot;
     private String cacheRoot;
 
-    private FileEditor fileEditor;
+    protected FileEditor fileEditor;
 
     private ConfigCenter configCenter;
 
@@ -66,7 +66,7 @@ public class AssetsHandler implements Handler {
         }
     }
 
-    private void initHandler() {
+    protected void initHandler() {
         if (this.realPath == null || this.assetsRoot == null) {
             this.realPath = this.configCenter.getWebRoot();
             this.assetsRoot = this.configCenter.getUcoolAssetsRoot();
@@ -82,7 +82,7 @@ public class AssetsHandler implements Handler {
      * @author zhangting
      * @since 2010-8-19 15:44:07
      */
-    private boolean cacheUrlFile(HttpServletRequest request) {
+    protected boolean cacheUrlFile(HttpServletRequest request) {
         String allUrl = request.getRequestURL().toString();
         allUrl = urlFilter(allUrl);
 
@@ -93,7 +93,7 @@ public class AssetsHandler implements Handler {
             sb.append(realPath).append(cacheRoot).append(request.getRequestURI());
             //先创建目录和文件，再往里写数据
             fileEditor.createDirectory(sb.toString());
-
+            //缓存文件
             return fileEditor.saveFile(sb.toString(), in);
         } catch (IOException e) {
             //log
@@ -112,20 +112,15 @@ public class AssetsHandler implements Handler {
      * @author zhangting
      * @since 2010-8-11 9:29:00
      */
-    private void readUrlFile(PrintWriter out, HttpServletRequest request)
+    protected void readUrlFile(PrintWriter out, HttpServletRequest request)
             throws javax.servlet.ServletException, IOException {
-        String allUrl = request.getRequestURL().toString();
+        String allUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
         allUrl = urlFilter(allUrl);
 
         try {
             URL url = new URL(allUrl);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             fileEditor.pushStream(out, in);
-            String line;
-            while ((line = in.readLine()) != null) {
-                out.println(line);
-            }
-            in.close();
         } catch (Exception e) {
             out.println("file not find");
         }
@@ -140,7 +135,7 @@ public class AssetsHandler implements Handler {
      * @author zhangting
      * @since 2010-8-19 14:49:26
      */
-    private boolean findAssetsFile(String filePath) {
+    protected boolean findAssetsFile(String filePath) {
         StringBuilder sb = new StringBuilder();
         sb.append(realPath).append(assetsRoot).append(filePath);
         return this.fileEditor.findFile(sb.toString());
@@ -154,7 +149,7 @@ public class AssetsHandler implements Handler {
      * @author zhangting
      * @since 2010-8-19 14:50:35
      */
-    private boolean findCacheFile(String filePath) {
+    protected boolean findCacheFile(String filePath) {
         StringBuilder sb = new StringBuilder();
         sb.append(realPath).append(cacheRoot).append(filePath);
         return this.fileEditor.findFile(sb.toString());
@@ -169,7 +164,7 @@ public class AssetsHandler implements Handler {
      * @author zhangting
      * @since 2010-8-19 15:22:02
      */
-    private FileReader loadExistFile(String filePath, boolean isCache) {
+    protected FileReader loadExistFile(String filePath, boolean isCache) {
         String root = isCache ? cacheRoot : assetsRoot;
         StringBuilder sb = new StringBuilder();
         sb.append(realPath).append(root).append(filePath);
@@ -190,7 +185,7 @@ public class AssetsHandler implements Handler {
     private String urlFilter(String url) {
         //如果是daily，直接替换，如果是线上，需要判断，线上有多个域名的情况
         String devDomain = configCenter.getUcoolDailyDomain();
-        String onlineDomain = configCenter.getUcoolOnlineDomain();
+//        String onlineDomain = configCenter.getUcoolOnlineDomain();
 
         if (url.indexOf(devDomain) != -1) {
             //TODO 这里后期还是要考虑下需求
