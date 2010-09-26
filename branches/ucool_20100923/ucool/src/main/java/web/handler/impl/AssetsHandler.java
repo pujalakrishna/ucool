@@ -2,6 +2,7 @@ package web.handler.impl;
 
 import biz.file.FileEditor;
 import common.ConfigCenter;
+import common.Switcher;
 import web.handler.Handler;
 
 import javax.servlet.ServletException;
@@ -27,12 +28,18 @@ public class AssetsHandler implements Handler {
 
     private ConfigCenter configCenter;
 
+    private Switcher switcher;
+
     public void setFileEditor(FileEditor fileEditor) {
         this.fileEditor = fileEditor;
     }
 
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
+    }
+
+    public void setSwitcher(Switcher switcher) {
+        this.switcher = switcher;
     }
 
     /**
@@ -47,6 +54,9 @@ public class AssetsHandler implements Handler {
                           HttpServletResponse response) throws IOException, ServletException {
         initHandler();
         String filePath = request.getRequestURI();
+        if (switcher.isAssetsDebugMode()) {
+            filePath = debugMode(filePath);
+        }
         response.setCharacterEncoding("gbk");
         PrintWriter out = response.getWriter();
         /**
@@ -84,13 +94,18 @@ public class AssetsHandler implements Handler {
      */
     protected boolean cacheUrlFile(HttpServletRequest request) {
         String allUrl = request.getRequestURL().toString();
+        String filePath = request.getRequestURI();
+        if (switcher.isAssetsDebugMode()) {
+            allUrl = debugMode(allUrl);
+            filePath = debugMode(filePath);
+        }
         allUrl = urlFilter(allUrl);
 
         try {
             URL url = new URL(allUrl);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             StringBuilder sb = new StringBuilder();
-            sb.append(realPath).append(cacheRoot).append(request.getRequestURI());
+            sb.append(realPath).append(cacheRoot).append(filePath);
             //先创建目录和文件，再往里写数据
             fileEditor.createDirectory(sb.toString());
             //缓存文件
@@ -115,6 +130,9 @@ public class AssetsHandler implements Handler {
     protected void readUrlFile(PrintWriter out, HttpServletRequest request)
             throws javax.servlet.ServletException, IOException {
         String allUrl = request.getRequestURL().toString() + "?" + request.getQueryString();
+        if(request.getRequestURI().equals("/combo")) {
+            allUrl = (String) request.getAttribute("comboUrl");
+        }
         allUrl = urlFilter(allUrl);
 
         try {
@@ -198,5 +216,23 @@ public class AssetsHandler implements Handler {
             }
         }
         return url;
+    }
+
+    /**
+     * TODO 抽象出来
+     * @param filePath
+     * @return
+     */
+    private String debugMode(String filePath) {
+        if (filePath.indexOf("-min") != -1) {
+            filePath = filePath.replace("-min", "");
+        } else {
+            if (filePath.endsWith(".css")) {
+                filePath = filePath.replace(".css", ".source.css");
+            } else {
+                filePath = filePath.replace(".js", ".source.js");
+            }
+        }
+        return filePath;
     }
 }

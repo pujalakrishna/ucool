@@ -32,19 +32,19 @@ public class DoorServlet extends HttpServlet {
     /**
      * Method doPost ...
      *
-     * @author zhangting
-     * @since 2010-9-20 15:37:01
-     *
-     * @param request of type HttpServletRequest
+     * @param request  of type HttpServletRequest
      * @param response of type HttpServletResponse
      * @throws ServletException when
-     * @throws IOException when
+     * @throws IOException      when
+     * @author zhangting
+     * @since 2010-9-20 15:37:01
      */
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException {
         initBean();
         setRootPath();
+
         //begin to dispatch
         this.suffixDispatcher.dispatch(request, response);
     }
@@ -57,8 +57,8 @@ public class DoorServlet extends HttpServlet {
     /**
      * Method initBean ...
      */
-    private void initBean(){
-        if(configCenter == null || suffixDispatcher == null ) {
+    private void initBean() {
+        if (configCenter == null || suffixDispatcher == null) {
             WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
             setConfigCenter((ConfigCenter) context.getBean("configCenter"));
             setSuffixDispatcher((SuffixDispatcher) context.getBean("suffixDispatcher"));
@@ -68,8 +68,8 @@ public class DoorServlet extends HttpServlet {
     /**
      * 设置一下根目录的绝对路径
      */
-    private void setRootPath(){
-        if(configCenter != null && configCenter.getWebRoot() == null) {
+    private void setRootPath() {
+        if (configCenter != null && configCenter.getWebRoot() == null) {
             configCenter.setWebRoot(this.getServletContext().getRealPath("/"));
         }
     }

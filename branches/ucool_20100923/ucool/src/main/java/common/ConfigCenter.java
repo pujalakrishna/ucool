@@ -33,6 +33,8 @@ public class ConfigCenter implements InitializingBean {
     public String ucoolCacheRoot;
     public String ucoolAssetsRoot;
 
+    public String ucoolAssetsDebug;
+
     public String getWebRoot() {
         return webRoot;
     }
@@ -129,6 +131,14 @@ public class ConfigCenter implements InitializingBean {
         this.ucoolAssetsRoot = ucoolAssetsRoot;
     }
 
+    public String getUcoolAssetsDebug() {
+        return ucoolAssetsDebug;
+    }
+
+    public void setUcoolAssetsDebug(String ucoolAssetsDebug) {
+        this.ucoolAssetsDebug = ucoolAssetsDebug;
+    }
+
     /**
      * Method afterPropertiesSet ...
      *
@@ -155,6 +165,37 @@ public class ConfigCenter implements InitializingBean {
         } else {
             //log
         }
+    }
+
+
+    /**
+     * 用于pz.jsp的css调用
+     *
+     * @param state of type String
+     * @return String
+     */
+    public String getStateStyle(String state) {
+        return state.equals("true")?"open":"closed";
+    }
+
+    /**
+     * 用于pz.jsp的状态调用
+     *
+     * @param state of type String
+     * @return String
+     */
+    public String getStateOper(String state) {
+        return state.equals("true")?"点击关闭":"点击打开";
+    }
+
+    /**
+     * 用于pz.jsp的状态调用
+     *
+     * @param state of type String
+     * @return String
+     */
+    public String getCurState(String state) {
+        return state.equals("true")?"已打开":"已关闭";
     }
 
     public static void main(String[] args) throws Exception {

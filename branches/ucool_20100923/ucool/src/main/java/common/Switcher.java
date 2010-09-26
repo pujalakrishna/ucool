@@ -35,4 +35,20 @@ public class Switcher {
     public boolean isAutoAssetsClean() {
         return this.configCenter.getUcoolAssetsAutoClean().equals("true");
     }
+
+    /**
+     * 是否开启了assets debug
+     * @return
+     */
+    public boolean isAssetsDebugMode() {
+        return this.configCenter.getUcoolAssetsDebug().equals("true");
+    }
+
+    /**
+     * 设置assets debug
+     * @return
+     */
+    public void setAssetsDebugMode(String state) {
+        this.configCenter.setUcoolAssetsDebug(state);
+    }
 }

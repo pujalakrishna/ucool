@@ -4,6 +4,15 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
+    <filter>
+        <filter-name>ComboFilter</filter-name>
+        <filter-class>web.filter.ComboFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ComboFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <servlet-name>DoorServlet</servlet-name>
+    </filter-mapping>
     <servlet>
         <servlet-name>DoorServlet</servlet-name>
         <servlet-class>web.servlet.DoorServlet</servlet-class>
@@ -11,8 +20,33 @@
 
     <servlet-mapping>
         <servlet-name>DoorServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>*.htm</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>*.js</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>*.css</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>*.png</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>*.gif</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>/pz</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>/combo</url-pattern>
+    </servlet-mapping>
+
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
