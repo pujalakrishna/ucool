@@ -29,6 +29,7 @@ public class SuffixDispatcher {
         //≈‰÷√“≥
         if(request.getRequestURI().equals("/pz")) {
             request.getRequestDispatcher("pz.jsp").forward(request, response);
+            return;
         }
         String url = request.getRequestURL().toString() + "?" + request.getQueryString();
         //ªÒ»°comboµƒurl

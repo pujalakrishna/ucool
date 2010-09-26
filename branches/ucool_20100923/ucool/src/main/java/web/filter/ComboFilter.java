@@ -20,9 +20,9 @@ public class ComboFilter implements Filter {
         if(fullUrl.indexOf("??") != -1) {
             request.setAttribute("comboUrl", fullUrl);
             request.getRequestDispatcher("/combo").forward(request, response);
+        } else {
+            chain.doFilter(req, resp);
         }
-
-        chain.doFilter(req, resp);
     }
 
     public void init(FilterConfig config) throws ServletException {
