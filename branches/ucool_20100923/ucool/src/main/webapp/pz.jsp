@@ -6,6 +6,9 @@
 <head>
     <title>ucool ≈‰÷√“≥</title>
     <style type="text/css">
+        body{
+            background-color: #E2E2E2;
+        }
         #content {
             width: 950px;
             margin: 0 auto;
