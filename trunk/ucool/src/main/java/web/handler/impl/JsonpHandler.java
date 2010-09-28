@@ -1,9 +1,10 @@
-package web;
+package web.handler.impl;
 
 import biz.JsonpParser;
+import common.ConfigCenter;
+import web.handler.Handler;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -14,19 +15,31 @@ import java.net.URL;
 import java.util.Map;
 
 /**
- * @author <a href="mailto:zhangting@taobao.com">’≈Õ¶</a>
- * @since 2010-8-30 13:27:20
+ * jsonpµƒhandler
+ *
+ * @author <a href="mailto:czy88840616@gmail.com">czy</a>
+ * @since 2010-9-23 13:34:28
  */
-public class JsonpServlet extends HttpServlet {
+public class JsonpHandler implements Handler {
 
-    private String realPath;    
+    private String realPath;
+    private ConfigCenter configCenter;
 
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
-            throws ServletException, IOException {
-        if (realPath == null) {
-            realPath = this.getServletContext().getRealPath("/");
-        }
+    public void setConfigCenter(ConfigCenter configCenter) {
+        this.configCenter = configCenter;
+    }
+
+    /**
+     * Method doHandler ...
+     *
+     * @param request of type HttpServletRequest
+     * @param response of type HttpServletResponse
+     * @throws IOException when
+     * @throws ServletException when
+     */
+    @Override
+    public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        initHandler();
         String requestURL = request.getRequestURL().toString();
         String directURL = requestURL;
 
@@ -37,12 +50,12 @@ public class JsonpServlet extends HttpServlet {
                 break;
             }
         }
-        
+
         response.setCharacterEncoding("gbk");
         response.setHeader("Pragma", "No-cache");//HTTP 1.1
         response.setHeader("Cache-Control", "no-cache");//HTTP 1.0
         response.setHeader("Expires", "0");//∑¿÷π±ªproxy
-        
+
         PrintWriter out = response.getWriter();
 
         try {
@@ -59,9 +72,9 @@ public class JsonpServlet extends HttpServlet {
         out.flush();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
+    private void initHandler() {
+        if(this.realPath != null) {
+            this.realPath = this.configCenter.getWebRoot();
+        }
     }
-
 }
