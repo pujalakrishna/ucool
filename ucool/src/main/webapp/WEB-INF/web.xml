@@ -40,6 +40,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>*.ico</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
         <url-pattern>/pz</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
