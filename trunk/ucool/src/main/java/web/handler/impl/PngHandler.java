@@ -28,13 +28,15 @@ public class PngHandler implements Handler {
         //临时处理下png
         if(request.getRequestURI().indexOf("png") != -1) {
             response.setContentType("image/png");
-        } else {
+        } else if(request.getRequestURI().indexOf("gif") != -1) {
             response.setContentType("image/gif");
+        } else {
+            response.setContentType("image/x-icon");
         }
 
-        response.setHeader("Pragma", "No-cache");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expires", 0);
+//        response.setHeader("Pragma", "No-cache");
+//        response.setHeader("Cache-Control", "no-cache");
+//        response.setDateHeader("Expires", 0);
         BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());//输出缓冲流
         try {
             URL url = new URL("http://"+ configCenter.getUcoolOnlineIp() + request.getRequestURI());

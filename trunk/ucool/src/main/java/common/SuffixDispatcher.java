@@ -45,7 +45,7 @@ public class SuffixDispatcher {
             } else {
                 this.dispatchMapping.getMapping("assets").doHandler(request, response);
             }
-        } else if (url.indexOf(".png") != -1 || url.indexOf(".gif") != -1) {
+        } else if (url.indexOf(".png") != -1 || url.indexOf(".gif") != -1 || url.indexOf(".ico") != -1) {
             this.dispatchMapping.getMapping("png").doHandler(request, response);
         } else if (url.indexOf(".htm") != -1) {
             this.dispatchMapping.getMapping("htm").doHandler(request, response);
