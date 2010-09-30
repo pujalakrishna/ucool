@@ -103,7 +103,7 @@ public class AssetsHandler implements Handler {
     }
 
     /**
-     * 把线上的文件缓存起来
+     * 把对应域的文件缓存起来
      *
      * @param request of type String
      * @return boolean
@@ -117,7 +117,7 @@ public class AssetsHandler implements Handler {
             allUrl = debugMode(allUrl);
             filePath = debugMode(filePath);
         }
-        allUrl = urlFilter(allUrl);
+        allUrl = urlFilter(allUrl, false);
 
         try {
             URL url = new URL(allUrl);
@@ -151,7 +151,8 @@ public class AssetsHandler implements Handler {
         if(request.getRequestURI().equals("/combo")) {
             allUrl = (String) request.getAttribute("comboUrl");
         }
-        allUrl = urlFilter(allUrl);
+        //这里强制走线上了，一般也不会到这一步，daily和线上是统一的
+        allUrl = urlFilter(allUrl, true);
 
         try {
             URL url = new URL(allUrl);
@@ -218,18 +219,17 @@ public class AssetsHandler implements Handler {
      * @param url of type String
      * @return String
      */
-    private String urlFilter(String url) {
-        //如果是daily，直接替换，如果是线上，需要判断，线上有多个域名的情况
-        String devDomain = configCenter.getUcoolDailyDomain();
-//        String onlineDomain = configCenter.getUcoolOnlineDomain();
-
-        if (url.indexOf(devDomain) != -1) {
-            //TODO 这里后期还是要考虑下需求
-            return url.replace(devDomain, configCenter.getUcoolOnlineIp());
-        } else {
+    private String urlFilter(String url, boolean force) {
+        if (force || this.isOnline) {
             for (String d : configCenter.getUcoolOnlineDomain().split(",")) {
                 if (url.indexOf(d) != -1) {
                     return url.replace(d, configCenter.getUcoolOnlineIp());
+                }
+            }
+        } else {
+            for (String d : configCenter.getUcoolDailyDomain().split(",")) {
+                if (url.indexOf(d) != -1) {
+                    return url.replace(d, configCenter.getUcoolDailyIp());
                 }
             }
         }
@@ -245,6 +245,9 @@ public class AssetsHandler implements Handler {
         if (filePath.indexOf("-min") != -1) {
             filePath = filePath.replace("-min", "");
         } else {
+            if(filePath.indexOf(".source.") != -1) {
+                return filePath;
+            }
             if (filePath.endsWith(".css")) {
                 filePath = filePath.replace(".css", ".source.css");
             } else {
