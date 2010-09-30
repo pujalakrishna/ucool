@@ -22,13 +22,24 @@ public class AssetsHandler implements Handler {
     private String realPath;
 
     private String assetsRoot;
+
+    /**
+     * @deprecated 已经改用cacheRootDaily和cacheRootOnline
+     */
+    @Deprecated
     private String cacheRoot;
+
+    private String cacheRootDaily;
+
+    private String cacheRootOnline;    
 
     protected FileEditor fileEditor;
 
     private ConfigCenter configCenter;
 
     private Switcher switcher;
+
+    private boolean isOnline = false;
 
     public void setFileEditor(FileEditor fileEditor) {
         this.fileEditor = fileEditor;
@@ -53,6 +64,11 @@ public class AssetsHandler implements Handler {
     public void doHandler(HttpServletRequest request,
                           HttpServletResponse response) throws IOException, ServletException {
         initHandler();
+        if(configCenter.getUcoolOnlineDomain().indexOf(request.getServerName()) != -1) {
+            this.isOnline = true;
+        } else {
+            this.isOnline = false;
+        }
         String filePath = request.getRequestURI();
         if (switcher.isAssetsDebugMode()) {
             filePath = debugMode(filePath);
@@ -81,6 +97,8 @@ public class AssetsHandler implements Handler {
             this.realPath = this.configCenter.getWebRoot();
             this.assetsRoot = this.configCenter.getUcoolAssetsRoot();
             this.cacheRoot = this.configCenter.getUcoolCacheRoot();
+            this.cacheRootDaily = this.configCenter.getUcoolCacheRootDaily();
+            this.cacheRootOnline = this.configCenter.getUcoolCacheRootOnline();
         }
     }
 
@@ -105,7 +123,7 @@ public class AssetsHandler implements Handler {
             URL url = new URL(allUrl);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             StringBuilder sb = new StringBuilder();
-            sb.append(realPath).append(cacheRoot).append(filePath);
+            sb.append(realPath).append(getCacheString()).append(filePath);
             //先创建目录和文件，再往里写数据
             fileEditor.createDirectory(sb.toString());
             //缓存文件
@@ -169,7 +187,7 @@ public class AssetsHandler implements Handler {
      */
     protected boolean findCacheFile(String filePath) {
         StringBuilder sb = new StringBuilder();
-        sb.append(realPath).append(cacheRoot).append(filePath);
+        sb.append(realPath).append(getCacheString()).append(filePath);
         return this.fileEditor.findFile(sb.toString());
     }
 
@@ -183,7 +201,7 @@ public class AssetsHandler implements Handler {
      * @since 2010-8-19 15:22:02
      */
     protected FileReader loadExistFile(String filePath, boolean isCache) {
-        String root = isCache ? cacheRoot : assetsRoot;
+        String root = isCache ? getCacheString() : assetsRoot;
         StringBuilder sb = new StringBuilder();
         sb.append(realPath).append(root).append(filePath);
         try {
@@ -234,5 +252,20 @@ public class AssetsHandler implements Handler {
             }
         }
         return filePath;
+    }
+
+    /**
+     * 返回线上或者daily下的cache路径
+     *
+     * @author <a href="mailto:zhangting@taobao.com">zhangting</a>
+     * Created on 2010-9-30
+     * @return String
+     */
+    private String getCacheString() {
+        if(this.isOnline) {
+            return configCenter.getUcoolCacheRootOnline();
+        } else {
+            return configCenter.getUcoolCacheRootDaily();
+        }
     }
 }
