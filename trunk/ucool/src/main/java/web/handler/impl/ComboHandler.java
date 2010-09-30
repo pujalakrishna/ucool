@@ -29,8 +29,13 @@ public class ComboHandler extends AssetsHandler {
 
         /**
          * TODO combo的文件必须拆开后再combo输出
-         *  1、如何支持调试？返回的是再次combo？
          */
+        String allUrl = (String) request.getAttribute("comboUrl");
+        String[] firstCut = allUrl.split("??");
+        String pathPrefix = firstCut[0];
+        String[] allFiles = firstCut[1].split(",");
+        
+
         response.setCharacterEncoding("gbk");
         PrintWriter out = response.getWriter();
 
