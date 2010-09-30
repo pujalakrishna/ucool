@@ -16,24 +16,26 @@ public class ConfigCenter implements InitializingBean {
     /**
      * 该配置在属性文件中不存在，只是为了方便查找文件而保存根目录绝对路径
      */
-    public String webRoot;
+    private String webRoot;
 
-    public String ucoolEnv;
+    private String ucoolEnv;
 
-    public String ucoolDailyDomain;
-    public String ucoolOnlineDomain;
-    public String ucoolDailyIp;
-    public String ucoolOnlineIp;
+    private String ucoolDailyDomain;
+    private String ucoolOnlineDomain;
+    private String ucoolDailyIp;
+    private String ucoolOnlineIp;
 
-    public String ucoolAssetsAutoClean;
-    public String ucoolCacheAutoClean;
-    public String ucoolCacheCleanPeriod;
-    public String ucoolAssetsCleanPeriod;
+    private String ucoolAssetsAutoClean;
+    private String ucoolCacheAutoClean;
+    private String ucoolCacheCleanPeriod;
+    private String ucoolAssetsCleanPeriod;
 
-    public String ucoolCacheRoot;
-    public String ucoolAssetsRoot;
+    private String ucoolCacheRoot;
+    private String ucoolCacheRootDaily;
+    private String ucoolCacheRootOnline;
+    private String ucoolAssetsRoot;
 
-    public String ucoolAssetsDebug;
+    private String ucoolAssetsDebug;
 
     public String getWebRoot() {
         return webRoot;
@@ -137,6 +139,22 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolAssetsDebug(String ucoolAssetsDebug) {
         this.ucoolAssetsDebug = ucoolAssetsDebug;
+    }
+
+    public String getUcoolCacheRootDaily() {
+        return ucoolCacheRootDaily;
+    }
+
+    public void setUcoolCacheRootDaily(String ucoolCacheRootDaily) {
+        this.ucoolCacheRootDaily = ucoolCacheRootDaily;
+    }
+
+    public String getUcoolCacheRootOnline() {
+        return ucoolCacheRootOnline;
+    }
+
+    public void setUcoolCacheRootOnline(String ucoolCacheRootOnline) {
+        this.ucoolCacheRootOnline = ucoolCacheRootOnline;
     }
 
     /**

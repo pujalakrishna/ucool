@@ -9,20 +9,33 @@
 <%@ page import="common.ConfigCenter" %>
 <%@ page import="org.springframework.web.context.WebApplicationContext" %>
 <%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="biz.file.FileEditor" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%
     WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext());
     ConfigCenter configCenter = (ConfigCenter) wac.getBean("configCenter");
+    FileEditor fileEditor = (FileEditor) wac.getBean("fileEditor");
     String pid = request.getParameter("pid");
     String callback = request.getParameter("callback");
-    
-    if (pid != null && pid.equalsIgnoreCase("assetsdebug")) {
-        String tState;
-        if (configCenter.getUcoolAssetsDebug().equals("true")) {
-            tState = "false";
-        } else {
-            tState = "true";
+
+    if (pid != null) {
+        String tState = null;
+        if (pid.equalsIgnoreCase("assetsdebug")) {
+            if (configCenter.getUcoolAssetsDebug().equals("true")) {
+                tState = "false";
+            } else {
+                tState = "true";
+            }
+            configCenter.setUcoolAssetsDebug(tState);
+        } else if (pid.equalsIgnoreCase("cleanOnlineCache")) {
+            fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootOnline());
+            tState = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date());
+        } else if (pid.equalsIgnoreCase("cleanDailyCache")) {
+            fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootDaily());
+            tState = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date());
         }
-        configCenter.setUcoolAssetsDebug(tState);
+
         if (callback != null) {
             out.print(callback + "(\'" + pid + "\',\'ok\', \'" + tState + "\');");
         }
