@@ -74,9 +74,13 @@ public class FileEditor {
      * @param reader of type FileReader
      * @throws IOException when
      */
-    public void pushFile(PrintWriter out, FileReader reader) throws IOException {
-        BufferedReader in = new BufferedReader(reader);
-        pushStream(out, in);
+    public void pushFile(PrintWriter out, FileReader reader) {
+        try {
+            BufferedReader in = new BufferedReader(reader);
+            pushStream(out, in);
+        } catch(Exception e) {
+            //捕获所有异常，这里有可能缓存失败，所以取不到文件
+        }
     }
 
     /**

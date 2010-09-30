@@ -3,8 +3,10 @@
 <%@ page import="org.springframework.web.context.WebApplicationContext" %>
 <%@ page import="common.ConfigCenter" %>
 <%@ page import="biz.file.FileEditor" %>
+<!DOCTYPE HTML>
 <html>
 <head>
+    <meta charset="gbk"/>
     <title>ucool 配置页</title>
     <style type="text/css">
         body{
