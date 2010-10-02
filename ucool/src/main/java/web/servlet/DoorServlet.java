@@ -1,10 +1,10 @@
 package web.servlet;
 
-import common.ConfigCenter;
 import common.SuffixDispatcher;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,16 +17,19 @@ import java.io.IOException;
  */
 public class DoorServlet extends HttpServlet {
 
-    private ConfigCenter configCenter;
-
     private SuffixDispatcher suffixDispatcher;
-
-    public void setConfigCenter(ConfigCenter configCenter) {
-        this.configCenter = configCenter;
-    }
 
     public void setSuffixDispatcher(SuffixDispatcher suffixDispatcher) {
         this.suffixDispatcher = suffixDispatcher;
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        if (suffixDispatcher == null) {
+            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+            setSuffixDispatcher((SuffixDispatcher) context.getBean("suffixDispatcher"));
+        }
     }
 
     /**
@@ -42,9 +45,6 @@ public class DoorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException {
-        initBean();
-        setRootPath();
-
         //begin to dispatch
         this.suffixDispatcher.dispatch(request, response);
     }
@@ -52,25 +52,5 @@ public class DoorServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doPost(request, response);
-    }
-
-    /**
-     * Method initBean ...
-     */
-    private void initBean() {
-        if (configCenter == null || suffixDispatcher == null) {
-            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-            setConfigCenter((ConfigCenter) context.getBean("configCenter"));
-            setSuffixDispatcher((SuffixDispatcher) context.getBean("suffixDispatcher"));
-        }
-    }
-
-    /**
-     * 设置一下根目录的绝对路径
-     */
-    private void setRootPath() {
-        if (configCenter != null && configCenter.getWebRoot() == null) {
-            configCenter.setWebRoot(this.getServletContext().getRealPath("/"));
-        }
     }
 }

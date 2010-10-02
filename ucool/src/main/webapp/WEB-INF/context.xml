@@ -7,6 +7,7 @@
     <bean id="configCenter" class="common.ConfigCenter" scope="singleton" />
     <bean id="fileEditor" class="biz.file.FileEditor"/>
     <bean id="switcher" class="common.Switcher" scope="singleton"/>
+    <bean id="urlExecutor" class="web.url.UrlExecutor" scope="singleton"/>
 
     <bean id="dispatchMapping" class="common.DispatchMapping">
         <property name="mappingTable">
@@ -15,6 +16,7 @@
                 <entry key="png" value-ref="pngHandler" />
                 <entry key="htm" value-ref="jsonpHandler" />
                 <entry key="combo" value-ref="comboHandler" />
+                <entry key="other" value-ref="xmlHandler" />
             </map>
         </property>
     </bean>
@@ -23,4 +25,5 @@
     <bean id="jsonpHandler" class="web.handler.impl.JsonpHandler"/>
     <bean id="pngHandler" class="web.handler.impl.PngHandler"/>
     <bean id="comboHandler" class="web.handler.impl.ComboHandler"/>
+    <bean id="xmlHandler" class="web.handler.impl.OtherHandler"/>
 </beans>
