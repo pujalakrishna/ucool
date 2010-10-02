@@ -34,9 +34,6 @@ public class PngHandler implements Handler {
             response.setContentType("image/x-icon");
         }
 
-//        response.setHeader("Pragma", "No-cache");
-//        response.setHeader("Cache-Control", "no-cache");
-//        response.setDateHeader("Expires", 0);
         BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());//Êä³ö»º³åÁ÷
         try {
             URL url = new URL("http://"+ configCenter.getUcoolOnlineIp() + request.getRequestURI());
@@ -54,7 +51,7 @@ public class PngHandler implements Handler {
             bos.close();
             in.close();
         } catch (Exception e) {
-            bos.write(new Byte("file not find"));
+//            bos.write(new Byte("file not find"));
         }
         bos.flush();
     }

@@ -46,9 +46,13 @@
     <fieldset>
         <legend>开关</legend>
         <ul id="switch">
-            <li><label>js/css调试模式（所有js和css都显示source文件,combo路径暂时不支持）</label>
+            <li><label>js/css调试模式（所有js和css都显示source文件，开启时请勿访问/?debug）</label>
                 <input type="button" id="assetsdebugswitch"
-                       value="<%=configCenter.getStateOper(configCenter.getUcoolAssetsDebug())%>"/></li>
+                       value="<%=configCenter.getStateOper(configCenter.getUcoolAssetsDebug())%>"/>
+                <span class="<%=configCenter.getStateStyle(configCenter.getUcoolAssetsDebug())%>" id="assetsdebugstate">
+                    <%=configCenter.getCurState(configCenter.getUcoolAssetsDebug())%>
+                </span>
+            </li>
             <li><label>手动清理线上缓存</label>
                 <input type="button" id="cleanOnlineCache"
                        value="立即清理"/><span></span></li>
@@ -75,11 +79,6 @@
             <li>assets文件夹名：<%=configCenter.getUcoolAssetsRoot()%></li>
             <li>缓存daily文件夹名：<%=configCenter.getUcoolCacheRootDaily()%></li>
             <li>缓存online文件夹名：<%=configCenter.getUcoolCacheRootOnline()%></li>
-            <li>是否已开启assets debug模式：
-                <span class="<%=configCenter.getStateStyle(configCenter.getUcoolAssetsDebug())%>" id="assetsdebugstate">
-                    <%=configCenter.getCurState(configCenter.getUcoolAssetsDebug())%>
-                </span>
-            </li>
         </ul>
     </fieldset>
 </div>
@@ -96,7 +95,7 @@
             var _change = function(pid, success, curState) {
                 if (success === 'ok') {
                     S.get('#'+pid+'switch').value = curState==='true'?'点击关闭':'点击打开';
-                    S.get('#'+pid+'state').innerHTML = curState==='true'?'已开启':'已关闭';
+                    S.get('#'+pid+'state').innerHTML = curState==='true'?'已打开':'已关闭';
                     S.get('#'+pid+'state').className = curState==='true'?'open':'closed';
                 }
             };

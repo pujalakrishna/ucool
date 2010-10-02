@@ -20,25 +20,67 @@ public class ComboHandler extends AssetsHandler {
      * @throws javax.servlet.ServletException when
      */
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        //http://a.tbcdn.cn/p/??header/header-min.css,
-        // fp/2010c/fp-base-min.css,fp/2010c/fp-channel-min.css,
-        // fp/2010c/fp-product-min.css,fp/2010c/fp-mall-min.css,
-        // fp/2010c/fp-category-min.css,fp/2010c/fp-sub-min.css,
-        // fp/2010c/fp-gdp4p-min.css,fp/2010c/fp-css3-min.css,
-        // fp/2010c/fp-misc-min.css?t=20100902.css
-
         /**
-         * TODO combo的文件必须拆开后再combo输出
+         * combo url example:
+         * 
+         * http://a.tbcdn.cn/p/??header/header-min.css,
+         * fp/2010c/fp-base-min.css,fp/2010c/fp-channel-min.css,
+         * fp/2010c/fp-product-min.css,fp/2010c/fp-mall-min.css,
+         * fp/2010c/fp-category-min.css,fp/2010c/fp-sub-min.css,
+         * fp/2010c/fp-gdp4p-min.css,fp/2010c/fp-css3-min.css,
+         * fp/2010c/fp-misc-min.css?t=20100902.css
+         *
          */
-        String allUrl = (String) request.getAttribute("comboUrl");
-        String[] firstCut = allUrl.split("??");
-        String pathPrefix = firstCut[0];
-        String[] allFiles = firstCut[1].split(",");
         
+        /**
+         * combo的文件必须拆开后再combo输出
+         */
+        String realUrl = (String) request.getAttribute("realUrl");
+        String filePath = (String) request.getAttribute("filePath"); // e.g.:/p/
+
+       //bugfix 首页，不知道php里加了什么，在debugmode下部分js会自动请求源文件
+        boolean isIndexBug = false;
+        if (getSwitcher().isAssetsDebugMode()) {
+            if(realUrl.indexOf("s/kissy/1.1.3/datalazyload/datalazyload-pkg.js") != -1) {
+                isIndexBug = true;
+            }
+        }
+        String[] firstCut = realUrl.split("\\?\\?");
+        String pathPrefix = firstCut[0];    // e.g.:http://a.tbcdn.cn/p/
+        String[] allFiles = firstCut[1].split(",");
 
         response.setCharacterEncoding("gbk");
+        if (realUrl.indexOf(".css") != -1) {
+            response.setContentType("text/css");
+        } else {
+            response.setContentType("application/x-javascript");
+        }
         PrintWriter out = response.getWriter();
 
-        readUrlFile(out, request);
+        boolean isOnline = getConfigCenter().getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
+
+        for (String everyFile : allFiles) {
+            // e.g.:header/header-min.css
+            //拼出单个url，然后的逻辑和单文件相同
+            String singleFilePath = filePath + everyFile;
+            String singleRealUrl = pathPrefix + everyFile;
+            
+            //在debug过滤之前还要过滤时间戳
+            singleFilePath = singleFilePath.split("\\?")[0];
+            //获取源文件url
+            if (getSwitcher().isAssetsDebugMode()) {
+                if(isIndexBug) {
+                    singleFilePath = singleFilePath.replace(".js", "-min.js");
+                    singleRealUrl = singleRealUrl.replace(".js", "-min.js");
+                }
+                singleFilePath = debugMode(singleFilePath);
+                singleRealUrl = debugMode(singleRealUrl);
+            }
+
+            singleRealUrl = urlFilter(singleRealUrl, isOnline);
+            
+            getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, isOnline, out);
+        }
+        
     }
 }

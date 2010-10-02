@@ -14,10 +14,13 @@ import java.util.Properties;
 public class ConfigCenter implements InitializingBean {
 
     /**
-     * 该配置在属性文件中不存在，只是为了方便查找文件而保存根目录绝对路径
+     * 以下配置在属性文件中不存在，只是为了方便查找文件而保存根目录绝对路径
      */
     private String webRoot;
 
+    /**
+     * 以下为配置文件使用
+     */
     private String ucoolEnv;
 
     private String ucoolDailyDomain;

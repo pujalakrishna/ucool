@@ -31,11 +31,7 @@ public class SuffixDispatcher {
             request.getRequestDispatcher("pz.jsp").forward(request, response);
             return;
         }
-        String url = request.getRequestURL().toString() + "?" + request.getQueryString();
-        //获取combo的url
-        if(request.getRequestURI().equals("/combo")) {
-            url = (String) request.getAttribute("comboUrl");
-        }
+        String url = (String) request.getAttribute("realUrl");
         
         //assets用的最多，所以先判断
         if (url.indexOf(".js") != -1 || url.indexOf(".css") != -1) {
@@ -49,6 +45,8 @@ public class SuffixDispatcher {
             this.dispatchMapping.getMapping("png").doHandler(request, response);
         } else if (url.indexOf(".htm") != -1) {
             this.dispatchMapping.getMapping("htm").doHandler(request, response);
+        } else {
+            this.dispatchMapping.getMapping("other").doHandler(request, response);
         }
     }
 

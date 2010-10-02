@@ -5,11 +5,11 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
     <filter>
-        <filter-name>ComboFilter</filter-name>
-        <filter-class>web.filter.ComboFilter</filter-class>
+        <filter-name>DoorFilter</filter-name>
+        <filter-class>web.filter.DoorFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>ComboFilter</filter-name>
+        <filter-name>DoorFilter</filter-name>
         <url-pattern>/*</url-pattern>
         <servlet-name>DoorServlet</servlet-name>
     </filter-mapping>
@@ -50,7 +50,14 @@
         <servlet-name>DoorServlet</servlet-name>
         <url-pattern>/combo</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>*.xml</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>*.swf</url-pattern>
+    </servlet-mapping>
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
