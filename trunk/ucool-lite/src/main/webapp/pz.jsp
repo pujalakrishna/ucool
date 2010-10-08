@@ -31,8 +31,14 @@
         .circle-hidden {
             list-style:none;
         }
+
+        #switch {
+            position: relative;
+        }
+
         #switch input {
-            float:right;
+            position: absolute;
+            right: 0;
         }
     </style>
 </head>
@@ -46,19 +52,13 @@
     <fieldset>
         <legend>开关</legend>
         <ul id="switch">
-            <li><label>js/css调试模式（所有js和css都显示source文件，开启时请勿访问/?debug）</label>
-                <input type="button" id="assetsdebugswitch"
-                       value="<%=configCenter.getStateOper(configCenter.getUcoolAssetsDebug())%>"/>
+            <li><label>js/css调试模式（所有js和css都显示source文件，开启时请勿访问/?debug）</label><input type="button" id="assetsdebugswitch" value="<%=configCenter.getStateOper(configCenter.getUcoolAssetsDebug())%>"/>
                 <span class="<%=configCenter.getStateStyle(configCenter.getUcoolAssetsDebug())%>" id="assetsdebugstate">
                     <%=configCenter.getCurState(configCenter.getUcoolAssetsDebug())%>
                 </span>
             </li>
-            <li><label>手动清理线上缓存</label>
-                <input type="button" id="cleanOnlineCache"
-                       value="立即清理"/><span></span></li>
-            <li><label>手动清理daily缓存</label>
-                <input type="button" id="cleanDailyCache"
-                       value="立即清理"/><span></span></li>
+            <li><label>手动清理线上缓存</label><input type="button" id="cleanOnlineCache" value="立即清理"/><span></span></li>
+            <li><label>手动清理daily缓存</label><input type="button" id="cleanDailyCache" value="立即清理"/><span></span></li>
         </ul>
     </fieldset>
 

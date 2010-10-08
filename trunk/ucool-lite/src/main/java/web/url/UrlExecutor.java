@@ -33,11 +33,9 @@ public class UrlExecutor {
      */
     public void doUrlRule(String filePath, String realUrl, boolean isOnline, PrintWriter out) {
         /**
-         * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
+         * 找缓存，没有缓存的从线上下载，再走缓存。
          */
-        if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, isOnline, false));
-        } else if (findCacheFile(filePath, isOnline)) {
+        if (findCacheFile(filePath, isOnline)) {
             this.fileEditor.pushFile(out, loadExistFile(filePath, isOnline, true));
         } else {
             if (cacheUrlFile(filePath, realUrl, isOnline)) {
@@ -47,20 +45,6 @@ public class UrlExecutor {
                 readUrlFile(realUrl, out);
             }
         }
-    }
-
-    /**
-     * 从assets目录中查找本地修改过的文件
-     *
-     * @param filePath of type String
-     * @return boolean
-     * @author zhangting
-     * @since 2010-8-19 14:49:26
-     */
-    private boolean findAssetsFile(String filePath) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(configCenter.getWebRoot()).append(configCenter.getUcoolAssetsRoot()).append(filePath);
-        return this.fileEditor.findFile(sb.toString());
     }
 
     /**

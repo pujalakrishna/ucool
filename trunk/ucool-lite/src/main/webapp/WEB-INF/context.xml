@@ -14,7 +14,6 @@
             <map>
                 <entry key="assets" value-ref="assetsHandler" />
                 <entry key="png" value-ref="pngHandler" />
-                <entry key="htm" value-ref="jsonpHandler" />
                 <entry key="combo" value-ref="comboHandler" />
                 <entry key="other" value-ref="xmlHandler" />
             </map>
@@ -22,7 +21,6 @@
     </bean>
 
     <bean id="assetsHandler" class="web.handler.impl.AssetsHandler"/>
-    <bean id="jsonpHandler" class="web.handler.impl.JsonpHandler"/>
     <bean id="pngHandler" class="web.handler.impl.PngHandler"/>
     <bean id="comboHandler" class="web.handler.impl.ComboHandler"/>
     <bean id="xmlHandler" class="web.handler.impl.OtherHandler"/>
