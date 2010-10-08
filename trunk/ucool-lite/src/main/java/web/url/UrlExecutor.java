@@ -36,10 +36,10 @@ public class UrlExecutor {
          * 找缓存，没有缓存的从线上下载，再走缓存。
          */
         if (findCacheFile(filePath, isOnline)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, isOnline, true));
+            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
         } else {
             if (cacheUrlFile(filePath, realUrl, isOnline)) {
-                this.fileEditor.pushFile(out, loadExistFile(filePath, isOnline, true));
+                this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
             } else {
                 //最后的保障，如果缓存失败了，从线上取吧
                 readUrlFile(realUrl, out);
