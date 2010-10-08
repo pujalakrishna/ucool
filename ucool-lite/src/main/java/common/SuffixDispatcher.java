@@ -43,8 +43,6 @@ public class SuffixDispatcher {
             }
         } else if (url.indexOf(".png") != -1 || url.indexOf(".gif") != -1 || url.indexOf(".ico") != -1) {
             this.dispatchMapping.getMapping("png").doHandler(request, response);
-        } else if (url.indexOf(".htm") != -1) {
-            this.dispatchMapping.getMapping("htm").doHandler(request, response);
         } else {
             this.dispatchMapping.getMapping("other").doHandler(request, response);
         }
