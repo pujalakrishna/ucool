@@ -64,6 +64,7 @@ public class ComboHandler extends AssetsHandler {
             //拼出单个url，然后的逻辑和单文件相同
             String singleFilePath = filePath + everyFile;
             String singleRealUrl = pathPrefix + everyFile;
+            String singleFullUrl = singleRealUrl;
             
             //在debug过滤之前还要过滤时间戳
             singleFilePath = singleFilePath.split("\\?")[0];
@@ -78,9 +79,11 @@ public class ComboHandler extends AssetsHandler {
             }
 
             singleRealUrl = urlFilter(singleRealUrl, isOnline);
+            singleFullUrl = urlFilter(singleFullUrl, isOnline);
             
-            getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, isOnline, out);
+            getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
         }
         
     }
+
 }

@@ -30,9 +30,11 @@ public class UrlExecutor {
      *
      * @param filePath of type String
      * @param realUrl of type String
+     * @param fullUrl 用于记录最初的url
+     * @param isOnline
      * @param out of type PrintWriter
      */
-    public void doUrlRule(String filePath, String realUrl, boolean isOnline, PrintWriter out) {
+    public void doUrlRule(String filePath, String realUrl, String fullUrl, boolean isOnline, PrintWriter out) {
         /**
          * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
          */
@@ -45,7 +47,7 @@ public class UrlExecutor {
                 this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
             } else {
                 //最后的保障，如果缓存失败了，从线上取吧
-                readUrlFile(realUrl, out);
+                readUrlFile(fullUrl, out);
             }
         }
     }
@@ -93,18 +95,7 @@ public class UrlExecutor {
         try {
             URL url = new URL(realUrl);
             if(((HttpURLConnection) url.openConnection()).getResponseCode() == 404) {
-                //TODO http://assets.daily.taobao.net/p/tshop/c2c-mods-min.css 竟然没有源码存在
-                if(realUrl.indexOf(".source") != -1) {
-                    realUrl = realUrl.replace(".source", "");
-                } else {
-                    realUrl = realUrl.replaceAll(".css", "-min.css");
-                    realUrl = realUrl.replaceAll(".js", "-min.js");
-                }
-
-                url = new URL(realUrl);
-                if (((HttpURLConnection) url.openConnection()).getResponseCode() == 404) {
-                    return false;
-                }
+                return false;
             }
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             StringBuilder sb = new StringBuilder();
@@ -160,12 +151,12 @@ public class UrlExecutor {
     /**
      * Method readUrlFile ...
      *
-     * @param realUrl of type String
+     * @param fullUrl of type String
      * @param out of type PrintWriter
      */
-    private void readUrlFile(String realUrl, PrintWriter out) {
+    private void readUrlFile(String fullUrl, PrintWriter out) {
         try {
-            URL url = new URL(realUrl);
+            URL url = new URL(fullUrl);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             fileEditor.pushStream(out, in);
         } catch (Exception e) {
