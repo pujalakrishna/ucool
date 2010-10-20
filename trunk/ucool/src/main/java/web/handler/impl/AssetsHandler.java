@@ -68,6 +68,7 @@ public class AssetsHandler implements Handler {
          */
         String filePath = (String) request.getAttribute("filePath");
         String realUrl = (String) request.getAttribute("realUrl");
+        String fullUrl = realUrl;
         boolean isOnline = configCenter.getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
         if (switcher.isAssetsDebugMode()) {
             //bugfix 首页，不知道php里加了什么，在debugmode下部分js会自动请求源文件
@@ -79,6 +80,7 @@ public class AssetsHandler implements Handler {
             realUrl = debugMode(realUrl);
         }
         realUrl = urlFilter(realUrl, isOnline);
+        fullUrl = urlFilter(fullUrl, isOnline);
 
         response.setCharacterEncoding("gbk");
         if(filePath.indexOf(".css") != -1) {
@@ -88,7 +90,7 @@ public class AssetsHandler implements Handler {
         }
         PrintWriter out = response.getWriter();
 
-        urlExecutor.doUrlRule(filePath, realUrl, isOnline, out);
+        urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, out);
     }
 
     /**
@@ -99,6 +101,13 @@ public class AssetsHandler implements Handler {
      * @return String
      */
     protected String urlFilter(String url, boolean isOnline) {
+        /**
+         * 防止定位到本地导致自循环
+         * 还有一种可能是直接访问本地内网ip，这个没法子
+         */
+        if(url.indexOf("127.0.0.1") != -1) {
+            return url.replace("127.0.0.1", configCenter.getUcoolOnlineIp());
+        }
         if (isOnline) {
             for (String d : configCenter.getUcoolOnlineDomain().split(",")) {
                 if (url.indexOf(d) != -1) {
