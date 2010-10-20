@@ -4,6 +4,7 @@ import biz.file.FileEditor;
 import common.ConfigCenter;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
@@ -36,12 +37,12 @@ public class UrlExecutor {
          * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
          */
         if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, isOnline, false));
+            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline));
         } else if (findCacheFile(filePath, isOnline)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, isOnline, true));
+            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
         } else {
             if (cacheUrlFile(filePath, realUrl, isOnline)) {
-                this.fileEditor.pushFile(out, loadExistFile(filePath, isOnline, true));
+                this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
             } else {
                 //最后的保障，如果缓存失败了，从线上取吧
                 readUrlFile(realUrl, out);
@@ -91,6 +92,20 @@ public class UrlExecutor {
     private boolean cacheUrlFile(String filePath, String realUrl, boolean isOnline) {
         try {
             URL url = new URL(realUrl);
+            if(((HttpURLConnection) url.openConnection()).getResponseCode() == 404) {
+                //TODO http://assets.daily.taobao.net/p/tshop/c2c-mods-min.css 竟然没有源码存在
+                if(realUrl.indexOf(".source") != -1) {
+                    realUrl = realUrl.replace(".source", "");
+                } else {
+                    realUrl = realUrl.replaceAll(".css", "-min.css");
+                    realUrl = realUrl.replaceAll(".js", "-min.js");
+                }
+
+                url = new URL(realUrl);
+                if (((HttpURLConnection) url.openConnection()).getResponseCode() == 404) {
+                    return false;
+                }
+            }
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             StringBuilder sb = new StringBuilder();
             sb.append(configCenter.getWebRoot()).append(getCacheString(isOnline)).append(filePath);
