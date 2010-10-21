@@ -28,8 +28,8 @@ public class UrlExecutor {
     /**
      * 去除request依赖的执行url rule的方法
      *
-     * @param filePath of type String
-     * @param realUrl of type String
+     * @param filePath of type String  /p/app/tc/detail_v2.css
+     * @param realUrl of type String   http://xxxx.css
      * @param fullUrl 用于记录最初的url
      * @param isOnline
      * @param out of type PrintWriter
