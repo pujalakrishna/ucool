@@ -34,6 +34,9 @@
         #switch input {
             float:right;
         }
+        input{
+            margin:0;
+        }
     </style>
 </head>
 <body>
