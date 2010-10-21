@@ -27,7 +27,7 @@ public class SuffixDispatcher {
     public void dispatch(HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
         //配置页
-        if(request.getRequestURI().equals("/pz")) {
+        if(request.getRequestURI().equals("/pz") || request.getRequestURI().equals("/setting")) {
             request.getRequestDispatcher("pz.jsp").forward(request, response);
             return;
         }
@@ -42,10 +42,13 @@ public class SuffixDispatcher {
                 this.dispatchMapping.getMapping("assets").doHandler(request, response);
             }
         } else if (url.indexOf(".png") != -1 || url.indexOf(".gif") != -1 || url.indexOf(".ico") != -1) {
+            //图片处理 目前有png,gif,ico
             this.dispatchMapping.getMapping("png").doHandler(request, response);
         } else if (url.indexOf(".htm") != -1) {
+            // htm页面处理
             this.dispatchMapping.getMapping("htm").doHandler(request, response);
         } else {
+            // 其他格式的处理，目前包括swf和xml
             this.dispatchMapping.getMapping("other").doHandler(request, response);
         }
     }

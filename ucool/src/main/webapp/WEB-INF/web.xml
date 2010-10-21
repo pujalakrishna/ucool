@@ -48,6 +48,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DoorServlet</servlet-name>
+        <url-pattern>/setting</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoorServlet</servlet-name>
         <url-pattern>/combo</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
