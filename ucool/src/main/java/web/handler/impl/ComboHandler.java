@@ -1,5 +1,7 @@
 package web.handler.impl;
 
+import common.HttpTools;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,7 +71,7 @@ public class ComboHandler extends AssetsHandler {
             //在debug过滤之前还要过滤时间戳
             singleFilePath = singleFilePath.split("\\?")[0];
             //获取源文件url
-            if (getSwitcher().isAssetsDebugMode()) {
+            if (getSwitcher().isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
                 if(isIndexBug) {
                     singleFilePath = singleFilePath.replace(".js", "-min.js");
                     singleRealUrl = singleRealUrl.replace(".js", "-min.js");

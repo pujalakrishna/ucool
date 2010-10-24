@@ -1,6 +1,7 @@
 package web.handler.impl;
 
 import common.ConfigCenter;
+import common.HttpTools;
 import common.Switcher;
 import web.handler.Handler;
 import web.url.UrlExecutor;
@@ -70,7 +71,7 @@ public class AssetsHandler implements Handler {
         String realUrl = (String) request.getAttribute("realUrl");
         String fullUrl = realUrl;
         boolean isOnline = configCenter.getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
-        if (switcher.isAssetsDebugMode()) {
+        if (switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
             //bugfix 首页，不知道php里加了什么，在debugmode下部分js会自动请求源文件
             if(filePath.indexOf("fp-direct-promo.js") != -1) {
                 filePath = filePath.replace("fp-direct-promo.js", "fp-direct-promo-min.js");
