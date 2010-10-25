@@ -19,7 +19,7 @@ public class HttpTools {
         /**
          * 目前支持2种方式：?debug和debug=true
          */
-        if(refer != null && (refer.indexOf("?debug") != -1 || refer.indexOf("debug=true") != -1)) {
+        if(refer != null && (refer.indexOf("ucool=debug") != -1)) {
             return true;
         }
         return false;
