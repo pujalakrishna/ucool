@@ -11,7 +11,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
@@ -24,7 +23,7 @@ public class DoorFilter implements Filter {
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
     }
-    
+
     public void destroy() {
     }
 
@@ -33,7 +32,7 @@ public class DoorFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
         String fullUrl = getFullUrl(request, response);
         request.setAttribute("filePath", request.getRequestURI());
-        if(fullUrl.indexOf("??") != -1) {
+        if (fullUrl.indexOf("??") != -1) {
             request.setAttribute("realUrl", fullUrl);
             request.getRequestDispatcher("/combo").forward(request, response);
         } else {
@@ -43,7 +42,7 @@ public class DoorFilter implements Filter {
     }
 
     public void init(FilterConfig config) throws ServletException {
-        if (configCenter == null ) {
+        if (configCenter == null) {
             WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
             setConfigCenter((ConfigCenter) context.getBean("configCenter"));
             /**
@@ -51,12 +50,15 @@ public class DoorFilter implements Filter {
              */
             configCenter.setWebRoot(config.getServletContext().getRealPath("/"));
             //设置一下自动清理的周期
-            if("true".equals(configCenter.getUcoolCacheAutoClean())) {
+            if ("true".equals(configCenter.getUcoolCacheAutoClean())) {
                 Scheduler scheduler = (Scheduler) context.getBean("startQuertz");
                 CronTriggerBean trigger = null;
                 try {
                     trigger = (CronTriggerBean) scheduler.getTrigger("triggerCleanOnlineTime", Scheduler.DEFAULT_GROUP);
-                    if(!"".equals(configCenter.getUcoolCacheCleanPeriod()) && !configCenter.getUcoolCacheCleanPeriod().equals("0 30 12 * * ?")) {
+                    if (!"".equals(configCenter.getUcoolCacheCleanPeriod()) && !configCenter.getUcoolCacheCleanPeriod().equals("0 30 12 * * ?")) {
+                        if (!scheduler.isShutdown()) {
+                            scheduler.shutdown();
+                        }
                         trigger.setCronExpression(configCenter.getUcoolCacheCleanPeriod());
                         scheduler.rescheduleJob("triggerCleanOnlineTime", Scheduler.DEFAULT_GROUP, trigger);
                     }
@@ -65,12 +67,17 @@ public class DoorFilter implements Filter {
                     try {
                         trigger = (CronTriggerBean) scheduler.getTrigger("triggerCleanOnlineTime", Scheduler.DEFAULT_GROUP);
                         if (trigger != null) {
+                            if(!scheduler.isShutdown()) {
+                                scheduler.shutdown();
+                            }
                             trigger.setCronExpression("0 30 12 * * ?");
                             scheduler.rescheduleJob("triggerCleanOnlineTime", Scheduler.DEFAULT_GROUP, trigger);
                         }
                     } catch (Exception e1) {
                         try {
-                            scheduler.shutdown();
+                            if (!scheduler.isShutdown()) {
+                                scheduler.shutdown();
+                            }
                         } catch (SchedulerException e2) {
                         }
                     }
@@ -82,14 +89,14 @@ public class DoorFilter implements Filter {
     /**
      * Method getFullUrl ...
      *
-     * @param request of type HttpServletRequest
+     * @param request  of type HttpServletRequest
      * @param response of type HttpServletResponse
      * @return String
      */
     private String getFullUrl(HttpServletRequest request, HttpServletResponse response) {
         StringBuilder sb = new StringBuilder();
         sb.append(request.getRequestURL());
-        if(request.getQueryString() != null){
+        if (request.getQueryString() != null) {
             sb.append("?").append(request.getQueryString());
         }
         return sb.toString();

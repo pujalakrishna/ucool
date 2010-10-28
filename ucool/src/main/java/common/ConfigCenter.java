@@ -21,24 +21,41 @@ public class ConfigCenter implements InitializingBean {
     /**
      * 以下为配置文件使用
      */
+
+    //当前环境local or vm
     private String ucoolEnv;
 
+    //daily的域名
     private String ucoolDailyDomain;
+    //线上域名
     private String ucoolOnlineDomain;
+    //daily ip
     private String ucoolDailyIp;
+    //线上ip
     private String ucoolOnlineIp;
 
+    //是否开启assest的自动清理
     private String ucoolAssetsAutoClean;
+    //是否开启cache目录的自动清理
     private String ucoolCacheAutoClean;
+    //cache目录清理周期
     private String ucoolCacheCleanPeriod;
+    //assets目录清理周期
     private String ucoolAssetsCleanPeriod;
 
+    //cache根目录
     private String ucoolCacheRoot;
+    //daily的cache根目录
     private String ucoolCacheRootDaily;
+    //线上的cache根目录
     private String ucoolCacheRootOnline;
+    //assets目录
     private String ucoolAssetsRoot;
 
+    //是否开启assets调试功能
     private String ucoolAssetsDebug;
+    //是否在调试时使用cache
+    private String ucoolAssetsDebugCache;
 
     public String getWebRoot() {
         return webRoot;
@@ -158,6 +175,14 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolCacheRootOnline(String ucoolCacheRootOnline) {
         this.ucoolCacheRootOnline = ucoolCacheRootOnline;
+    }
+
+    public String getUcoolAssetsDebugCache() {
+        return ucoolAssetsDebugCache;
+    }
+
+    public void setUcoolAssetsDebugCache(String ucoolAssetsDebugCache) {
+        this.ucoolAssetsDebugCache = ucoolAssetsDebugCache;
     }
 
     /**

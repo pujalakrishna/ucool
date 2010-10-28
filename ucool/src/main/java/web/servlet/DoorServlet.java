@@ -1,6 +1,8 @@
 package web.servlet;
 
 import common.SuffixDispatcher;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -52,5 +54,18 @@ public class DoorServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doPost(request, response);
+    }
+
+    @Override
+    public void destroy() {
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+        Scheduler scheduler = (Scheduler) context.getBean("startQuertz");
+        try {
+            if (!scheduler.isShutdown()) {
+                scheduler.shutdown();
+            }
+        } catch (SchedulerException e) {
+        }
+        super.destroy();
     }
 }
