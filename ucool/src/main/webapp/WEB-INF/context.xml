@@ -26,4 +26,42 @@
     <bean id="pngHandler" class="web.handler.impl.PngHandler"/>
     <bean id="comboHandler" class="web.handler.impl.ComboHandler"/>
     <bean id="xmlHandler" class="web.handler.impl.OtherHandler"/>
+
+    <bean id="autoCleanDelegate" class="biz.file.AutoCleanDelegate" scope="singleton"/>
+
+    <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序  -->
+    <bean id="startQuertz" lazy-init="true" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="triggerCleanOnlineTime"/>
+                <!--<ref bean="triggerCleanDailyTime"/>-->
+            </list>
+        </property>
+    </bean>
+
+    <!-- 定义触发时间 -->
+    <bean id="triggerCleanOnlineTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="cleanOnlineJob"/>
+        <!-- cron表达式 -->
+        <property name="cronExpression" value="0 30 12 * * ?"/>
+    </bean>
+
+    <!--<bean id="triggerCleanDailyTime" class="org.springframework.scheduling.quartz.CronTriggerBean">-->
+        <!--<property name="jobDetail" ref="cleanDailyJob"/>-->
+        <!--&lt;!&ndash; cron表达式 &ndash;&gt;-->
+        <!--<property name="cronExpression" value="0 * */1 * * ?"/>-->
+    <!--</bean>-->
+    <!-- 定义调用对象和调用对象的方法 -->
+    <bean id="cleanOnlineJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="autoCleanDelegate"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="autoCleanOnline"/>
+    </bean>
+    <!--<bean id="cleanDailyJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+        <!--&lt;!&ndash; 调用的类 &ndash;&gt;-->
+        <!--<property name="targetObject" ref="autoCleanDelegate"/>-->
+        <!--&lt;!&ndash; 调用类中的方法 &ndash;&gt;-->
+        <!--<property name="targetMethod" value="autoCleanDaily"/>-->
+    <!--</bean>-->
 </beans>

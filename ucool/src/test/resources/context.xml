@@ -6,7 +6,7 @@
     <bean id="quartzJob" class="QuartzJob.QuartzJob"/>
 
     <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序  -->
-    <bean id="startQuertz" lazy-init="false" autowire="no"
+    <bean id="startQuertz" lazy-init="true" autowire="no"
           class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
@@ -19,7 +19,7 @@
     <bean id="doTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="jobtask"/>
         <!-- cron表达式 -->
-        <property name="cronExpression" value="10,15,20,25,30,35,40,45,50,55 * * * * ?"/>
+        <property name="cronExpression" value="0 */1 * * * ?"/>
     </bean>
     <!-- 定义调用对象和调用对象的方法 -->
     <bean id="jobtask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
