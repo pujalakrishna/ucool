@@ -27,16 +27,21 @@
     <bean id="comboHandler" class="web.handler.impl.ComboHandler"/>
     <bean id="xmlHandler" class="web.handler.impl.OtherHandler"/>
 
-    <bean id="autoCleanDelegate" class="biz.file.AutoCleanDelegate" scope="singleton"/>
+    <bean id="autoCleanDelegate" class="biz.file.AutoCleanDelegate"/>
 
     <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序  -->
-    <bean id="startQuertz" lazy-init="true" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <bean id="startQuertz" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
                 <ref bean="triggerCleanOnlineTime"/>
                 <!--<ref bean="triggerCleanDailyTime"/>-->
             </list>
         </property>
+        <property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.threadPool.threadCount">1</prop>
+			</props>
+		</property>
     </bean>
 
     <!-- 定义触发时间 -->
