@@ -90,8 +90,17 @@ public class AssetsHandler implements Handler {
             response.setContentType("application/x-javascript");
         }
         PrintWriter out = response.getWriter();
+        //尝试debug下所有的直接走source，不走cache
+        if (switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
+            if ("false".equals(configCenter.getUcoolAssetsDebugCache())) {
+                urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, out);
+            } else {
+                urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, out);
+            }
+        } else {
+            urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, out);
+        }
 
-        urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, out);
     }
 
     /**
