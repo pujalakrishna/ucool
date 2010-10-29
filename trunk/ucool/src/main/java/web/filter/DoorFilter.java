@@ -1,9 +1,6 @@
 package web.filter;
 
 import common.ConfigCenter;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.springframework.scheduling.quartz.CronTriggerBean;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -11,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
@@ -49,40 +47,8 @@ public class DoorFilter implements Filter {
              * 设置一下根目录的绝对路径
              */
             configCenter.setWebRoot(config.getServletContext().getRealPath("/"));
-            //设置一下自动清理的周期
-            if ("true".equals(configCenter.getUcoolCacheAutoClean())) {
-                Scheduler scheduler = (Scheduler) context.getBean("startQuertz");
-                CronTriggerBean trigger = null;
-                try {
-                    trigger = (CronTriggerBean) scheduler.getTrigger("triggerCleanOnlineTime", Scheduler.DEFAULT_GROUP);
-                    if (!"".equals(configCenter.getUcoolCacheCleanPeriod()) && !configCenter.getUcoolCacheCleanPeriod().equals("0 30 12 * * ?")) {
-                        if (!scheduler.isShutdown()) {
-                            scheduler.shutdown();
-                        }
-                        trigger.setCronExpression(configCenter.getUcoolCacheCleanPeriod());
-                        scheduler.rescheduleJob("triggerCleanOnlineTime", Scheduler.DEFAULT_GROUP, trigger);
-                    }
-                } catch (Exception e) {
-                    //如果挂了，那就恢复默认情况
-                    try {
-                        trigger = (CronTriggerBean) scheduler.getTrigger("triggerCleanOnlineTime", Scheduler.DEFAULT_GROUP);
-                        if (trigger != null) {
-                            if(!scheduler.isShutdown()) {
-                                scheduler.shutdown();
-                            }
-                            trigger.setCronExpression("0 30 12 * * ?");
-                            scheduler.rescheduleJob("triggerCleanOnlineTime", Scheduler.DEFAULT_GROUP, trigger);
-                        }
-                    } catch (Exception e1) {
-                        try {
-                            if (!scheduler.isShutdown()) {
-                                scheduler.shutdown();
-                            }
-                        } catch (SchedulerException e2) {
-                        }
-                    }
-                }
-            }
+            //设置一下初始化时间
+            configCenter.setLastCleanTime(new Date());
         }
     }
 

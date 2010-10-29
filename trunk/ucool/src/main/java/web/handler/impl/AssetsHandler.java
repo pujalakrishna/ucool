@@ -72,11 +72,6 @@ public class AssetsHandler implements Handler {
         String fullUrl = realUrl;
         boolean isOnline = configCenter.getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
         if (switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
-            //bugfix 首页，不知道php里加了什么，在debugmode下部分js会自动请求源文件
-            if(filePath.indexOf("fp-direct-promo.js") != -1) {
-                filePath = filePath.replace("fp-direct-promo.js", "fp-direct-promo-min.js");
-                realUrl = realUrl.replace("fp-direct-promo.js", "fp-direct-promo-min.js");
-            }
             filePath = debugMode(filePath);
             realUrl = debugMode(realUrl);
         }

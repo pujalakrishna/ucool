@@ -75,10 +75,6 @@
             <li>日常ip：<%=configCenter.getUcoolDailyIp()%></li>
             <li>线上ip：<%=configCenter.getUcoolOnlineIp()%></li>
             <li class="circle-hidden"></li>
-            <%--<li>是否开启assets目录清理：<%=configCenter.getUcoolAssetsAutoClean()%></li>--%>
-            <%--<li>assets目录清理周期（小时）：<%=configCenter.getUcoolAssetsCleanPeriod()%></li>--%>
-            <li>是否开启cache目录清理：<%=configCenter.getUcoolCacheAutoClean()%></li>
-            <li>cache目录清理周期字符串：<%=configCenter.getUcoolCacheCleanPeriod()%></li>
             <li>assets文件夹名：<%=configCenter.getUcoolAssetsRoot()%></li>
             <li>缓存daily文件夹名：<%=configCenter.getUcoolCacheRootDaily()%></li>
             <li>缓存online文件夹名：<%=configCenter.getUcoolCacheRootOnline()%></li>

@@ -18,13 +18,13 @@ public class ComboHandler extends AssetsHandler {
      *
      * @param request  of type HttpServletRequest
      * @param response of type HttpServletResponse
-     * @throws java.io.IOException      when
+     * @throws java.io.IOException            when
      * @throws javax.servlet.ServletException when
      */
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         /**
          * combo url example:
-         * 
+         *
          * http://a.tbcdn.cn/p/??header/header-min.css,
          * fp/2010c/fp-base-min.css,fp/2010c/fp-channel-min.css,
          * fp/2010c/fp-product-min.css,fp/2010c/fp-mall-min.css,
@@ -33,20 +33,13 @@ public class ComboHandler extends AssetsHandler {
          * fp/2010c/fp-misc-min.css?t=20100902.css
          *
          */
-        
+
         /**
          * combo的文件必须拆开后再combo输出
          */
         String realUrl = (String) request.getAttribute("realUrl");
         String filePath = (String) request.getAttribute("filePath"); // e.g.:/p/
 
-       //bugfix 首页，不知道php里加了什么，在debugmode下部分js会自动请求源文件
-        boolean isIndexBug = false;
-        if (getSwitcher().isAssetsDebugMode()) {
-            if(realUrl.indexOf("s/kissy/1.1.3/datalazyload/datalazyload-pkg.js") != -1) {
-                isIndexBug = true;
-            }
-        }
         String[] firstCut = realUrl.split("\\?\\?");
         String pathPrefix = firstCut[0];    // e.g.:http://a.tbcdn.cn/p/
         String[] allFiles = firstCut[1].split(",");
@@ -67,25 +60,30 @@ public class ComboHandler extends AssetsHandler {
             String singleFilePath = filePath + everyFile;
             String singleRealUrl = pathPrefix + everyFile;
             String singleFullUrl = singleRealUrl;
-            
+
             //在debug过滤之前还要过滤时间戳
             singleFilePath = singleFilePath.split("\\?")[0];
             //获取源文件url
             if (getSwitcher().isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
-                if(isIndexBug) {
-                    singleFilePath = singleFilePath.replace(".js", "-min.js");
-                    singleRealUrl = singleRealUrl.replace(".js", "-min.js");
-                }
                 singleFilePath = debugMode(singleFilePath);
                 singleRealUrl = debugMode(singleRealUrl);
             }
 
             singleRealUrl = urlFilter(singleRealUrl, isOnline);
             singleFullUrl = urlFilter(singleFullUrl, isOnline);
-            
-            getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
+
+            //尝试debug下所有的直接走source，不走cache
+            if (getSwitcher().isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
+                if ("false".equals(getConfigCenter().getUcoolAssetsDebugCache())) {
+                    getUrlExecutor().doDebugUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
+                } else {
+                    getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
+                }
+            } else {
+                getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
+            }
         }
-        
+
     }
 
 }

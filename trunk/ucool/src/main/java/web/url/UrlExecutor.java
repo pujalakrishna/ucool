@@ -6,6 +6,7 @@ import common.ConfigCenter;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
@@ -29,12 +30,21 @@ public class UrlExecutor {
      * 去除request依赖的执行url rule的方法
      *
      * @param filePath of type String  /p/app/tc/detail_v2.css
-     * @param realUrl of type String   http://xxxx.css
-     * @param fullUrl 用于记录最初的url
+     * @param realUrl  of type String   http://xxxx.css
+     * @param fullUrl  用于记录最初的url
      * @param isOnline
-     * @param out of type PrintWriter
+     * @param out      of type PrintWriter
      */
     public void doUrlRule(String filePath, String realUrl, String fullUrl, boolean isOnline, PrintWriter out) {
+        if ("true".equals(configCenter.getUcoolCacheAutoClean())) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(configCenter.getLastCleanTime());
+            calendar.add(java.util.Calendar.HOUR_OF_DAY, Integer.parseInt(configCenter.getUcoolCacheCleanPeriod()));
+            if (!calendar.after(Calendar.getInstance())) {
+                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootOnline());
+                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootDaily());
+            }
+        }
         /**
          * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
          */
@@ -55,14 +65,13 @@ public class UrlExecutor {
     /**
      * 为debug模式特殊处理url请求，不走cache
      *
+     * @param filePath of type String
+     * @param realUrl  of type String
+     * @param fullUrl  of type String
+     * @param isOnline of type boolean
+     * @param out      of type PrintWriter
      * @author zhangting
      * @since 10-10-29 上午9:51
-     *
-     * @param filePath of type String
-     * @param realUrl of type String
-     * @param fullUrl of type String
-     * @param isOnline of type boolean
-     * @param out of type PrintWriter
      */
     public void doDebugUrlRule(String filePath, String realUrl, String fullUrl, boolean isOnline, PrintWriter out) {
         /**
@@ -71,7 +80,7 @@ public class UrlExecutor {
         if (findAssetsFile(filePath)) {
             this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline));
         } else {
-            if(!readUrlFile(realUrl, out)) {
+            if (!readUrlFile(realUrl, out)) {
                 //最后的保障，如果缓存失败了，从线上取吧
                 readUrlFile(fullUrl, out);
             }
@@ -120,7 +129,7 @@ public class UrlExecutor {
     private boolean cacheUrlFile(String filePath, String realUrl, boolean isOnline) {
         try {
             URL url = new URL(realUrl);
-            if(((HttpURLConnection) url.openConnection()).getResponseCode() == 404) {
+            if (((HttpURLConnection) url.openConnection()).getResponseCode() == 404) {
                 return false;
             }
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -161,12 +170,12 @@ public class UrlExecutor {
      * 返回线上或者daily下的cache路径
      *
      * @param isOnline
+     * @return String
      * @author <a href="mailto:zhangting@taobao.com">zhangting</a>
      * Created on 2010-9-30
-     * @return String
      */
     private String getCacheString(boolean isOnline) {
-        if(isOnline) {
+        if (isOnline) {
             return configCenter.getUcoolCacheRootOnline();
         } else {
             return configCenter.getUcoolCacheRootDaily();
@@ -178,7 +187,7 @@ public class UrlExecutor {
      * Method readUrlFile ...
      *
      * @param fullUrl of type String
-     * @param out of type PrintWriter
+     * @param out     of type PrintWriter
      * @return
      */
     private boolean readUrlFile(String fullUrl, PrintWriter out) {

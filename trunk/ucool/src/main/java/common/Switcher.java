@@ -21,22 +21,6 @@ public class Switcher {
     }
 
     /**
-     * 是否cache目录自动清理
-     * @return
-     */
-    public boolean isAutoCacheClean() {
-        return this.configCenter.getUcoolCacheAutoClean().equals("true");
-    }
-
-    /**
-     * 是否assets目录自动清理
-     * @return
-     */
-    public boolean isAutoAssetsClean() {
-        return this.configCenter.getUcoolAssetsAutoClean().equals("true");
-    }
-
-    /**
      * 是否开启了assets debug
      * @return
      */

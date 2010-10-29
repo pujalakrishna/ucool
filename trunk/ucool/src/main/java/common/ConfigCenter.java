@@ -2,6 +2,7 @@ package common;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
@@ -17,6 +18,11 @@ public class ConfigCenter implements InitializingBean {
      * 以下配置在属性文件中不存在，只是为了方便查找文件而保存根目录绝对路径
      */
     private String webRoot;
+
+    /**
+     * 最近清理时间
+     */
+    private Date lastCleanTime;
 
     /**
      * 以下为配置文件使用
@@ -183,6 +189,14 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolAssetsDebugCache(String ucoolAssetsDebugCache) {
         this.ucoolAssetsDebugCache = ucoolAssetsDebugCache;
+    }
+
+    public Date getLastCleanTime() {
+        return lastCleanTime;
+    }
+
+    public void setLastCleanTime(Date lastCleanTime) {
+        this.lastCleanTime = lastCleanTime;
     }
 
     /**
