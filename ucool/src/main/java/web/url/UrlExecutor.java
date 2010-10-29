@@ -53,6 +53,32 @@ public class UrlExecutor {
     }
 
     /**
+     * 为debug模式特殊处理url请求，不走cache
+     *
+     * @author zhangting
+     * @since 10-10-29 上午9:51
+     *
+     * @param filePath of type String
+     * @param realUrl of type String
+     * @param fullUrl of type String
+     * @param isOnline of type boolean
+     * @param out of type PrintWriter
+     */
+    public void doDebugUrlRule(String filePath, String realUrl, String fullUrl, boolean isOnline, PrintWriter out) {
+        /**
+         * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
+         */
+        if (findAssetsFile(filePath)) {
+            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline));
+        } else {
+            if(!readUrlFile(realUrl, out)) {
+                //最后的保障，如果缓存失败了，从线上取吧
+                readUrlFile(fullUrl, out);
+            }
+        }
+    }
+
+    /**
      * 从assets目录中查找本地修改过的文件
      *
      * @param filePath of type String
@@ -153,14 +179,20 @@ public class UrlExecutor {
      *
      * @param fullUrl of type String
      * @param out of type PrintWriter
+     * @return
      */
-    private void readUrlFile(String fullUrl, PrintWriter out) {
+    private boolean readUrlFile(String fullUrl, PrintWriter out) {
         try {
             URL url = new URL(fullUrl);
+            if (((HttpURLConnection) url.openConnection()).getResponseCode() == 404) {
+                return false;
+            }
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             fileEditor.pushStream(out, in);
+            return true;
         } catch (Exception e) {
         }
 //        out.flush();
+        return false;
     }
 }
