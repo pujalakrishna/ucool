@@ -40,9 +40,9 @@ public class ComboHandler extends AssetsHandler {
         String realUrl = (String) request.getAttribute("realUrl");
         String filePath = (String) request.getAttribute("filePath"); // e.g.:/p/
 
-        String[] firstCut = realUrl.split("\\?\\?");
+        String[] firstCut = realUrl.split(HttpTools.filterSpecialChar(getConfigCenter().getUcoolComboDecollator()));
         String pathPrefix = firstCut[0];    // e.g.:http://a.tbcdn.cn/p/
-        String[] allFiles = firstCut[1].split(",");
+        String[] allFiles = firstCut[1].split(HttpTools.filterSpecialChar(","));
 
         response.setCharacterEncoding("gbk");
         if (realUrl.indexOf(".css") != -1) {
@@ -53,7 +53,7 @@ public class ComboHandler extends AssetsHandler {
         PrintWriter out = response.getWriter();
 
         boolean isOnline = getConfigCenter().getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
-
+        boolean isDebugMode = getSwitcher().isAssetsDebugMode() || HttpTools.isReferDebug(request);
         for (String everyFile : allFiles) {
             // e.g.:header/header-min.css
             //拼出单个url，然后的逻辑和单文件相同
@@ -62,25 +62,25 @@ public class ComboHandler extends AssetsHandler {
             String singleFullUrl = singleRealUrl;
 
             //在debug过滤之前还要过滤时间戳
-            singleFilePath = singleFilePath.split("\\?")[0];
+            singleFilePath = singleFilePath.split(HttpTools.filterSpecialChar("?"))[0];
             //获取源文件url
-            if (getSwitcher().isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
-                singleFilePath = debugMode(singleFilePath);
-                singleRealUrl = debugMode(singleRealUrl);
+            if (isDebugMode) {
+                singleFilePath = debugMode(singleFilePath, singleFullUrl);
+                singleRealUrl = debugMode(singleRealUrl, singleFullUrl);
             }
 
             singleRealUrl = urlFilter(singleRealUrl, isOnline);
             singleFullUrl = urlFilter(singleFullUrl, isOnline);
 
             //尝试debug下所有的直接走source，不走cache
-            if (getSwitcher().isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
+            if (isDebugMode) {
                 if ("false".equals(getConfigCenter().getUcoolAssetsDebugCache())) {
                     getUrlExecutor().doDebugUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
                 } else {
-                    getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
+                    getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, isDebugMode, out);
                 }
             } else {
-                getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
+                getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, isDebugMode, out);
             }
         }
 

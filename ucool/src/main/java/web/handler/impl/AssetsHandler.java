@@ -70,10 +70,11 @@ public class AssetsHandler implements Handler {
         String filePath = (String) request.getAttribute("filePath");
         String realUrl = (String) request.getAttribute("realUrl");
         String fullUrl = realUrl;
+        boolean isDebugMode = switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request);
         boolean isOnline = configCenter.getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
-        if (switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
-            filePath = debugMode(filePath);
-            realUrl = debugMode(realUrl);
+        if (isDebugMode) {
+            filePath = debugMode(filePath, fullUrl);
+            realUrl = debugMode(realUrl, fullUrl);
         }
         realUrl = urlFilter(realUrl, isOnline);
         fullUrl = urlFilter(fullUrl, isOnline);
@@ -86,14 +87,14 @@ public class AssetsHandler implements Handler {
         }
         PrintWriter out = response.getWriter();
         //尝试debug下所有的直接走source，不走cache
-        if (switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request)) {
+        if (isDebugMode) {
             if ("false".equals(configCenter.getUcoolAssetsDebugCache())) {
                 urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, out);
             } else {
-                urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, out);
+                urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
             }
         } else {
-            urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, out);
+            urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
         }
 
     }
@@ -114,13 +115,13 @@ public class AssetsHandler implements Handler {
             return url.replace("127.0.0.1", configCenter.getUcoolOnlineIp());
         }
         if (isOnline) {
-            for (String d : configCenter.getUcoolOnlineDomain().split(",")) {
+            for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
                     return url.replace(d, configCenter.getUcoolOnlineIp());
                 }
             }
         } else {
-            for (String d : configCenter.getUcoolDailyDomain().split(",")) {
+            for (String d : configCenter.getUcoolDailyDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
                     return url.replace(d, configCenter.getUcoolDailyIp());
                 }
@@ -132,14 +133,21 @@ public class AssetsHandler implements Handler {
     /**
      * TODO 抽象出来
      * @param filePath
+     * @param fullUrl
      * @return
      */
-    protected String debugMode(String filePath) {
+    protected String debugMode(String filePath, String fullUrl) {
         if (filePath.indexOf("-min") != -1) {
             filePath = filePath.replace("-min", "");
         } else {
             if(filePath.indexOf(".source.") != -1) {
                 return filePath;
+            }
+            //在这里使用配置的文件作特殊处理
+            for (String filterString : configCenter.getUcoolAssetsDebugCorrectStrings()) {
+                if(fullUrl.indexOf(filterString) != -1) {
+                    return filePath;
+                }
             }
             if (filePath.endsWith(".css")) {
                 filePath = filePath.replace(".css", ".source.css");

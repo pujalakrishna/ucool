@@ -24,6 +24,8 @@ public class ConfigCenter implements InitializingBean {
      */
     private Date lastCleanTime;
 
+    private String[] ucoolAssetsDebugCorrectStrings;
+
     /**
      * 以下为配置文件使用
      */
@@ -39,6 +41,8 @@ public class ConfigCenter implements InitializingBean {
     private String ucoolDailyIp;
     //线上ip
     private String ucoolOnlineIp;
+    //combo的分隔符号
+    private String ucoolComboDecollator;
 
     //是否开启assest的自动清理
     private String ucoolAssetsAutoClean;
@@ -62,6 +66,8 @@ public class ConfigCenter implements InitializingBean {
     private String ucoolAssetsDebug;
     //是否在调试时使用cache
     private String ucoolAssetsDebugCache;
+    //用于debug时纠正文件名
+    private String ucoolAssetsDebugCorrect;
 
     public String getWebRoot() {
         return webRoot;
@@ -77,6 +83,14 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolEnv(String ucoolEnv) {
         this.ucoolEnv = ucoolEnv;
+    }
+
+    public String[] getUcoolAssetsDebugCorrectStrings() {
+        return ucoolAssetsDebugCorrectStrings;
+    }
+
+    public void setUcoolAssetsDebugCorrectStrings(String[] ucoolAssetsDebugCorrectStrings) {
+        this.ucoolAssetsDebugCorrectStrings = ucoolAssetsDebugCorrectStrings;
     }
 
     public String getUcoolDailyDomain() {
@@ -199,6 +213,22 @@ public class ConfigCenter implements InitializingBean {
         this.lastCleanTime = lastCleanTime;
     }
 
+    public String getUcoolComboDecollator() {
+        return ucoolComboDecollator;
+    }
+
+    public void setUcoolComboDecollator(String ucoolComboDecollator) {
+        this.ucoolComboDecollator = ucoolComboDecollator;
+    }
+
+    public String getUcoolAssetsDebugCorrect() {
+        return ucoolAssetsDebugCorrect;
+    }
+
+    public void setUcoolAssetsDebugCorrect(String ucoolAssetsDebugCorrect) {
+        this.ucoolAssetsDebugCorrect = ucoolAssetsDebugCorrect;
+    }
+
     /**
      * Method afterPropertiesSet ...
      *
@@ -212,7 +242,7 @@ public class ConfigCenter implements InitializingBean {
         if (!properties.isEmpty()) {
             for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                 String key = entry.getKey().toString();
-                String[] keySplits = key.split("\\.");
+                String[] keySplits = key.split(HttpTools.filterSpecialChar("."));
                 StringBuffer realKey = new StringBuffer();
                 for (String keySplit : keySplits) {
                     realKey.append(keySplit.toUpperCase().substring(0, 1)).append(keySplit.substring(1));

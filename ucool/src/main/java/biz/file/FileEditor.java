@@ -68,22 +68,6 @@ public class FileEditor {
     }
 
     /**
-     * Method pushFile ...
-     *
-     * @param out    of type PrintWriter
-     * @param reader of type FileReader
-     * @throws IOException when
-     */
-    public void pushFile(PrintWriter out, FileReader reader) {
-        try {
-            BufferedReader in = new BufferedReader(reader);
-            pushStream(out, in);
-        } catch(Exception e) {
-            //捕获所有异常，这里有可能缓存失败，所以取不到文件
-        }
-    }
-
-    /**
      * Method pushStream ...
      *
      * @param out of type PrintWriter
@@ -97,6 +81,22 @@ public class FileEditor {
         }
         in.close();
 //        out.flush();
+    }
+
+    /**
+     * Method pushFile ...
+     *
+     * @param out    of type PrintWriter
+     * @param reader of type FileReader
+     * @throws IOException when
+     */
+    public void pushFile(PrintWriter out, FileReader reader) {
+        try {
+            BufferedReader in = new BufferedReader(reader);
+            pushStream(out, in);
+        } catch(Exception e) {
+            //捕获所有异常，这里有可能缓存失败，所以取不到文件
+        }
     }
 
     /**
