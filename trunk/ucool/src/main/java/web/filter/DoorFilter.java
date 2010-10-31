@@ -1,6 +1,7 @@
 package web.filter;
 
 import common.ConfigCenter;
+import common.HttpTools;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -30,7 +31,7 @@ public class DoorFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
         String fullUrl = getFullUrl(request, response);
         request.setAttribute("filePath", request.getRequestURI());
-        if (fullUrl.indexOf("??") != -1) {
+        if (fullUrl.indexOf(configCenter.getUcoolComboDecollator()) != -1) {
             request.setAttribute("realUrl", fullUrl);
             request.getRequestDispatcher("/combo").forward(request, response);
         } else {
@@ -49,6 +50,8 @@ public class DoorFilter implements Filter {
             configCenter.setWebRoot(config.getServletContext().getRealPath("/"));
             //设置一下初始化时间
             configCenter.setLastCleanTime(new Date());
+            //初始化纠正debugmode下的字符串
+            configCenter.setUcoolAssetsDebugCorrectStrings(configCenter.getUcoolAssetsDebugCorrect().split(HttpTools.filterSpecialChar(",")));
         }
     }
 

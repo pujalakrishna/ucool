@@ -4,9 +4,9 @@ import biz.file.FileEditor;
 import common.ConfigCenter;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
@@ -29,36 +29,80 @@ public class UrlExecutor {
     /**
      * 去除request依赖的执行url rule的方法
      *
-     * @param filePath of type String  /p/app/tc/detail_v2.css
-     * @param realUrl  of type String   http://xxxx.css
-     * @param fullUrl  用于记录最初的url
+     * @param filePath    of type String  /p/app/tc/detail_v2.css
+     * @param realUrl     of type String   http://xxxx.css
+     * @param fullUrl     用于记录最初的url
      * @param isOnline
-     * @param out      of type PrintWriter
+     * @param isDebugMode
+     * @param out         of type PrintWriter
      */
-    public void doUrlRule(String filePath, String realUrl, String fullUrl, boolean isOnline, PrintWriter out) {
-        if ("true".equals(configCenter.getUcoolCacheAutoClean())) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(configCenter.getLastCleanTime());
-            calendar.add(java.util.Calendar.HOUR_OF_DAY, Integer.parseInt(configCenter.getUcoolCacheCleanPeriod()));
-            if (!calendar.after(Calendar.getInstance())) {
-                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootOnline());
-                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootDaily());
-            }
-        }
+    public void doUrlRule(String filePath, String realUrl, String fullUrl, boolean isOnline, boolean isDebugMode, PrintWriter out) {
+        autoCleanCache();
         /**
          * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
          */
         if (findAssetsFile(filePath)) {
             this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline));
-        } else if (findCacheFile(filePath, isOnline)) {
+        } else if (findCacheFile(filePath, realUrl, isOnline, isDebugMode)) {
             this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
         } else {
             if (cacheUrlFile(filePath, realUrl, isOnline)) {
                 this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
             } else {
-                //最后的保障，如果缓存失败了，从线上取吧
-                readUrlFile(fullUrl, out);
+                if (isDebugMode) {
+                    //debug mode下如果请求-min的源文件a.js，会出现请求a.source.js的情况，到这里处理
+                    //如果到这里那就说明线上都没有改文件，即使返回压缩的文件也没问题，只要保证尽可能的命中cache
+                    filePath = filePath.replace(".source", "");
+                    realUrl = realUrl.replace(".source", "");
+                    doUrlRuleCopy(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
+                } else {
+                    //最后的保障，如果缓存失败了，从线上取吧
+                    readUrlFile(fullUrl, out);
+                }
             }
+        }
+    }
+
+    /**
+     * Method doUrlRule 's Copy ...
+     * 为debug mode下直接访问带-min的源码而创建，例如访问kissy.js
+     *
+     * @param filePath of type String
+     * @param realUrl of type String
+     * @param fullUrl of type String
+     * @param isOnline of type boolean
+     * @param isDebugMode of type boolean
+     * @param out of type PrintWriter
+     */
+    public void doUrlRuleCopy(String filePath, String realUrl, String fullUrl, boolean isOnline, boolean isDebugMode, PrintWriter out) {
+        if (findAssetsFile(filePath)) {
+            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline));
+        } else if (findCacheFile(filePath, realUrl, isOnline, isDebugMode)) {
+            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
+        } else if (cacheUrlFile(filePath, realUrl, isOnline)) {
+            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
+        } else {
+            //最后的保障，如果缓存失败了，从线上取吧
+            readUrlFile(fullUrl, out);
+        }
+    }
+
+    /**
+     * Method autoCleanCache ...
+     */
+    private void autoCleanCache() {
+        if ("true".equals(configCenter.getUcoolCacheAutoClean())) {
+            //防止并发同时进行删除
+            configCenter.setUcoolCacheAutoClean("false");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(configCenter.getLastCleanTime());
+            calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(configCenter.getUcoolCacheCleanPeriod()));
+            if (!calendar.after(Calendar.getInstance())) {
+                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootOnline());
+                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootDaily());
+                configCenter.setLastCleanTime(new Date());
+            }
+            configCenter.setUcoolCacheAutoClean("true");
         }
     }
 
@@ -104,15 +148,18 @@ public class UrlExecutor {
     /**
      * 从cache目录查找替补文件
      *
-     * @param filePath of type String
+     * @param filePath    of type String
+     * @param realUrl
      * @param isOnline
-     * @return boolean
+     * @param isDebugMode @return boolean
+     * @return
      * @author zhangting
      * @since 2010-8-19 14:50:35
      */
-    private boolean findCacheFile(String filePath, boolean isOnline) {
+    private boolean findCacheFile(String filePath, String realUrl, boolean isOnline, Boolean isDebugMode) {
         StringBuilder sb = new StringBuilder();
         sb.append(configCenter.getWebRoot()).append(getCacheString(isOnline)).append(filePath);
+        //这里如果找到了，直接返回了，下面的逻辑尽可能的少走
         return this.fileEditor.findFile(sb.toString());
     }
 
@@ -129,9 +176,6 @@ public class UrlExecutor {
     private boolean cacheUrlFile(String filePath, String realUrl, boolean isOnline) {
         try {
             URL url = new URL(realUrl);
-            if (((HttpURLConnection) url.openConnection()).getResponseCode() == 404) {
-                return false;
-            }
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             StringBuilder sb = new StringBuilder();
             sb.append(configCenter.getWebRoot()).append(getCacheString(isOnline)).append(filePath);
@@ -193,13 +237,11 @@ public class UrlExecutor {
     private boolean readUrlFile(String fullUrl, PrintWriter out) {
         try {
             URL url = new URL(fullUrl);
-            if (((HttpURLConnection) url.openConnection()).getResponseCode() == 404) {
-                return false;
-            }
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             fileEditor.pushStream(out, in);
             return true;
         } catch (Exception e) {
+            System.out.println("");
         }
 //        out.flush();
         return false;

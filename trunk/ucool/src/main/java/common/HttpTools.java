@@ -24,4 +24,27 @@ public class HttpTools {
         }
         return false;
     }
+
+    /**
+     * ¹ıÂËÌØÊâ×Ö·û
+     * @param input
+     * @return
+     */
+    public static String filterSpecialChar (String input) {
+        StringBuffer filtered = new StringBuffer(input.length());
+        char c;
+        for (int i = 0; i < input.length(); i++) {
+            c = input.charAt(i);
+            switch (c) {
+                case '"':filtered.append("\\\"");break;
+                case '\'':filtered.append("\\'");break;
+                case '\\':filtered.append("\\\\");break;
+                case '?':filtered.append("\\?");break;
+                case '.':filtered.append("\\.");break;
+                default:filtered.append(c);
+            }
+        }
+        return (filtered.toString());
+    }
+
 }
