@@ -182,7 +182,7 @@ public class ConfigCenter implements InitializingBean {
     }
 
     public String getUcoolCacheRootDaily() {
-        return ucoolCacheRootDaily;
+        return this.ucoolCacheRoot + "/" + ucoolCacheRootDaily;
     }
 
     public void setUcoolCacheRootDaily(String ucoolCacheRootDaily) {
@@ -190,7 +190,7 @@ public class ConfigCenter implements InitializingBean {
     }
 
     public String getUcoolCacheRootOnline() {
-        return ucoolCacheRootOnline;
+        return this.ucoolCacheRoot + "/" + ucoolCacheRootOnline;
     }
 
     public void setUcoolCacheRootOnline(String ucoolCacheRootOnline) {
