@@ -220,7 +220,7 @@ public class UrlExecutor {
      */
     private String getCacheString(boolean isOnline) {
         if (isOnline) {
-            return configCenter.getUcoolCacheRootOnline();
+            return configCenter.isPrepub() ? configCenter.getUcoolCacheRootPrepub() : configCenter.getUcoolCacheRootOnline();
         } else {
             return configCenter.getUcoolCacheRootDaily();
         }

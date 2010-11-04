@@ -24,8 +24,15 @@ public class ConfigCenter implements InitializingBean {
      */
     private Date lastCleanTime;
 
+    /**
+     * 用于特殊文件名纠正，这些目录下的assets的debug模式默认先取xx.js/css而不加source
+     */
     private String[] ucoolAssetsDebugCorrectStrings;
 
+    /**
+     * 当前是否走预发ip
+     */
+    private boolean isPrepub;
     /**
      * 以下为配置文件使用
      */
@@ -41,6 +48,8 @@ public class ConfigCenter implements InitializingBean {
     private String ucoolDailyIp;
     //线上ip
     private String ucoolOnlineIp;
+    //预发ip
+    private String ucoolPrepubIp;
     //combo的分隔符号
     private String ucoolComboDecollator;
 
@@ -55,10 +64,12 @@ public class ConfigCenter implements InitializingBean {
 
     //cache根目录
     private String ucoolCacheRoot;
-    //daily的cache根目录
+    //daily的cache子目录
     private String ucoolCacheRootDaily;
-    //线上的cache根目录
+    //线上的cache子目录
     private String ucoolCacheRootOnline;
+    //预发的cache子目录
+    private String ucoolCacheRootPrepub;
     //assets目录
     private String ucoolAssetsRoot;
 
@@ -75,6 +86,14 @@ public class ConfigCenter implements InitializingBean {
 
     public void setWebRoot(String webRoot) {
         this.webRoot = webRoot;
+    }
+
+    public boolean isPrepub() {
+        return isPrepub;
+    }
+
+    public void setPrepub(boolean prepub) {
+        isPrepub = prepub;
     }
 
     public String getUcoolEnv() {
@@ -227,6 +246,22 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolAssetsDebugCorrect(String ucoolAssetsDebugCorrect) {
         this.ucoolAssetsDebugCorrect = ucoolAssetsDebugCorrect;
+    }
+
+    public String getUcoolPrepubIp() {
+        return ucoolPrepubIp;
+    }
+
+    public void setUcoolPrepubIp(String ucoolPrepubIp) {
+        this.ucoolPrepubIp = ucoolPrepubIp;
+    }
+
+    public String getUcoolCacheRootPrepub() {
+        return this.ucoolCacheRoot + "/" + ucoolCacheRootPrepub;
+    }
+
+    public void setUcoolCacheRootPrepub(String ucoolCacheRootPrepub) {
+        this.ucoolCacheRootPrepub = ucoolCacheRootPrepub;
     }
 
     /**
