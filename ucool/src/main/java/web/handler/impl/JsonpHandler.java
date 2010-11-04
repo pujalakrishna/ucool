@@ -2,6 +2,7 @@ package web.handler.impl;
 
 import biz.JsonpParser;
 import common.ConfigCenter;
+import common.UrlTools;
 import web.handler.Handler;
 
 import javax.servlet.ServletException;
@@ -24,9 +25,14 @@ public class JsonpHandler implements Handler {
 
     private String realPath;
     private ConfigCenter configCenter;
+    private UrlTools urlTools;
 
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
+    }
+
+    public void setUrlTools(UrlTools urlTools) {
+        this.urlTools = urlTools;
     }
 
     /**
@@ -59,6 +65,7 @@ public class JsonpHandler implements Handler {
         PrintWriter out = response.getWriter();
 
         try {
+            directURL = urlTools.urlFilter(directURL, true);
             URL url = new URL(directURL);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             String line;

@@ -65,12 +65,12 @@ public class ComboHandler extends AssetsHandler {
             singleFilePath = singleFilePath.split(HttpTools.filterSpecialChar("?"))[0];
             //获取源文件url
             if (isDebugMode) {
-                singleFilePath = debugMode(singleFilePath, singleFullUrl);
-                singleRealUrl = debugMode(singleRealUrl, singleFullUrl);
+                singleFilePath = getUrlTools().debugMode(singleFilePath, singleFullUrl);
+                singleRealUrl = getUrlTools().debugMode(singleRealUrl, singleFullUrl);
             }
 
-            singleRealUrl = urlFilter(singleRealUrl, isOnline);
-            singleFullUrl = urlFilter(singleFullUrl, isOnline);
+            singleRealUrl = getUrlTools().urlFilter(singleRealUrl, isOnline);
+            singleFullUrl = getUrlTools().urlFilter(singleFullUrl, isOnline);
 
             //尝试debug下所有的直接走source，不走cache
             if (isDebugMode) {

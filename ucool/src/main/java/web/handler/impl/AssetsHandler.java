@@ -3,6 +3,7 @@ package web.handler.impl;
 import common.ConfigCenter;
 import common.HttpTools;
 import common.Switcher;
+import common.UrlTools;
 import web.handler.Handler;
 import web.url.UrlExecutor;
 
@@ -25,6 +26,8 @@ public class AssetsHandler implements Handler {
     private Switcher switcher;
 
     private UrlExecutor urlExecutor;
+
+    private UrlTools urlTools;
 
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
@@ -50,6 +53,14 @@ public class AssetsHandler implements Handler {
         return urlExecutor;
     }
 
+    public void setUrlTools(UrlTools urlTools) {
+        this.urlTools = urlTools;
+    }
+
+    protected UrlTools getUrlTools() {
+        return urlTools;
+    }
+
     /**
      * Method doHandler ...
      *
@@ -73,11 +84,11 @@ public class AssetsHandler implements Handler {
         boolean isDebugMode = switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request);
         boolean isOnline = configCenter.getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
         if (isDebugMode) {
-            filePath = debugMode(filePath, fullUrl);
-            realUrl = debugMode(realUrl, fullUrl);
+            filePath = urlTools.debugMode(filePath, fullUrl);
+            realUrl = urlTools.debugMode(realUrl, fullUrl);
         }
-        realUrl = urlFilter(realUrl, isOnline);
-        fullUrl = urlFilter(fullUrl, isOnline);
+        realUrl = urlTools.urlFilter(realUrl, isOnline);
+        fullUrl = urlTools.urlFilter(fullUrl, isOnline);
 
         response.setCharacterEncoding("gbk");
         if(filePath.indexOf(".css") != -1) {
@@ -97,65 +108,6 @@ public class AssetsHandler implements Handler {
             urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
         }
 
-    }
-
-    /**
-     * 把请求的在配置文件中的所有域名换成ip
-     *
-     * @param url of type String
-     * @param isOnline
-     * @return String
-     */
-    protected String urlFilter(String url, boolean isOnline) {
-        /**
-         * 防止定位到本地导致自循环
-         * 还有一种可能是直接访问本地内网ip，这个没法子
-         */
-        if(url.indexOf("127.0.0.1") != -1) {
-            return url.replace("127.0.0.1", configCenter.getUcoolOnlineIp());
-        }
-        if (isOnline) {
-            for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
-                if (url.indexOf(d) != -1) {
-                    return url.replace(d, configCenter.getUcoolOnlineIp());
-                }
-            }
-        } else {
-            for (String d : configCenter.getUcoolDailyDomain().split(HttpTools.filterSpecialChar(","))) {
-                if (url.indexOf(d) != -1) {
-                    return url.replace(d, configCenter.getUcoolDailyIp());
-                }
-            }
-        }
-        return url;
-    }
-
-    /**
-     * TODO 抽象出来
-     * @param filePath
-     * @param fullUrl
-     * @return
-     */
-    protected String debugMode(String filePath, String fullUrl) {
-        if (filePath.indexOf("-min") != -1) {
-            filePath = filePath.replace("-min", "");
-        } else {
-            if(filePath.indexOf(".source.") != -1) {
-                return filePath;
-            }
-            //在这里使用配置的文件作特殊处理
-            for (String filterString : configCenter.getUcoolAssetsDebugCorrectStrings()) {
-                if(fullUrl.indexOf(filterString) != -1) {
-                    return filePath;
-                }
-            }
-            if (filePath.endsWith(".css")) {
-                filePath = filePath.replace(".css", ".source.css");
-            } else {
-                filePath = filePath.replace(".js", ".source.js");
-            }
-        }
-        return filePath;
     }
 
 }

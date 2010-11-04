@@ -52,11 +52,11 @@
     ConfigCenter configCenter = (ConfigCenter) wac.getBean("configCenter");
 %>
 <div id="content">
-    ucool 配置页
+    <h3>ucool v2.4 配置页</h3>
     <fieldset>
         <legend>开关</legend>
         <ul id="switch">
-            <li><label>js/css调试模式（所有js和css都显示source文件，开启时请勿访问/?debug）</label>
+            <li><label>js/css调试模式（所有js和css都显示源码）</label>
                 <input type="button" id="assetsdebugswitch"
                        value="<%=configCenter.getStateOper(configCenter.getUcoolAssetsDebug())%>"/>
                 <span class="<%=configCenter.getStateStyle(configCenter.getUcoolAssetsDebug())%>" id="assetsdebugstate">
@@ -69,6 +69,8 @@
             <li><label>手动清理daily缓存</label>
                 <input type="button" id="cleanDailyCache"
                        value="立即清理"/><span></span></li>
+            <li><label>绑定预发</label>
+                <input type="checkbox" id="bindPrepub"/><span></span></li>
         </ul>
     </fieldset>
 
@@ -85,6 +87,8 @@
             </li>
             <li>线上ip：<%=configCenter.getUcoolOnlineIp()%>
             </li>
+            <li>预发ip：<%=configCenter.getUcoolPrepubIp()%>
+            </li>
             <li>combo分隔符：<%=configCenter.getUcoolComboDecollator()%>
             </li>
             <li class="circle-hidden"></li>
@@ -98,9 +102,11 @@
             </li>
             <li>cache目录：<%=configCenter.getUcoolCacheRoot()%>
             </li>
-            <li>缓存daily子目录：<%=configCenter.getUcoolCacheRootDaily()%>
+            <li>daily缓存子目录：<%=configCenter.getUcoolCacheRootDaily()%>
             </li>
-            <li>缓存online子目录：<%=configCenter.getUcoolCacheRootOnline()%>
+            <li>线上子目录：<%=configCenter.getUcoolCacheRootOnline()%>
+            </li>
+            <li>预发缓存子目录：<%=configCenter.getUcoolCacheRootPrepub()%>
             </li>
             <li>debug状态下是否使用cache：<%=configCenter.getUcoolAssetsDebugCache()%>
             </li>
