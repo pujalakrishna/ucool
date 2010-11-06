@@ -21,7 +21,7 @@
 
     if (pid != null) {
         String tState = null;
-        if (pid.equalsIgnoreCase("assetsdebug")) {
+        if (pid.equalsIgnoreCase("assetsdebugswitch")) {
             if (configCenter.getUcoolAssetsDebug().equals("true")) {
                 tState = "false";
             } else {
@@ -34,6 +34,12 @@
         } else if (pid.equalsIgnoreCase("cleanDailyCache")) {
             fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootDaily());
             tState = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date());
+        } else if(pid.equalsIgnoreCase("cleanPrepubCache")) {
+            fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootPrepub());
+            tState = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date());
+        } else if(pid.equalsIgnoreCase("bindPrepub")) {
+            configCenter.setPrepub(!configCenter.isPrepub());
+            tState = configCenter.isPrepub()?"true":"false";
         }
 
         if (callback != null) {
