@@ -299,28 +299,12 @@ public class ConfigCenter implements InitializingBean {
      * @param state of type String
      * @return String
      */
-    public String getStateStyle(String state) {
-        return state.equals("true")?"open":"closed";
+    public String getStateStringStyle(String state) {
+        return state.equals("true")?"switch-open":"switch-close";
     }
 
-    /**
-     * 用于pz.jsp的状态调用
-     *
-     * @param state of type String
-     * @return String
-     */
-    public String getStateOper(String state) {
-        return state.equals("true")?"点击关闭":"点击打开";
-    }
-
-    /**
-     * 用于pz.jsp的状态调用
-     *
-     * @param state of type String
-     * @return String
-     */
-    public String getCurState(String state) {
-        return state.equals("true")?"已打开":"已关闭";
+    public String getStateStyle(boolean status) {
+        return status ?"switch-open":"switch-close";
     }
 
     public static void main(String[] args) throws Exception {
