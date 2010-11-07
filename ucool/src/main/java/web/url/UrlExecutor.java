@@ -140,9 +140,12 @@ public class UrlExecutor {
      * @since 2010-8-19 14:49:26
      */
     private boolean findAssetsFile(String filePath) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(configCenter.getWebRoot()).append(configCenter.getUcoolAssetsRoot()).append(filePath);
-        return this.fileEditor.findFile(sb.toString());
+        if (configCenter.isEnableAssets()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(configCenter.getWebRoot()).append(configCenter.getUcoolAssetsRoot()).append(filePath);
+            return this.fileEditor.findFile(sb.toString());
+        }
+        return false;
     }
 
     /**

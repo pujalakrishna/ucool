@@ -149,6 +149,11 @@
                         <td class="note">切换到预发环境</td>
                     </tr>
                     <tr>
+                        <th>ENABLE ASSETS：</th>
+                        <td class="op"><a class="<%=configCenter.getStateStyle(configCenter.isEnableAssets())%>" id="enableAssets"></a></td>
+                        <td class="note">使用assets</td>
+                    </tr>
+                    <tr>
                         <th>RELEASE CACHE：</th>
                         <td class="op"><input type="button" value="CLEAR" id="cleanOnlineCache"/></td>
                         <td class="note"></td>
@@ -295,6 +300,13 @@
                     });
                     Event.on('#bindPrepub', 'click', function(e) {
                         var scriptNode = S.getScript("pzbg.jsp?" + "pid=bindPrepub&callback=UCOOL.Pz.change&t=" + new Date(), {
+                            success:function(){
+                                DOM.remove(scriptNode);
+                            }
+                        });
+                    });
+                    Event.on('#enableAssets', 'click', function(e) {
+                        var scriptNode = S.getScript("pzbg.jsp?" + "pid=enableAssets&callback=UCOOL.Pz.change&t=" + new Date(), {
                             success:function(){
                                 DOM.remove(scriptNode);
                             }
