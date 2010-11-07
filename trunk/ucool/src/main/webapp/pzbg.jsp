@@ -40,6 +40,9 @@
         } else if(pid.equalsIgnoreCase("bindPrepub")) {
             configCenter.setPrepub(!configCenter.isPrepub());
             tState = configCenter.isPrepub()?"true":"false";
+        } else if(pid.equalsIgnoreCase("enableAssets")) {
+            configCenter.setEnableAssets(!configCenter.isEnableAssets());
+            tState = configCenter.isEnableAssets()?"true":"false";
         }
 
         if (callback != null) {

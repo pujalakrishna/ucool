@@ -33,6 +33,12 @@ public class ConfigCenter implements InitializingBean {
      * 当前是否走预发ip
      */
     private boolean isPrepub;
+
+    /**
+     * 是否使用本地的assets
+     */
+    private boolean isEnableAssets = true;
+    
     /**
      * 以下为配置文件使用
      */
@@ -94,6 +100,14 @@ public class ConfigCenter implements InitializingBean {
 
     public void setPrepub(boolean prepub) {
         isPrepub = prepub;
+    }
+
+    public boolean isEnableAssets() {
+        return isEnableAssets;
+    }
+
+    public void setEnableAssets(boolean enableAssets) {
+        isEnableAssets = enableAssets;
     }
 
     public String getUcoolEnv() {
