@@ -149,9 +149,9 @@
                         <td class="note">切换到预发环境</td>
                     </tr>
                     <tr>
-                        <th>ENABLE ASSETS：</th>
+                        <th>USE ASSETS：</th>
                         <td class="op"><a class="<%=configCenter.getStateStyle(configCenter.isEnableAssets())%>" id="enableAssets"></a></td>
-                        <td class="note">使用assets</td>
+                        <td class="note">使用服务器上的assets目录</td>
                     </tr>
                     <tr>
                         <th>RELEASE CACHE：</th>
