@@ -110,7 +110,7 @@
             background-position:-7px -3px;
         }
         .switch-close {
-            background-position:-7px -37px;
+            background-position:-7px -38px;
         }
         #footer {
             text-align:center;
