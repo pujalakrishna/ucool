@@ -3,12 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-autowire="byName">
-    <bean id="suffixDispatcher" class="common.SuffixDispatcher" scope="singleton" />
+    <bean id="suffixDispatcher" class="common.SuffixDispatcher" />
     <bean id="configCenter" class="common.ConfigCenter" scope="singleton" />
     <bean id="fileEditor" class="biz.file.FileEditor"/>
-    <bean id="switcher" class="common.Switcher" scope="singleton"/>
-    <bean id="urlExecutor" class="web.url.UrlExecutor" scope="singleton"/>
-    <bean id="urlTools" class="common.UrlTools" scope="singleton"/>
+    <bean id="switcher" class="common.Switcher"/>
+    <bean id="urlExecutor" class="web.url.UrlExecutor" />
+    <bean id="urlTools" class="common.UrlTools"/>
 
     <bean id="dispatchMapping" class="common.DispatchMapping">
         <property name="mappingTable">
@@ -23,7 +23,7 @@
     </bean>
 
     <bean id="assetsHandler" class="web.handler.impl.AssetsHandler"/>
-    <bean id="jsonpHandler" class="web.handler.impl.JsonpHandler"/>
+    <bean id="jsonpHandler" class="web.handler.impl.HtmHandler"/>
     <bean id="pngHandler" class="web.handler.impl.PngHandler"/>
     <bean id="comboHandler" class="web.handler.impl.ComboHandler"/>
     <bean id="xmlHandler" class="web.handler.impl.OtherHandler"/>

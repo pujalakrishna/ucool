@@ -1,6 +1,5 @@
 package web.handler.impl;
 
-import biz.JsonpParser;
 import common.ConfigCenter;
 import common.UrlTools;
 import web.handler.Handler;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.Map;
 
 /**
  * jsonpµÄhandler
@@ -21,7 +19,7 @@ import java.util.Map;
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
  * @since 2010-9-23 13:34:28
  */
-public class JsonpHandler implements Handler {
+public class HtmHandler implements Handler {
 
     private String realPath;
     private ConfigCenter configCenter;
@@ -46,16 +44,7 @@ public class JsonpHandler implements Handler {
     @Override
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         initHandler();
-        String requestURL = request.getRequestURL().toString();
-        String directURL = requestURL;
-
-        Map<String, String> map = JsonpParser.readProperties(realPath);
-        for (String s : map.keySet()) {
-            if(requestURL.indexOf(s) != -1) {
-                directURL = map.get(s);
-                break;
-            }
-        }
+        String directURL = request.getRequestURL().toString();
 
         response.setCharacterEncoding("gbk");
         response.setHeader("Pragma", "No-cache");//HTTP 1.1
@@ -79,6 +68,9 @@ public class JsonpHandler implements Handler {
         out.flush();
     }
 
+    /**
+     * Method initHandler ...
+     */
     private void initHandler() {
         if(this.realPath != null) {
             this.realPath = this.configCenter.getWebRoot();
