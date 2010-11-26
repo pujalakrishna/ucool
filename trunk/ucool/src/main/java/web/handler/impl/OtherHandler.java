@@ -34,10 +34,12 @@ public class OtherHandler implements Handler {
     @Override
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if(request.getRequestURI().indexOf(".swf") != -1) {
+            response.setCharacterEncoding("utf-8");
             response.setContentType("application/x-shockwave-flash");
         } else if(request.getRequestURI().indexOf(".xml") != -1) {
             response.setContentType("text/xml");
         }
+
         PrintWriter out = response.getWriter();
         try {
             URL url = new URL("http://"+ configCenter.getUcoolOnlineIp() + request.getRequestURI());
