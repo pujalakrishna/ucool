@@ -158,16 +158,16 @@
                         <td class="op"><input type="button" value="CLEAR" id="cleanOnlineCache"/></td>
                         <td class="note"></td>
                     </tr>
-                    <tr>
-                        <th>DAILY CACHE£º</th>
-                        <td class="op"><input type="button" value="CLEAR" id="cleanDailyCache"/></td>
-                        <td class="note"></td>
-                    </tr>
-                    <tr>
-                        <th>PRE-RELEASE CACHE£º</th>
-                        <td class="op"><input type="button" value="CLEAR" id="cleanPrepubCache"/></td>
-                        <td class="note"></td>
-                    </tr>
+                    <%--<tr>--%>
+                        <%--<th>DAILY CACHE£º</th>--%>
+                        <%--<td class="op"><input type="button" value="CLEAR" id="cleanDailyCache"/></td>--%>
+                        <%--<td class="note"></td>--%>
+                    <%--</tr>--%>
+                    <%--<tr>--%>
+                        <%--<th>PRE-RELEASE CACHE£º</th>--%>
+                        <%--<td class="op"><input type="button" value="CLEAR" id="cleanPrepubCache"/></td>--%>
+                        <%--<td class="note"></td>--%>
+                    <%--</tr>--%>
                 </table>
             </div>
         </div>
