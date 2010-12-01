@@ -158,16 +158,6 @@
                         <td class="op"><input type="button" value="CLEAR" id="cleanOnlineCache"/></td>
                         <td class="note"></td>
                     </tr>
-                    <%--<tr>--%>
-                        <%--<th>DAILY CACHE£º</th>--%>
-                        <%--<td class="op"><input type="button" value="CLEAR" id="cleanDailyCache"/></td>--%>
-                        <%--<td class="note"></td>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<th>PRE-RELEASE CACHE£º</th>--%>
-                        <%--<td class="op"><input type="button" value="CLEAR" id="cleanPrepubCache"/></td>--%>
-                        <%--<td class="note"></td>--%>
-                    <%--</tr>--%>
                 </table>
             </div>
         </div>
@@ -223,16 +213,8 @@
                         <td><%=configCenter.getUcoolCacheRoot()%></td>
                     </tr>
                     <tr>
-                        <th>DAILY  CACHE SUB-DIR£º</th>
-                        <td><%=configCenter.getUcoolCacheRootDaily()%></td>
-                    </tr>
-                    <tr>
                         <th>RELEASE CACHE SUB-DIR£º</th>
                         <td><%=configCenter.getUcoolCacheRootOnline()%></td>
-                    </tr>
-                    <tr>
-                        <th>PRE-RELEASE CACHE SUB-DIR£º</th>
-                        <td><%=configCenter.getUcoolCacheRootPrepub()%></td>
                     </tr>
                 </table>
             </div>
@@ -279,20 +261,6 @@
                     });
                     Event.on('#cleanOnlineCache', 'click', function(e) {
                         var scriptNode = S.getScript("pzbg.jsp?" + "pid=cleanOnlineCache&callback=UCOOL.Pz.doOnce&t=" + new Date(), {
-                            success:function(){
-                                DOM.remove(scriptNode);
-                            }
-                        });
-                    });
-                    Event.on('#cleanDailyCache', 'click', function(e) {
-                        var scriptNode = S.getScript("pzbg.jsp?" + "pid=cleanDailyCache&callback=UCOOL.Pz.doOnce&t=" + new Date(), {
-                            success:function(){
-                                DOM.remove(scriptNode);
-                            }
-                        });
-                    });
-                    Event.on('#cleanPrepubCache', 'click', function(e) {
-                        var scriptNode = S.getScript("pzbg.jsp?" + "pid=cleanPrepubCache&callback=UCOOL.Pz.doOnce&t=" + new Date(), {
                             success:function(){
                                 DOM.remove(scriptNode);
                             }
