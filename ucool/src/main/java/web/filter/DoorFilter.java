@@ -36,6 +36,8 @@ public class DoorFilter implements Filter {
             request.getRequestDispatcher("/combo").forward(request, response);
         } else {
             request.setAttribute("realUrl", request.getRequestURL().toString());
+            //目前只有flash文件用到，需要302
+            request.setAttribute("fullUrl", fullUrl);
             chain.doFilter(req, resp);
         }
     }
