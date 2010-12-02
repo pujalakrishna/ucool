@@ -1,17 +1,30 @@
 package biz.file;
 
+import common.ConfigCenter;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
  * @since 2010-9-23 14:17:50
  */
 public class FileEditor {
+
+    private ConfigCenter configCenter;
+
+    public void setConfigCenter(ConfigCenter configCenter) {
+        this.configCenter = configCenter;
+    }
+
     /**
      * 查询文件是否存在
      *
      * @param filePath of type String
+     *
      * @return boolean
+     *
      * @author zhangting
      * @since 2010-8-16 13:51:20
      */
@@ -24,7 +37,9 @@ public class FileEditor {
      * Method loadFile ...
      *
      * @param filePath of type String
+     *
      * @return FileReader
+     *
      * @throws FileNotFoundException when
      */
     public FileReader loadFile(String filePath) throws FileNotFoundException {
@@ -35,6 +50,7 @@ public class FileEditor {
      * Method safeLoadFile ...
      *
      * @param filePath of type String
+     *
      * @return FileReader
      */
     public FileReader safeLoadFile(String filePath) {
@@ -53,6 +69,7 @@ public class FileEditor {
      * 支持创建带多级目录的文件
      *
      * @param filePath of type String
+     *
      * @throws java.io.IOException when
      * @author zhangting
      * @since 2010-8-19 16:16:53
@@ -71,7 +88,8 @@ public class FileEditor {
      * Method pushStream ...
      *
      * @param out of type PrintWriter
-     * @param in of type BufferedReader
+     * @param in  of type BufferedReader
+     *
      * @throws IOException when
      */
     public void pushStream(PrintWriter out, BufferedReader in) throws IOException {
@@ -88,13 +106,14 @@ public class FileEditor {
      *
      * @param out    of type PrintWriter
      * @param reader of type FileReader
+     *
      * @throws IOException when
      */
     public void pushFile(PrintWriter out, FileReader reader) {
         try {
             BufferedReader in = new BufferedReader(reader);
             pushStream(out, in);
-        } catch(Exception e) {
+        } catch (Exception e) {
             //捕获所有异常，这里有可能缓存失败，所以取不到文件
         }
     }
@@ -103,8 +122,10 @@ public class FileEditor {
      * Method saveFile ...
      *
      * @param filePath of type String
-     * @param in of type BufferedReader
+     * @param in       of type BufferedReader
+     *
      * @return boolean
+     *
      * @throws IOException when
      */
     public boolean saveFile(String filePath, BufferedReader in) throws IOException {
@@ -167,8 +188,29 @@ public class FileEditor {
             File myFilePath = new File(filePath);
             myFilePath.delete(); //删除空文件夹
         } catch (Exception e) {
-            
+
         }
+    }
+
+    /**
+     * 用于获取assets的子目录，让用户选择
+     *
+     * @return the assetsSubDirs (type ArrayList<String>) of this FileEditor object.
+     */
+    public List<String> getAssetsSubDirs() {
+        List<String> dirList = new ArrayList<String>();
+        String filePath = this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot();
+        File assetsDir = new File(filePath);
+        if (!assetsDir.exists()) {
+            assetsDir.mkdir();
+        }
+        File[] files = assetsDir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                dirList.add(file.getName());
+            }
+        }
+        return dirList;
     }
 
     public static void main(String[] args) {

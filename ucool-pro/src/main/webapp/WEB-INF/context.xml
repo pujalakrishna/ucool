@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-autowire="byName">
     <bean id="suffixDispatcher" class="common.SuffixDispatcher" />
-    <bean id="configCenter" class="common.ConfigCenter" scope="singleton" />
+    <bean id="configCenter" class="common.ConfigCenter" scope="session" />
     <bean id="fileEditor" class="biz.file.FileEditor"/>
     <bean id="switcher" class="common.Switcher"/>
     <bean id="urlExecutor" class="web.url.UrlExecutor" />
