@@ -32,6 +32,18 @@ public class FileEditor {
     }
 
     /**
+     * 使用fileInputStream加载文件，可以设置编码
+     *
+     * @param filePath of type String
+     * @return FileReader
+     * @throws FileNotFoundException when
+     */
+    public InputStreamReader loadFileStream(String filePath, String encoding)
+            throws FileNotFoundException, UnsupportedEncodingException {
+        return new InputStreamReader(new FileInputStream(filePath), encoding);
+    }
+
+    /**
      * Method safeLoadFile ...
      *
      * @param filePath of type String
@@ -80,7 +92,7 @@ public class FileEditor {
             out.println(line);
         }
         in.close();
-//        out.flush();
+        out.flush();
     }
 
     /**
@@ -116,11 +128,11 @@ public class FileEditor {
             while ((line = in.readLine()) != null) {
                 bw.write(line);
                 bw.newLine();
+                bw.flush();
             }
-            bw.flush();
-            in.close();
             bw.close();
             writer.close();
+            in.close();
             return true;
         }
         return false;
