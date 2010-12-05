@@ -4,7 +4,7 @@
     <groupId>com.taobao</groupId>
     <artifactId>ucool</artifactId>
     <packaging>war</packaging>
-    <version>2.4.1a</version>
+    <version>2.4.1b</version>
     <name>ued cool tools</name>
     <url>http://code.google.com/p/ucool/</url>
     <dependencies>
