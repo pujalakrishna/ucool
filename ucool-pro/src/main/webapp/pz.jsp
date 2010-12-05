@@ -32,7 +32,7 @@
             margin:0 auto;
             position:relative;
         }
-        #header .author {
+        #header .version {
             position:absolute;
             right: 0;
             bottom:0;
@@ -112,12 +112,24 @@
         .switch-close {
             background-position:-7px -38px;
         }
-        #footer {
+        #footer, #footer a {
             text-align:center;
-            border-top:1px solid #DCDCDC;
             margin-top:10px;
             height:50px;
             line-height:50px;
+            color:#996;
+            background-color:#edead8;
+        }
+        #footer .help {
+            float:left;
+            margin-left: 25px;
+        }
+        #footer .author {
+            float:right;
+        }
+        #footer .author li{
+            float:left;
+            margin-right: 30px;
         }
     </style>
 </head>
@@ -130,7 +142,7 @@
     <div id="header">
         <div class="top">
             <h1>ucool config page</h1>
-            <a class="author" href="mailto:zhangting@taobao.com">author: zhangting@taobao.com</a>
+            <a class="version" href="http://code.google.com/p/ucool">版本：0.1</a>
         </div>
     </div>
     <div id="content">
@@ -221,7 +233,11 @@
         </div>
     </div>
     <div id="footer">
-        Copyright &copy; 2003-2010 Taobao.com 版权所有
+        <span class="help">(?) help</span>
+        <ul class="author">
+            <li><a href="mailto:zhangting@taobao.com">开发：张挺(zhangting@taobao.com)</a></li>
+            <li><a href="mailto:wuxuan@taobao.com">设计：悟玄(wuxuan@taobao.com)</a></li>
+        </ul>
     </div>
 </div>
 <script type="text/javascript">
