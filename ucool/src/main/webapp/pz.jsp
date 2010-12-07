@@ -142,7 +142,7 @@
     <div id="header">
         <div class="top">
             <h1>ucool config page</h1>
-            <a class="version" href="http://code.google.com/p/ucool">°æ±¾£º2.4.1</a>
+            <a class="version" href="http://code.google.com/p/ucool">°æ±¾£º0.1</a>
         </div>
     </div>
     <div id="content">

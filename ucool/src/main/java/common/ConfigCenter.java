@@ -30,11 +30,6 @@ public class ConfigCenter implements InitializingBean {
     private String[] ucoolAssetsDebugCorrectStrings;
 
     /**
-     * 用于特殊编码纠正，这些目录下的assets的debug模式默认使用该编码
-     */
-    private String[] ucoolAssetsEncodingCorrectStrings;
-
-    /**
      * 当前是否走预发ip
      */
     private boolean isPrepub;
@@ -90,8 +85,6 @@ public class ConfigCenter implements InitializingBean {
     private String ucoolAssetsDebugCache;
     //用于debug时纠正文件名
     private String ucoolAssetsDebugCorrect;
-    //用于debug时纠正编码
-    private String ucoolAssetsEncodingCorrect;
 
     public String getWebRoot() {
         return webRoot;
@@ -131,14 +124,6 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolAssetsDebugCorrectStrings(String[] ucoolAssetsDebugCorrectStrings) {
         this.ucoolAssetsDebugCorrectStrings = ucoolAssetsDebugCorrectStrings;
-    }
-
-    public String[] getUcoolAssetsEncodingCorrectStrings() {
-        return ucoolAssetsEncodingCorrectStrings;
-    }
-
-    public void setUcoolAssetsEncodingCorrectStrings(String[] ucoolAssetsEncodingCorrectStrings) {
-        this.ucoolAssetsEncodingCorrectStrings = ucoolAssetsEncodingCorrectStrings;
     }
 
     public String getUcoolDailyDomain() {
@@ -291,14 +276,6 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolCacheRootPrepub(String ucoolCacheRootPrepub) {
         this.ucoolCacheRootPrepub = ucoolCacheRootPrepub;
-    }
-
-    public String getUcoolAssetsEncodingCorrect() {
-        return ucoolAssetsEncodingCorrect;
-    }
-
-    public void setUcoolAssetsEncodingCorrect(String ucoolAssetsEncodingCorrect) {
-        this.ucoolAssetsEncodingCorrect = ucoolAssetsEncodingCorrect;
     }
 
     /**

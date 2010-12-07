@@ -54,8 +54,6 @@ public class DoorFilter implements Filter {
             configCenter.setLastCleanTime(new Date());
             //初始化纠正debugmode下的字符串
             configCenter.setUcoolAssetsDebugCorrectStrings(configCenter.getUcoolAssetsDebugCorrect().split(HttpTools.filterSpecialChar(",")));
-            //这几个文件走utf-8编码
-            configCenter.setUcoolAssetsEncodingCorrectStrings(configCenter.getUcoolAssetsEncodingCorrect().split(HttpTools.filterSpecialChar(",")));
         }
     }
 
