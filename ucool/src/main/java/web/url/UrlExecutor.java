@@ -179,7 +179,15 @@ public class UrlExecutor {
     private boolean cacheUrlFile(String filePath, String realUrl, boolean isOnline) {
         try {
             URL url = new URL(realUrl);
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+            String encoding = "gbk";
+            //在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
+            for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
+                if (realUrl.indexOf(enCodingString) != -1) {
+                    encoding = "utf-8";
+                    break;
+                }
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
             StringBuilder sb = new StringBuilder();
             sb.append(configCenter.getWebRoot()).append(getCacheString(isOnline)).append(filePath);
             //先创建目录和文件，再往里写数据
@@ -209,6 +217,28 @@ public class UrlExecutor {
             return this.fileEditor.loadFile(sb.toString());
         } catch (FileNotFoundException e) {
 
+        }
+        return null;
+    }
+
+    /**
+     * 根据编码返回新的文件流
+     *
+     * @param filePath of type String
+     * @param encoding of type String
+     * @param isCache of type boolean
+     * @param isOnline of type boolean
+     * @return InputStreamReader
+     */
+    private InputStreamReader loadExistFileStrean(String filePath, String encoding, boolean isCache, boolean isOnline) {
+        String root = isCache ? getCacheString(isOnline) : configCenter.getUcoolAssetsRoot();
+        StringBuilder sb = new StringBuilder();
+        sb.append(configCenter.getWebRoot()).append(root).append(filePath);
+        try {
+            return this.fileEditor.loadFileStream(sb.toString(), encoding);
+        } catch (FileNotFoundException e) {
+
+        } catch (UnsupportedEncodingException e) {
         }
         return null;
     }
