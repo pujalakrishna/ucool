@@ -111,6 +111,15 @@ public class FileEditor {
         }
     }
 
+    public void pushFileOutputStream(PrintWriter out, InputStreamReader reader) {
+        try {
+            BufferedReader in = new BufferedReader(reader);
+            pushStream(out, in);
+        } catch(Exception e) {
+            //捕获所有异常，这里有可能缓存失败，所以取不到文件
+        }
+    }
+
     /**
      * Method saveFile ...
      *
@@ -123,15 +132,15 @@ public class FileEditor {
         String line;
         File file = new File(filePath);
         if (file.canWrite()) {
-            FileWriter writer = new FileWriter(file);
-            BufferedWriter bw = new BufferedWriter(writer);
+            FileOutputStream writerStream = new FileOutputStream(file);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(writerStream, "gbk"));
             while ((line = in.readLine()) != null) {
                 bw.write(line);
                 bw.newLine();
                 bw.flush();
             }
             bw.close();
-            writer.close();
+            writerStream.close();
             in.close();
             return true;
         }
