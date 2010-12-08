@@ -122,7 +122,7 @@ public class UrlExecutor {
          * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
          */
         if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline));
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline));
         } else {
             if (!readUrlFile(realUrl, out)) {
                 //最后的保障，如果缓存失败了，从线上取吧
@@ -180,7 +180,7 @@ public class UrlExecutor {
         try {
             URL url = new URL(realUrl);
             String encoding = "gbk";
-            //在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
+            //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
             for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
                 if (realUrl.indexOf(enCodingString) != -1) {
                     encoding = "utf-8";
@@ -230,7 +230,7 @@ public class UrlExecutor {
      * @param isOnline of type boolean
      * @return InputStreamReader
      */
-    private InputStreamReader loadExistFileStrean(String filePath, String encoding, boolean isCache, boolean isOnline) {
+    private InputStreamReader loadExistFileStream(String filePath, String encoding, boolean isCache, boolean isOnline) {
         String root = isCache ? getCacheString(isOnline) : configCenter.getUcoolAssetsRoot();
         StringBuilder sb = new StringBuilder();
         sb.append(configCenter.getWebRoot()).append(root).append(filePath);
@@ -270,7 +270,15 @@ public class UrlExecutor {
     private boolean readUrlFile(String fullUrl, PrintWriter out) {
         try {
             URL url = new URL(fullUrl);
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+            String encoding = "gbk";
+            //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
+            for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
+                if (fullUrl.indexOf(enCodingString) != -1) {
+                    encoding = "utf-8";
+                    break;
+                }
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
             fileEditor.pushStream(out, in);
             return true;
         } catch (Exception e) {
