@@ -29,7 +29,7 @@
             }
             configCenter.setUcoolAssetsDebug(tState);
         } else if (pid.equalsIgnoreCase("cleanOnlineCache")) {
-            fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootOnline());
+            fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRoot());
             tState = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date());
         } else if(pid.equalsIgnoreCase("bindPrepub")) {
             configCenter.setPrepub(!configCenter.isPrepub());
