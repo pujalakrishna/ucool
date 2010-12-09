@@ -110,7 +110,12 @@ public class AssetsHandler implements Handler {
                 }
             }
         } else {
-            urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
+            //daily和预发只有一台机器，没必要走cache了
+            if (!isOnline || configCenter.isPrepub()) {
+                urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, out);
+            } else {
+                urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
+            }
         }
 
     }
