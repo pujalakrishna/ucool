@@ -202,10 +202,6 @@
                         <th>COMBO SPLITTER£º</th>
                         <td><%=configCenter.getUcoolComboDecollator()%></td>
                     </tr>
-                    <tr>
-                        <th>ENABLE CACHE IN DEBUG MODE£º</th>
-                        <td><%=configCenter.getUcoolAssetsDebugCache()%></td>
-                    </tr>
                     <tr class="separator"><td colspan="2"></td></tr>
                     <tr>
                         <th>AUTO FLUSH CACHE£º</th>
@@ -221,12 +217,8 @@
                         <td><%=configCenter.getUcoolAssetsRoot()%></td>
                     </tr>
                     <tr>
-                        <th>CACHE ROOT DIR£º</th>
+                        <th>RELEASE CACHE DIR£º</th>
                         <td><%=configCenter.getUcoolCacheRoot()%></td>
-                    </tr>
-                    <tr>
-                        <th>RELEASE CACHE SUB-DIR£º</th>
-                        <td><%=configCenter.getUcoolCacheRootOnline()%></td>
                     </tr>
                 </table>
             </div>
