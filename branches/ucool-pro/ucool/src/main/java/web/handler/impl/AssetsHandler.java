@@ -99,18 +99,19 @@ public class AssetsHandler implements Handler {
         PrintWriter out = response.getWriter();
         //尝试debug下所有的直接走source，不走cache
         if (isDebugMode) {
-            if ("false".equals(configCenter.getUcoolAssetsDebugCache())) {
+            //daily和预发只有一台机器，没必要走cache了
+            if (!isOnline || configCenter.isPrepub()) {
                 urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, out);
             } else {
-                //daily和预发只有一台机器，没必要走cache了
-                if (!isOnline || configCenter.isPrepub()) {
-                    urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, out);
-                } else {
-                    urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
-                }
+                urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
             }
         } else {
-            urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
+            //daily和预发只有一台机器，没必要走cache了
+            if (!isOnline || configCenter.isPrepub()) {
+                urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, out);
+            } else {
+                urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
+            }
         }
 
     }
