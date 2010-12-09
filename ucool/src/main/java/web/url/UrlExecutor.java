@@ -98,8 +98,7 @@ public class UrlExecutor {
             calendar.setTime(configCenter.getLastCleanTime());
             calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(configCenter.getUcoolCacheCleanPeriod()));
             if (!calendar.after(Calendar.getInstance())) {
-                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootOnline());
-                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRootDaily());
+                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRoot());
                 configCenter.setLastCleanTime(new Date());
             }
             configCenter.setUcoolCacheAutoClean("true");
@@ -252,11 +251,7 @@ public class UrlExecutor {
      * Created on 2010-9-30
      */
     private String getCacheString(boolean isOnline) {
-        if (isOnline) {
-            return configCenter.isPrepub() ? configCenter.getUcoolCacheRootPrepub() : configCenter.getUcoolCacheRootOnline();
-        } else {
-            return configCenter.getUcoolCacheRootDaily();
-        }
+        return configCenter.getUcoolCacheRoot();
     }
 
 

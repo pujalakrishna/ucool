@@ -47,10 +47,6 @@ public class ConfigCenter implements InitializingBean {
     /**
      * 以下为配置文件使用
      */
-
-    //当前环境local or vm
-    private String ucoolEnv;
-
     //daily的域名
     private String ucoolDailyDomain;
     //线上域名
@@ -75,19 +71,11 @@ public class ConfigCenter implements InitializingBean {
 
     //cache根目录
     private String ucoolCacheRoot;
-    //daily的cache子目录
-    private String ucoolCacheRootDaily;
-    //线上的cache子目录
-    private String ucoolCacheRootOnline;
-    //预发的cache子目录
-    private String ucoolCacheRootPrepub;
     //assets目录
     private String ucoolAssetsRoot;
 
     //是否开启assets调试功能
     private String ucoolAssetsDebug;
-    //是否在调试时使用cache
-    private String ucoolAssetsDebugCache;
     //用于debug时纠正文件名
     private String ucoolAssetsDebugCorrect;
     //用于debug时纠正编码
@@ -115,14 +103,6 @@ public class ConfigCenter implements InitializingBean {
 
     public void setEnableAssets(boolean enableAssets) {
         isEnableAssets = enableAssets;
-    }
-
-    public String getUcoolEnv() {
-        return ucoolEnv;
-    }
-
-    public void setUcoolEnv(String ucoolEnv) {
-        this.ucoolEnv = ucoolEnv;
     }
 
     public String[] getUcoolAssetsDebugCorrectStrings() {
@@ -229,30 +209,6 @@ public class ConfigCenter implements InitializingBean {
         this.ucoolAssetsDebug = ucoolAssetsDebug;
     }
 
-    public String getUcoolCacheRootDaily() {
-        return this.ucoolCacheRoot + "/" + ucoolCacheRootDaily;
-    }
-
-    public void setUcoolCacheRootDaily(String ucoolCacheRootDaily) {
-        this.ucoolCacheRootDaily = ucoolCacheRootDaily;
-    }
-
-    public String getUcoolCacheRootOnline() {
-        return this.ucoolCacheRoot + "/" + ucoolCacheRootOnline;
-    }
-
-    public void setUcoolCacheRootOnline(String ucoolCacheRootOnline) {
-        this.ucoolCacheRootOnline = ucoolCacheRootOnline;
-    }
-
-    public String getUcoolAssetsDebugCache() {
-        return ucoolAssetsDebugCache;
-    }
-
-    public void setUcoolAssetsDebugCache(String ucoolAssetsDebugCache) {
-        this.ucoolAssetsDebugCache = ucoolAssetsDebugCache;
-    }
-
     public Date getLastCleanTime() {
         return lastCleanTime;
     }
@@ -283,14 +239,6 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolPrepubIp(String ucoolPrepubIp) {
         this.ucoolPrepubIp = ucoolPrepubIp;
-    }
-
-    public String getUcoolCacheRootPrepub() {
-        return this.ucoolCacheRoot + "/" + ucoolCacheRootPrepub;
-    }
-
-    public void setUcoolCacheRootPrepub(String ucoolCacheRootPrepub) {
-        this.ucoolCacheRootPrepub = ucoolCacheRootPrepub;
     }
 
     public String getUcoolAssetsEncodingCorrect() {

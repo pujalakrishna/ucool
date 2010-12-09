@@ -12,15 +12,6 @@ public class Switcher {
     }
 
     /**
-     * 是否是本地环境
-     *
-     * @return the local (type boolean) of this Switcher object.
-     */
-    public boolean isLocal() {
-        return this.configCenter.getUcoolEnv().equalsIgnoreCase("local");
-    }
-
-    /**
      * 是否开启了assets debug
      * @return
      */
