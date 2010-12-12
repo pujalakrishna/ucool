@@ -1,8 +1,13 @@
 package sqlite;
 
+import dao.UserDO;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
@@ -13,9 +18,25 @@ public class SpringTest {
         ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
         JdbcTemplate jdbcTemplate = (JdbcTemplate) context.getBean("jdbcTemplate");
         System.out.println(jdbcTemplate == null);
-        String sql = "insert into user (host_name,dir, config) values (?,?,?)";
+//        String sql = "insert into user (host_name,dir, config) values (?,?,?)";
+//        if (jdbcTemplate != null) {
+//            jdbcTemplate.update(sql, new Object[]{"czy-notebook", "zhangting", 5});
+//        }
+
+        String sql = "select * from user where host_name=?";
+        String hostName = "czy-notebook";
+        final UserDO user = new UserDO();
         if (jdbcTemplate != null) {
-            jdbcTemplate.update(sql, new Object[]{"czy-notebook", "zhangting", 5});
+            jdbcTemplate.queryForObject(sql, new Object[]{hostName}, new RowMapper() {
+                @Override public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    user.setId(rs.getLong("id"));
+                    user.setHostName(rs.getString("host_name"));
+                    user.setDir(rs.getString("dir"));
+                    user.setConfig(rs.getLong("config"));
+                    return null;
+                }
+            });
         }
+        System.out.println(user.getDir());
     }
 }

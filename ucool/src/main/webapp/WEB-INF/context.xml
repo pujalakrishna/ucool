@@ -4,11 +4,12 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-autowire="byName">
     <bean id="suffixDispatcher" class="common.SuffixDispatcher" />
-    <bean id="configCenter" class="common.ConfigCenter" scope="session" />
+    <bean id="configCenter" class="common.ConfigCenter" />
     <bean id="fileEditor" class="biz.file.FileEditor"/>
     <bean id="switcher" class="common.Switcher"/>
     <bean id="urlExecutor" class="web.url.UrlExecutor" />
     <bean id="urlTools" class="common.UrlTools"/>
+    <bean id="personConfig" class="common.PersonConfig" scope="prototype" lazy-init="true"/>
 
     <bean id="dispatchMapping" class="common.DispatchMapping">
         <property name="mappingTable">
