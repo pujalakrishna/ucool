@@ -81,6 +81,9 @@ public class ConfigCenter implements InitializingBean {
     //用于debug时纠正编码
     private String ucoolAssetsEncodingCorrect;
 
+    // ucool-pro特有的个人配置
+    private PersonConfig personConfig;
+
     public String getWebRoot() {
         return webRoot;
     }
@@ -90,19 +93,19 @@ public class ConfigCenter implements InitializingBean {
     }
 
     public boolean isPrepub() {
-        return isPrepub;
+        return personConfig.isEnablePrepub();
     }
 
     public void setPrepub(boolean prepub) {
-        isPrepub = prepub;
+        personConfig.setEnablePrepub(prepub);
     }
 
     public boolean isEnableAssets() {
-        return isEnableAssets;
+        return personConfig.isEnableAssets();
     }
 
     public void setEnableAssets(boolean enableAssets) {
-        isEnableAssets = enableAssets;
+        personConfig.setEnableAssets(enableAssets);
     }
 
     public String[] getUcoolAssetsDebugCorrectStrings() {
@@ -186,7 +189,7 @@ public class ConfigCenter implements InitializingBean {
     }
 
     public String getUcoolCacheRoot() {
-        return ucoolCacheRoot;
+        return personConfig.getDir() + "/" + ucoolCacheRoot;
     }
 
     public void setUcoolCacheRoot(String ucoolCacheRoot) {
@@ -194,19 +197,29 @@ public class ConfigCenter implements InitializingBean {
     }
 
     public String getUcoolAssetsRoot() {
-        return ucoolAssetsRoot;
+        return personConfig.getDir() + "/" + ucoolAssetsRoot;
     }
 
     public void setUcoolAssetsRoot(String ucoolAssetsRoot) {
         this.ucoolAssetsRoot = ucoolAssetsRoot;
     }
 
+    @Deprecated
     public String getUcoolAssetsDebug() {
         return ucoolAssetsDebug;
     }
-
+    
+    @Deprecated
     public void setUcoolAssetsDebug(String ucoolAssetsDebug) {
         this.ucoolAssetsDebug = ucoolAssetsDebug;
+    }
+
+    public boolean isUcoolAssetsDebug() {
+        return personConfig.isEnableDebug();
+    }
+
+    public void setUcoolAssetsDebug(boolean ucoolAssetsDebug) {
+        personConfig.setEnableDebug(ucoolAssetsDebug);
     }
 
     public Date getLastCleanTime() {
@@ -247,6 +260,14 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolAssetsEncodingCorrect(String ucoolAssetsEncodingCorrect) {
         this.ucoolAssetsEncodingCorrect = ucoolAssetsEncodingCorrect;
+    }
+
+    public PersonConfig getPersonConfig() {
+        return personConfig;
+    }
+
+    public void setPersonConfig(PersonConfig personConfig) {
+        this.personConfig = personConfig;
     }
 
     /**

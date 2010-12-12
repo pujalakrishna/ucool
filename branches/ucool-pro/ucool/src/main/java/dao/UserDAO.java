@@ -5,4 +5,13 @@ package dao;
  * @since 10-12-3 ионГ12:16
  */
 public interface UserDAO {
+    /**
+     * Method getPersonDirectory ...
+     *
+     * @param hostName of type String
+     * @return String
+     */
+    UserDO getPersonInfo(String hostName);
+
+    boolean createNewUser(UserDO userDO);
 }

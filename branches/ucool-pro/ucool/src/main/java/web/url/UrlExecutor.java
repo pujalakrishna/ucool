@@ -2,6 +2,7 @@ package web.url;
 
 import biz.file.FileEditor;
 import common.ConfigCenter;
+import common.PersonConfig;
 
 import java.io.*;
 import java.net.URL;
@@ -18,12 +19,18 @@ public class UrlExecutor {
 
     private ConfigCenter configCenter;
 
+    private PersonConfig personConfig;
+
     public void setFileEditor(FileEditor fileEditor) {
         this.fileEditor = fileEditor;
     }
 
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
+    }
+
+    public void setPersonConfig(PersonConfig personConfig) {
+        this.personConfig = personConfig;
     }
 
     /**

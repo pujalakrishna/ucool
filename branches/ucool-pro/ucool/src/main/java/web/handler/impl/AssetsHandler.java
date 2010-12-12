@@ -1,9 +1,6 @@
 package web.handler.impl;
 
-import common.ConfigCenter;
-import common.HttpTools;
-import common.Switcher;
-import common.UrlTools;
+import common.*;
 import web.handler.Handler;
 import web.url.UrlExecutor;
 
@@ -80,6 +77,7 @@ public class AssetsHandler implements Handler {
          */
         String filePath = (String) request.getAttribute("filePath");
         String realUrl = (String) request.getAttribute("realUrl");
+        
         String fullUrl = realUrl;
         boolean isDebugMode = switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request);
         boolean isOnline = configCenter.getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
