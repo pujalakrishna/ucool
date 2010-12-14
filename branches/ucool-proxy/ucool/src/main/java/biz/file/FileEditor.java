@@ -89,6 +89,9 @@ public class FileEditor {
     public void pushStream(PrintWriter out, BufferedReader in) throws IOException {
         String line;
         while ((line = in.readLine()) != null) {
+            if("<!doctype html>".equalsIgnoreCase(line)) {
+                break;
+            }
             out.println(line);
         }
         in.close();

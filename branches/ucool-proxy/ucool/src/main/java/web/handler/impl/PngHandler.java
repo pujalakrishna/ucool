@@ -17,12 +17,6 @@ import java.net.URL;
  */
 public class PngHandler implements Handler {
 
-    private ConfigCenter configCenter;
-
-    public void setConfigCenter(ConfigCenter configCenter) {
-        this.configCenter = configCenter;
-    }
-
     @Override
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         //临时处理下png
@@ -36,7 +30,7 @@ public class PngHandler implements Handler {
 
         BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());//输出缓冲流
         try {
-            URL url = new URL("http://"+ configCenter.getUcoolOnlineIp() + request.getRequestURI());
+            URL url = new URL("http://a.tbcdn.cn" + request.getRequestURI());
             BufferedInputStream in = new BufferedInputStream(url.openStream());
             String line;
             byte[] data = new byte[4096];

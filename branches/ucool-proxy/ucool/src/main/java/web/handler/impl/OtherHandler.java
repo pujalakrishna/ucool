@@ -22,36 +22,25 @@ public class OtherHandler implements Handler {
 
     private FileEditor fileEditor;
 
-    private ConfigCenter configCenter;
-
-    private UrlTools urlTools;
 
     public void setFileEditor(FileEditor fileEditor) {
         this.fileEditor = fileEditor;
     }
 
-    public void setConfigCenter(ConfigCenter configCenter) {
-        this.configCenter = configCenter;
-    }
-
-    public void setUrlTools(UrlTools urlTools) {
-        this.urlTools = urlTools;
-    }
-
     @Override
     public void doHandler(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        if (request.getRequestURI().indexOf(".swf") != -1) {
-            String fullUrl = (String) request.getAttribute("fullUrl");
-            fullUrl = urlTools.urlFilter(fullUrl, true);
+        String fullUrl = (String) request.getAttribute("fullUrl");
+        
+        if (fullUrl.indexOf(".swf") != -1) {
             //哥对flash没办法，无论怎么取都无法正确展现，只好302
             response.sendRedirect(fullUrl);
-        } else if (request.getRequestURI().indexOf(".xml") != -1) {
+        } else if (fullUrl.indexOf(".xml") != -1) {
             response.setContentType("text/xml");
 
             PrintWriter out = response.getWriter();
             try {
-                URL url = new URL("http://" + configCenter.getUcoolOnlineIp() + request.getRequestURI());
+                URL url = new URL(fullUrl);
                 BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
                 fileEditor.pushStream(out, in);
             } catch (Exception e) {

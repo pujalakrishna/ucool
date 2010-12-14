@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.taobao</groupId>
-    <artifactId>ucool</artifactId>
+    <artifactId>ucool-proxy</artifactId>
     <packaging>war</packaging>
-    <version>2.4.1e</version>
+    <version>0.1</version>
     <name>ued cool tools</name>
     <url>http://code.google.com/p/ucool/</url>
     <dependencies>
@@ -39,7 +39,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>ucool-${version}</finalName>
+        <finalName>ucoolproxy-${version}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
