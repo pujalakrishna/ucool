@@ -7,29 +7,6 @@ import java.io.*;
  * @since 2010-9-23 14:17:50
  */
 public class FileEditor {
-    /**
-     * 查询文件是否存在
-     *
-     * @param filePath of type String
-     * @return boolean
-     * @author zhangting
-     * @since 2010-8-16 13:51:20
-     */
-    public boolean findFile(String filePath) {
-        File file = new File(filePath);
-        return file.exists();
-    }
-
-    /**
-     * Method loadFile ...
-     *
-     * @param filePath of type String
-     * @return FileReader
-     * @throws FileNotFoundException when
-     */
-    public FileReader loadFile(String filePath) throws FileNotFoundException {
-        return new FileReader(filePath);
-    }
 
     /**
      * 使用fileInputStream加载文件，可以设置编码
@@ -41,42 +18,6 @@ public class FileEditor {
     public InputStreamReader loadFileStream(String filePath, String encoding)
             throws FileNotFoundException, UnsupportedEncodingException {
         return new InputStreamReader(new FileInputStream(filePath), encoding);
-    }
-
-    /**
-     * Method safeLoadFile ...
-     *
-     * @param filePath of type String
-     * @return FileReader
-     */
-    public FileReader safeLoadFile(String filePath) {
-        if (findFile(filePath)) {
-            try {
-                return new FileReader(filePath);
-            } catch (Exception e) {
-                //log
-            }
-            return null;
-        }
-        return null;
-    }
-
-    /**
-     * 支持创建带多级目录的文件
-     *
-     * @param filePath of type String
-     * @throws java.io.IOException when
-     * @author zhangting
-     * @since 2010-8-19 16:16:53
-     */
-    public void createDirectory(String filePath) throws IOException {
-        File file = new File(filePath);
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        file.createNewFile();
-        FileWriter fw = new FileWriter(file);
-        fw.close();
     }
 
     /**
@@ -96,58 +37,6 @@ public class FileEditor {
         }
         in.close();
         out.flush();
-    }
-
-    /**
-     * Method pushFile ...
-     *
-     * @param out    of type PrintWriter
-     * @param reader of type FileReader
-     * @throws IOException when
-     */
-    public void pushFile(PrintWriter out, FileReader reader) {
-        try {
-            BufferedReader in = new BufferedReader(reader);
-            pushStream(out, in);
-        } catch(Exception e) {
-            //捕获所有异常，这里有可能缓存失败，所以取不到文件
-        }
-    }
-
-    public void pushFileOutputStream(PrintWriter out, InputStreamReader reader) {
-        try {
-            BufferedReader in = new BufferedReader(reader);
-            pushStream(out, in);
-        } catch(Exception e) {
-            //捕获所有异常，这里有可能缓存失败，所以取不到文件
-        }
-    }
-
-    /**
-     * Method saveFile ...
-     *
-     * @param filePath of type String
-     * @param in of type BufferedReader
-     * @return boolean
-     * @throws IOException when
-     */
-    public boolean saveFile(String filePath, BufferedReader in) throws IOException {
-        String line;
-        File file = new File(filePath);
-        if (file.canWrite()) {
-            FileOutputStream writerStream = new FileOutputStream(file);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(writerStream, "gbk"));
-            while ((line = in.readLine()) != null) {
-                bw.write(line);
-                bw.newLine();
-                bw.flush();
-            }
-            bw.close();
-            writerStream.close();
-            in.close();
-            return true;
-        }
-        return false;
     }
 
     public boolean removeDirectory(String filePath) {
