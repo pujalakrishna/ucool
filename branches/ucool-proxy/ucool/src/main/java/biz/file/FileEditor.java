@@ -31,6 +31,7 @@ public class FileEditor {
         String line;
         while ((line = in.readLine()) != null) {
             if("<!doctype html>".equalsIgnoreCase(line)) {
+                out.println("not found");
                 break;
             }
             out.println(line);
