@@ -64,7 +64,7 @@ public class UrlExecutor {
                     doUrlRuleCopy(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
                 } else {
                     //最后的保障，如果缓存失败了，从线上取吧
-                    readUrlFile(fullUrl, out);
+                    readUrlFile(fullUrl, out, isOnline);
                 }
             }
         }
@@ -90,7 +90,7 @@ public class UrlExecutor {
             this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
         } else {
             //最后的保障，如果缓存失败了，从线上取吧
-            readUrlFile(fullUrl, out);
+            readUrlFile(fullUrl, out, isOnline);
         }
     }
 
@@ -130,9 +130,9 @@ public class UrlExecutor {
         if (findAssetsFile(filePath)) {
             this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline));
         } else {
-            if (!readUrlFile(realUrl, out)) {
+            if (!readUrlFile(realUrl, out, isOnline)) {
                 //最后的保障，如果缓存失败了，从线上取吧
-                readUrlFile(fullUrl, out);
+                readUrlFile(fullUrl, out, isOnline);
             }
         }
     }
@@ -187,12 +187,12 @@ public class UrlExecutor {
             URL url = new URL(realUrl);
             String encoding = "gbk";
             //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
-            for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
-                if (realUrl.indexOf(enCodingString) != -1) {
-                    encoding = "utf-8";
-                    break;
-                }
-            }
+//            for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
+//                if (realUrl.indexOf(enCodingString) != -1) {
+//                    encoding = "utf-8";
+//                    break;
+//                }
+//            }
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
             StringBuilder sb = new StringBuilder();
             sb.append(configCenter.getWebRoot()).append(getCacheString(isOnline)).append(filePath);
@@ -269,20 +269,22 @@ public class UrlExecutor {
      * @param out     of type PrintWriter
      * @return
      */
-    private boolean readUrlFile(String fullUrl, PrintWriter out) {
+    private boolean readUrlFile(String fullUrl, PrintWriter out, boolean isOnline) {
         try {
             URL url = new URL(fullUrl);
             String encoding = "gbk";
-            //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
-            for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
-                if (fullUrl.indexOf(enCodingString) != -1) {
-                    encoding = "utf-8";
-                    break;
+            if(!isOnline) {
+                //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
+                for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
+                    if (fullUrl.indexOf(enCodingString) != -1) {
+                        encoding = "utf-8";
+                        break;
+                    }
                 }
             }
+
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
-            fileEditor.pushStream(out, in);
-            return true;
+            return fileEditor.pushStream(out, in);
         } catch (Exception e) {
             System.out.println("");
         }
