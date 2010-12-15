@@ -104,13 +104,21 @@ public class FileEditor {
      *
      * @throws IOException when
      */
-    public void pushStream(PrintWriter out, BufferedReader in) throws IOException {
+    public boolean pushStream(PrintWriter out, BufferedReader in) throws IOException {
         String line;
+        if ((line = in.readLine()) != null && line.equals("/*not found*/")) {
+            in.close();
+            return false;
+        } else {
+            out.println(line);
+            out.flush();
+        }
         while ((line = in.readLine()) != null) {
             out.println(line);
         }
         in.close();
         out.flush();
+        return true;
     }
 
     /**
@@ -155,6 +163,17 @@ public class FileEditor {
         if (file.canWrite()) {
             FileOutputStream writerStream = new FileOutputStream(file);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(writerStream, "gbk"));
+            if ((line = in.readLine()) != null && line.equals("/*not found*/")) {
+                bw.close();
+                writerStream.close();
+                in.close();
+                file.delete();
+                return false;
+            } else {
+                bw.write(line);
+                bw.newLine();
+                bw.flush();
+            }
             while ((line = in.readLine()) != null) {
                 bw.write(line);
                 bw.newLine();
