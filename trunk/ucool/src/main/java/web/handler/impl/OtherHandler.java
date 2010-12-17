@@ -53,7 +53,7 @@ public class OtherHandler implements Handler {
             try {
                 URL url = new URL("http://" + configCenter.getUcoolOnlineIp() + request.getRequestURI());
                 BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-                fileEditor.pushStream(out, in);
+                fileEditor.pushStream(out, in, null);
             } catch (Exception e) {
             }
             out.flush();

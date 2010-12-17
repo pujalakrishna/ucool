@@ -42,12 +42,12 @@ public class UrlExecutor {
          * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
          */
         if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline));
+            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline), filePath);
         } else if (findCacheFile(filePath, realUrl, isOnline, isDebugMode)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
+            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline), filePath);
         } else {
             if (cacheUrlFile(filePath, realUrl, isOnline)) {
-                this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
+                this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline), filePath);
             } else {
                 if (isDebugMode) {
                     //debug mode下如果请求-min的源文件a.js，会出现请求a.source.js的情况，到这里处理
@@ -76,11 +76,11 @@ public class UrlExecutor {
      */
     public void doUrlRuleCopy(String filePath, String realUrl, String fullUrl, boolean isOnline, boolean isDebugMode, PrintWriter out) {
         if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline));
+            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline), filePath);
         } else if (findCacheFile(filePath, realUrl, isOnline, isDebugMode)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
+            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline), filePath);
         } else if (cacheUrlFile(filePath, realUrl, isOnline)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline));
+            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline), filePath);
         } else {
             //最后的保障，如果缓存失败了，从线上取吧
             readUrlFile(fullUrl, out, isOnline);
@@ -117,11 +117,8 @@ public class UrlExecutor {
      * @since 10-10-29 上午9:51
      */
     public void doDebugUrlRule(String filePath, String realUrl, String fullUrl, boolean isOnline, PrintWriter out) {
-        /**
-         * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
-         */
         if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline));
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline), filePath);
         } else {
             if (!readUrlFile(realUrl, out, isOnline)) {
                 //最后的保障，如果缓存失败了，从线上取吧
@@ -275,9 +272,9 @@ public class UrlExecutor {
                     }
                 }
             }
-
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
-            return fileEditor.pushStream(out, in);
+            fileEditor.pushStream(out, in, fullUrl);
+            return true;
         } catch (Exception e) {
             System.out.println("");
         }

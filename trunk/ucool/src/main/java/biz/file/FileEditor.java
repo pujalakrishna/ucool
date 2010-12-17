@@ -84,14 +84,16 @@ public class FileEditor {
      *
      * @param out of type PrintWriter
      * @param in of type BufferedReader
+     * @param fileUrl 用于combo的时候输出是哪个文件
      * @throws IOException when
      */
-    public boolean pushStream(PrintWriter out, BufferedReader in) throws IOException {
+    public boolean pushStream(PrintWriter out, BufferedReader in, String fileUrl) throws IOException {
         String line;
         if ((line = in.readLine()) != null && line.equals("/*not found*/")) {
             in.close();
             return false;
         } else {
+            out.println("/*ucool filepath=" + fileUrl + "*/");
             out.println(line);
             out.flush();
         }
@@ -110,19 +112,19 @@ public class FileEditor {
      * @param reader of type FileReader
      * @throws IOException when
      */
-    public void pushFile(PrintWriter out, FileReader reader) {
+    public void pushFile(PrintWriter out, FileReader reader, String filePath) {
         try {
             BufferedReader in = new BufferedReader(reader);
-            pushStream(out, in);
+            pushStream(out, in, filePath);
         } catch(Exception e) {
             //捕获所有异常，这里有可能缓存失败，所以取不到文件
         }
     }
 
-    public void pushFileOutputStream(PrintWriter out, InputStreamReader reader) {
+    public void pushFileOutputStream(PrintWriter out, InputStreamReader reader, String filePath) {
         try {
             BufferedReader in = new BufferedReader(reader);
-            pushStream(out, in);
+            pushStream(out, in, filePath);
         } catch(Exception e) {
             //捕获所有异常，这里有可能缓存失败，所以取不到文件
         }
