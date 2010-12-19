@@ -16,7 +16,7 @@ public class Switcher {
      * @return
      */
     public boolean isAssetsDebugMode() {
-        return this.configCenter.getUcoolAssetsDebug().equals("true");
+        return this.configCenter.isUcoolAssetsDebug();
     }
 
     /**

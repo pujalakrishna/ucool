@@ -26,6 +26,8 @@ public class AssetsHandler implements Handler {
 
     private UrlTools urlTools;
 
+    private PersonConfig personConfig;
+
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
     }
@@ -56,6 +58,14 @@ public class AssetsHandler implements Handler {
 
     protected UrlTools getUrlTools() {
         return urlTools;
+    }
+
+    public void setPersonConfig(PersonConfig personConfig) {
+        this.personConfig = personConfig;
+    }
+
+    protected PersonConfig getPersonConfig() {
+        return personConfig;
     }
 
     /**
@@ -97,7 +107,7 @@ public class AssetsHandler implements Handler {
         PrintWriter out = response.getWriter();
         //尝试debug下所有的直接走source，不走cache
         //daily和预发只有一台机器，没必要走cache了
-        if (!isOnline || configCenter.isPrepub()) {
+        if (!isOnline || personConfig.isPrepub()) {
             urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, out);
         } else {
             urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
