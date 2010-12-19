@@ -17,8 +17,6 @@ public class SuffixDispatcher {
 
     private ConfigCenter configCenter;
 
-    private PersonConfig personConfig;
-
     private PersonConfigHandler personConfigHandler;
 
     public void setConfigCenter(ConfigCenter configCenter) {
@@ -29,6 +27,10 @@ public class SuffixDispatcher {
         this.dispatchMapping = dispatchMapping;
     }
 
+    public void setPersonConfigHandler(PersonConfigHandler personConfigHandler) {
+        this.personConfigHandler = personConfigHandler;
+    }
+
     /**
      * Method dispatch ...
      *
@@ -37,15 +39,16 @@ public class SuffixDispatcher {
      */
     public void dispatch(HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
+        setPersonConfig(request);
         //配置页
         if (request.getRequestURI().equals("/pz") || request.getRequestURI().equals("/setting")) {
-            request.getRequestDispatcher("pz.jsp").forward(request, response);
+            String target = "ppz.jsp";
+            request.getRequestDispatcher(target).forward(request, response);
             return;
         }
         String url = (String) request.getAttribute("realUrl");
         //assets用的最多，所以先判断
         if (url.indexOf(".js") != -1 || url.indexOf(".css") != -1) {
-            setPersonConfig(request);
             if (url.indexOf(configCenter.getUcoolComboDecollator()) != -1) {
                 //支持combo文件
                 this.dispatchMapping.getMapping("combo").doHandler(request, response);

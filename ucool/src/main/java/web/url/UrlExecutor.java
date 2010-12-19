@@ -105,7 +105,7 @@ public class UrlExecutor {
             calendar.setTime(configCenter.getLastCleanTime());
             calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(configCenter.getUcoolCacheCleanPeriod()));
             if (!calendar.after(Calendar.getInstance())) {
-                fileEditor.removeDirectory(configCenter.getWebRoot() + configCenter.getUcoolCacheRoot());
+                fileEditor.removeDirectory(configCenter.getWebRoot() + personConfig.getUcoolCacheRoot());
                 configCenter.setLastCleanTime(new Date());
             }
             configCenter.setUcoolCacheAutoClean("true");
@@ -143,9 +143,9 @@ public class UrlExecutor {
      * @since 2010-8-19 14:49:26
      */
     private boolean findAssetsFile(String filePath) {
-        if (configCenter.isEnableAssets()) {
+        if (personConfig.isEnableAssets()) {
             StringBuilder sb = new StringBuilder();
-            sb.append(configCenter.getWebRoot()).append(configCenter.getUcoolAssetsRoot()).append(filePath);
+            sb.append(configCenter.getWebRoot()).append(personConfig.getUcoolAssetsRoot()).append(filePath);
             return this.fileEditor.findFile(sb.toString());
         }
         return false;
@@ -213,7 +213,7 @@ public class UrlExecutor {
      * @since 2010-8-19 15:22:02
      */
     private FileReader loadExistFile(String filePath, boolean isCache, boolean isOnline) {
-        String root = isCache ? getCacheString(isOnline) : configCenter.getUcoolAssetsRoot();
+        String root = isCache ? getCacheString(isOnline) : personConfig.getUcoolAssetsRoot();
         StringBuilder sb = new StringBuilder();
         sb.append(configCenter.getWebRoot()).append(root).append(filePath);
         try {
@@ -234,7 +234,7 @@ public class UrlExecutor {
      * @return InputStreamReader
      */
     private InputStreamReader loadExistFileStream(String filePath, String encoding, boolean isCache, boolean isOnline) {
-        String root = isCache ? getCacheString(isOnline) : configCenter.getUcoolAssetsRoot();
+        String root = isCache ? getCacheString(isOnline) : personConfig.getUcoolAssetsRoot();
         StringBuilder sb = new StringBuilder();
         sb.append(configCenter.getWebRoot()).append(root).append(filePath);
         try {
@@ -255,7 +255,7 @@ public class UrlExecutor {
      * Created on 2010-9-30
      */
     private String getCacheString(boolean isOnline) {
-        return configCenter.getUcoolCacheRoot();
+        return personConfig.getUcoolCacheRoot();
     }
 
 

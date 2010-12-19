@@ -32,7 +32,7 @@ public class SpringTest {
                     user.setId(rs.getLong("id"));
                     user.setHostName(rs.getString("host_name"));
                     user.setDir(rs.getString("dir"));
-                    user.setConfig(rs.getLong("config"));
+                    user.setConfig(rs.getInt("config"));
                     return null;
                 }
             });

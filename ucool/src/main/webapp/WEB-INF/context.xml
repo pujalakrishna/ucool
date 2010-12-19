@@ -9,7 +9,7 @@
     <bean id="switcher" class="common.Switcher"/>
     <bean id="urlExecutor" class="web.url.UrlExecutor" />
     <bean id="urlTools" class="common.UrlTools"/>
-    <bean id="personConfig" class="common.PersonConfig" scope="prototype" lazy-init="true"/>
+    <bean id="personConfig" class="common.PersonConfig" scope="prototype"/>
 
     <bean id="dispatchMapping" class="common.DispatchMapping">
         <property name="mappingTable">
@@ -28,4 +28,5 @@
     <bean id="pngHandler" class="web.handler.impl.PngHandler"/>
     <bean id="comboHandler" class="web.handler.impl.ComboHandler"/>
     <bean id="xmlHandler" class="web.handler.impl.OtherHandler"/>
+    <bean id="personConfigHandler" class="web.handler.impl.PersonConfigHandler"/>
 </beans>

@@ -5,20 +5,20 @@ package dao;
  * @since 10-12-10 обнГ11:08
  */
 public class UserDO {
-    private Long Id;
+    private Long id = 0L;
 
     private String hostName;
     
-    private String dir = "";
+    private String dir="";
 
     private int config = 5;
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getHostName() {

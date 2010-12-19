@@ -13,10 +13,9 @@ import java.io.IOException;
  * @since 10-12-10 下午10:58
  */
 public class PersonConfigHandler {
+    private UserDAO userDAO;
 
     private PersonConfig personConfig;
-
-    private UserDAO userDAO;
 
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
@@ -28,16 +27,27 @@ public class PersonConfigHandler {
 
     public void doHandler(HttpServletRequest request)
             throws IOException, ServletException {
-        if (personConfig.getDir().equals("") && !personConfig.isNewUser()) {
-            // default有2种可能，没有绑定的新用户和已绑定但是是第一次来的老用户
+        String configString = (String) request.getSession().getAttribute("personConfig");
+        if (configString == null) {
+            /**
+             * 有2种情况：
+             * 1、数据库中没有绑定的新人
+             * 2、有绑定，但是失效了的老用户
+             */
             String remoteHost = request.getRemoteHost();
             UserDO personInfo = this.userDAO.getPersonInfo(remoteHost);
-            if(personInfo != null) {
+            if (personInfo != null) {
                 personConfig.setUserDO(personInfo);
             } else {
-                //又是default，又没在数据库查询到数据，肯定是新人
+                //没在数据库查询到数据，肯定是新人
                 personConfig.setNewUser(true);
             }
+            //set session
+            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
+        } else {
+            // get session
+            personConfig.parseConfigString(configString);
+            //TODO parse fail?
         }
     }
 
