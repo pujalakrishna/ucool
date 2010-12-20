@@ -36,4 +36,9 @@ public class UserDAOImpl implements UserDAO {
         String sql = "insert into user (host_name,dir, config) values (?,?,?)";
         return this.jdbcTemplate.update(sql, new Object[]{userDO.getHostName(), userDO.getDir(), 5}) > 0;
     }
+
+    @Override public boolean updateConfig(UserDO userDO, int srcConfig) {
+        String sql = "update user set config=? where host_name=? and config=?";
+        return this.jdbcTemplate.update(sql, new Object[]{userDO.getConfig(), userDO.getHostName(), srcConfig}) > 0;
+    }
 }
