@@ -10,6 +10,7 @@
     <bean id="urlExecutor" class="web.url.UrlExecutor" />
     <bean id="urlTools" class="common.UrlTools"/>
     <bean id="personConfig" class="common.PersonConfig" scope="prototype"/>
+    <bean id="userDAO" class="dao.UserDAOImpl"/>
 
     <bean id="dispatchMapping" class="common.DispatchMapping">
         <property name="mappingTable">
@@ -29,4 +30,13 @@
     <bean id="comboHandler" class="web.handler.impl.ComboHandler"/>
     <bean id="xmlHandler" class="web.handler.impl.OtherHandler"/>
     <bean id="personConfigHandler" class="web.handler.impl.PersonConfigHandler"/>
+
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.sqlite.JDBC"/>
+        <property name="url" value="jdbc:sqlite:WEB-INF/classes/ucool.sqlite"/>
+    </bean>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
 </beans>
