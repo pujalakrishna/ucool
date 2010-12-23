@@ -27,6 +27,9 @@ public class UrlTools {
         if (url.indexOf("127.0.0.1") != -1) {
             return url.replace("127.0.0.1", getUsefullIp());
         }
+        if (url.indexOf("localhost") != -1) {
+            return url.replace("localhost", getUsefullIp());
+        }
         if (isOnline) {
             for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
