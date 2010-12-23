@@ -85,17 +85,17 @@ public class DoorFilter implements Filter {
      * @return boolean
      */
     private boolean filterDomain(HttpServletRequest request) {
-        String remoteAddr = request.getRemoteAddr();
-        if(remoteAddr.equals("localhost") || remoteAddr.equals("127.0.0.1")) {
+        String url = request.getRequestURL().toString();
+        if(url.indexOf("localhost") != -1 || url.indexOf("127.0.0.1") != -1) {
             return true;
         }
         for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
-            if (remoteAddr.indexOf(d) != -1) {
+            if (url.indexOf(d) != -1) {
                 return true;
             }
         }
         for (String d : configCenter.getUcoolDailyDomain().split(HttpTools.filterSpecialChar(","))) {
-            if (remoteAddr.indexOf(d) != -1) {
+            if (url.indexOf(d) != -1) {
                 return true;
             }
         }
