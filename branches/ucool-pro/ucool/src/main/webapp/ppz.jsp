@@ -155,7 +155,7 @@
     </div>
     <div id="content">
         <div class="box location">
-            <div class="hd"><h3>your location</h3></div>
+            <div class="hd"><h3>change your location</h3></div>
             <div class="bd">
                 <%
                     List<String> assetsSubDirs = fileEditor.getAssetsSubDirs();
