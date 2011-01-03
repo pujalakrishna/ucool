@@ -21,17 +21,6 @@ public class FileEditor {
     }
 
     /**
-     * Method loadFile ...
-     *
-     * @param filePath of type String
-     * @return FileReader
-     * @throws FileNotFoundException when
-     */
-    public FileReader loadFile(String filePath) throws FileNotFoundException {
-        return new FileReader(filePath);
-    }
-
-    /**
      * 使用fileInputStream加载文件，可以设置编码
      *
      * @param filePath of type String
@@ -41,24 +30,6 @@ public class FileEditor {
     public InputStreamReader loadFileStream(String filePath, String encoding)
             throws FileNotFoundException, UnsupportedEncodingException {
         return new InputStreamReader(new FileInputStream(filePath), encoding);
-    }
-
-    /**
-     * Method safeLoadFile ...
-     *
-     * @param filePath of type String
-     * @return FileReader
-     */
-    public FileReader safeLoadFile(String filePath) {
-        if (findFile(filePath)) {
-            try {
-                return new FileReader(filePath);
-            } catch (Exception e) {
-                //log
-            }
-            return null;
-        }
-        return null;
     }
 
     /**
@@ -87,13 +58,15 @@ public class FileEditor {
      * @param fileUrl 用于combo的时候输出是哪个文件
      * @throws IOException when
      */
-    public boolean pushStream(PrintWriter out, BufferedReader in, String fileUrl) throws IOException {
+    public boolean pushStream(PrintWriter out, BufferedReader in, String fileUrl, boolean skipCommet) throws IOException {
         String line;
         if ((line = in.readLine()) != null && line.equals("/*not found*/")) {
             in.close();
             return false;
         } else {
-            out.println("/*ucool filepath=" + fileUrl + "*/");
+            if(!skipCommet) {
+                out.println("/*ucool filePath=" + fileUrl + "*/");
+            }
             out.println(line);
             out.flush();
         }
@@ -105,26 +78,10 @@ public class FileEditor {
         return true;
     }
 
-    /**
-     * Method pushFile ...
-     *
-     * @param out    of type PrintWriter
-     * @param reader of type FileReader
-     * @throws IOException when
-     */
-    public void pushFile(PrintWriter out, FileReader reader, String filePath) {
-        try {
-            BufferedReader in = new BufferedReader(reader);
-            pushStream(out, in, filePath);
-        } catch(Exception e) {
-            //捕获所有异常，这里有可能缓存失败，所以取不到文件
-        }
-    }
-
     public void pushFileOutputStream(PrintWriter out, InputStreamReader reader, String filePath) {
         try {
             BufferedReader in = new BufferedReader(reader);
-            pushStream(out, in, filePath);
+            pushStream(out, in, filePath, false);
         } catch(Exception e) {
             //捕获所有异常，这里有可能缓存失败，所以取不到文件
         }
@@ -143,7 +100,7 @@ public class FileEditor {
         File file = new File(filePath);
         if (file.canWrite()) {
             FileOutputStream writerStream = new FileOutputStream(file);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(writerStream, "gbk"));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(writerStream, "utf-8"));
             if ((line = in.readLine()) != null && line.equals("/*not found*/")) {
                 bw.close();
                 writerStream.close();

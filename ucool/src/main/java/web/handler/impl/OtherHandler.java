@@ -45,7 +45,16 @@ public class OtherHandler implements Handler {
             String fullUrl = (String) request.getAttribute("fullUrl");
             fullUrl = urlTools.urlFilter(fullUrl, true);
             //哥对flash没办法，无论怎么取都无法正确展现，只好302
-            response.sendRedirect(fullUrl);
+            //            response.sendRedirect(fullUrl);
+            response.setContentType("application/x-shockwave-flash");
+            PrintWriter out = response.getWriter();
+            try {
+                URL url = new URL(fullUrl);
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "utf-8"));
+                fileEditor.pushStream(out, in, null, true);
+            } catch (Exception e) {
+            }
+            out.flush();
         } else if (request.getRequestURI().indexOf(".xml") != -1) {
             response.setContentType("text/xml");
 
@@ -53,7 +62,7 @@ public class OtherHandler implements Handler {
             try {
                 URL url = new URL("http://" + configCenter.getUcoolOnlineIp() + request.getRequestURI());
                 BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-                fileEditor.pushStream(out, in, null);
+                fileEditor.pushStream(out, in, null, true);
             } catch (Exception e) {
             }
             out.flush();
