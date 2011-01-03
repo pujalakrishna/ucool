@@ -33,4 +33,18 @@ public class UrlTools {
         }
         return url;
     }
+
+    /**
+     * 根据url规则返回读取的字符集
+     * @param url
+     * @return
+     */
+    public String getReadCharSet(String url) {
+        String encoding = "utf-8";
+        //  在这里使用配置的文件作特殊处理，把给定的文件使用gbk编码
+        if (url.indexOf(".source.") != -1) {
+            encoding = "gbk";
+        }
+        return encoding;
+    }
 }

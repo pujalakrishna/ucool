@@ -29,11 +29,14 @@ public class FileEditor {
      */
     public void pushStream(PrintWriter out, BufferedReader in) throws IOException {
         String line;
+        if ((line = in.readLine()) != null && "<!doctype html>".equalsIgnoreCase(line)) {
+            in.close();
+            out.flush();
+            return;
+        } else {
+            out.println(line);
+        }
         while ((line = in.readLine()) != null) {
-            if("<!doctype html>".equalsIgnoreCase(line)) {
-                out.println("/*not found*/");
-                break;
-            }
             out.println(line);
         }
         in.close();
