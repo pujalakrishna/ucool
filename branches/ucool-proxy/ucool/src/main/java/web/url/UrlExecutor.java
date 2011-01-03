@@ -2,6 +2,7 @@ package web.url;
 
 import biz.file.FileEditor;
 import common.ConfigCenter;
+import common.UrlTools;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -17,14 +18,14 @@ public class UrlExecutor {
 
     private FileEditor fileEditor;
 
-    private ConfigCenter configCenter;
+    private UrlTools urlTools;
 
     public void setFileEditor(FileEditor fileEditor) {
         this.fileEditor = fileEditor;
     }
 
-    public void setConfigCenter(ConfigCenter configCenter) {
-        this.configCenter = configCenter;
+    public void setUrlTools(UrlTools urlTools) {
+        this.urlTools = urlTools;
     }
 
     /**
@@ -50,21 +51,11 @@ public class UrlExecutor {
         try {
             URL url = new URL(fullUrl);
 
-            String encoding = "gbk";
-            //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
-            for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
-                if (fullUrl.indexOf(enCodingString) != -1) {
-                    encoding = "utf-8";
-                    break;
-                }
-            }
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), urlTools.getReadCharSet(fullUrl)));
             fileEditor.pushStream(out, in);
             return true;
         } catch (Exception e) {
-            System.out.println("");
         }
-//        out.flush();
         return false;
     }
 }

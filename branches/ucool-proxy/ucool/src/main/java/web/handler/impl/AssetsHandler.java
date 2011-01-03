@@ -52,16 +52,15 @@ public class AssetsHandler implements Handler {
 
         fullUrl = urlTools.urlFilter(fullUrl);
 
-        response.setCharacterEncoding("gbk");
+        response.setCharacterEncoding("utf-8");
         if (fullUrl.indexOf(".css") != -1) {
             response.setContentType("text/css");
         } else {
             response.setContentType("application/x-javascript");
         }
         PrintWriter out = response.getWriter();
-        //尝试debug下所有的直接走source，不走cache
-        urlExecutor.doDebugUrlRule(fullUrl, out);
 
+        urlExecutor.doDebugUrlRule(fullUrl, out);
     }
 
 }
