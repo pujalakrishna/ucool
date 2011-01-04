@@ -1,6 +1,6 @@
 package web.handler.impl;
 
-import common.ConfigCenter;
+import common.UrlTools;
 import web.handler.Handler;
 
 import javax.servlet.ServletException;
@@ -17,12 +17,20 @@ import java.net.URL;
  */
 public class PngHandler implements Handler {
 
+    private UrlTools urlTools;
+
+    public void setUrlTools(UrlTools urlTools) {
+        this.urlTools = urlTools;
+    }
+
     @Override
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String fullUrl = (String) request.getAttribute("fullUrl");
+        fullUrl = urlTools.urlFilter(fullUrl);
         //临时处理下png
-        if(request.getRequestURI().indexOf("png") != -1) {
+        if(fullUrl.indexOf("png") != -1) {
             response.setContentType("image/png");
-        } else if(request.getRequestURI().indexOf("gif") != -1) {
+        } else if(fullUrl.indexOf("gif") != -1) {
             response.setContentType("image/gif");
         } else {
             response.setContentType("image/x-icon");
@@ -30,7 +38,7 @@ public class PngHandler implements Handler {
 
         BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());//输出缓冲流
         try {
-            URL url = new URL(request.getRequestURL().toString());
+            URL url = new URL(fullUrl);
             BufferedInputStream in = new BufferedInputStream(url.openStream());
             byte[] data = new byte[4096];
             int size = in.read(data);
