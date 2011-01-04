@@ -30,6 +30,7 @@ public class FileEditor {
     public void pushStream(PrintWriter out, BufferedReader in) throws IOException {
         String line;
         if ((line = in.readLine()) != null && "<!doctype html>".equalsIgnoreCase(line)) {
+            out.println("/*not found*/");
             in.close();
             out.flush();
             return;
