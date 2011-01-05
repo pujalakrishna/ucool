@@ -26,7 +26,6 @@ public class PngHandler implements Handler {
     @Override
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String fullUrl = (String) request.getAttribute("fullUrl");
-        fullUrl = urlTools.urlFilter(fullUrl);
         //临时处理下png
         if(fullUrl.indexOf("png") != -1) {
             response.setContentType("image/png");

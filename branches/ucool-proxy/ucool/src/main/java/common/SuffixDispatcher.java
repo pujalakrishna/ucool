@@ -13,8 +13,14 @@ public class SuffixDispatcher {
 
     private DispatchMapping dispatchMapping;
 
+    private UrlTools urlTools;
+
     public void setDispatchMapping(DispatchMapping dispatchMapping) {
         this.dispatchMapping = dispatchMapping;
+    }
+
+    public void setUrlTools(UrlTools urlTools) {
+        this.urlTools = urlTools;
     }
 
     /**
@@ -26,15 +32,19 @@ public class SuffixDispatcher {
     public void dispatch(HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
 
-        String url = (String) request.getAttribute("fullUrl");
+        String fullUrl = (String) request.getAttribute("fullUrl");
+        String env = request.getParameter("env");
+        env = (env == null) ? "online" : env;
+        fullUrl = urlTools.urlFilter(fullUrl, env);
+        request.setAttribute("fullUrl", fullUrl);
 
         //assets用的最多，所以先判断
-        if (url.indexOf(".js") != -1 || url.indexOf(".css") != -1) {
+        if (fullUrl.indexOf(".js") != -1 || fullUrl.indexOf(".css") != -1) {
             this.dispatchMapping.getMapping("assets").doHandler(request, response);
-        } else if (url.indexOf(".png") != -1 || url.indexOf(".gif") != -1 || url.indexOf(".ico") != -1) {
+        } else if (fullUrl.indexOf(".png") != -1 || fullUrl.indexOf(".gif") != -1 || fullUrl.indexOf(".ico") != -1) {
             //图片处理 目前有png,gif,ico
             this.dispatchMapping.getMapping("png").doHandler(request, response);
-        } else if (url.indexOf(".htm") != -1) {
+        } else if (fullUrl.indexOf(".htm") != -1) {
             // htm页面处理
             this.dispatchMapping.getMapping("htm").doHandler(request, response);
         } else {

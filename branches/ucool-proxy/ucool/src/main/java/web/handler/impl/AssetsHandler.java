@@ -1,5 +1,6 @@
 package web.handler.impl;
 
+import common.ConfigCenter;
 import common.UrlTools;
 import web.handler.Handler;
 import web.url.UrlExecutor;
@@ -18,17 +19,16 @@ import java.io.PrintWriter;
  */
 public class AssetsHandler implements Handler {
 
+    private ConfigCenter configCenter;
 
     private UrlExecutor urlExecutor;
-
-    private UrlTools urlTools;
 
     public void setUrlExecutor(UrlExecutor urlExecutor) {
         this.urlExecutor = urlExecutor;
     }
 
-    public void setUrlTools(UrlTools urlTools) {
-        this.urlTools = urlTools;
+    public void setConfigCenter(ConfigCenter configCenter) {
+        this.configCenter = configCenter;
     }
 
     /**
@@ -50,9 +50,7 @@ public class AssetsHandler implements Handler {
          */
         String fullUrl = (String) request.getAttribute("fullUrl");
 
-        fullUrl = urlTools.urlFilter(fullUrl);
-
-        response.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("gbk");
         if (fullUrl.indexOf(".css") != -1) {
             response.setContentType("text/css");
         } else {

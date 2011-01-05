@@ -36,7 +36,6 @@ public class OtherHandler implements Handler {
     public void doHandler(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         String fullUrl = (String) request.getAttribute("fullUrl");
-        fullUrl = urlTools.urlFilter(fullUrl);
         if (fullUrl.indexOf(".swf") != -1) {
             //哥对flash没办法，无论怎么取都无法正确展现，只好302
 //            response.sendRedirect(fullUrl);
