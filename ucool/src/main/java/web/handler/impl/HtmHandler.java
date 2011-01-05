@@ -20,19 +20,6 @@ import java.net.URL;
  * @since 2010-9-23 13:34:28
  */
 public class HtmHandler implements Handler {
-
-    private String realPath;
-    private ConfigCenter configCenter;
-    private UrlTools urlTools;
-
-    public void setConfigCenter(ConfigCenter configCenter) {
-        this.configCenter = configCenter;
-    }
-
-    public void setUrlTools(UrlTools urlTools) {
-        this.urlTools = urlTools;
-    }
-
     /**
      * Method doHandler ...
      *
@@ -43,8 +30,7 @@ public class HtmHandler implements Handler {
      */
     @Override
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        initHandler();
-        String directURL = request.getRequestURL().toString();
+        String fullUrl = (String) request.getAttribute("fullUrl");
 
         response.setCharacterEncoding("gbk");
         response.setHeader("Pragma", "No-cache");//HTTP 1.1
@@ -54,8 +40,7 @@ public class HtmHandler implements Handler {
         PrintWriter out = response.getWriter();
 
         try {
-            directURL = urlTools.urlFilter(directURL);
-            URL url = new URL(directURL);
+            URL url = new URL(fullUrl);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             String line;
             while ((line = in.readLine()) != null) {
@@ -68,12 +53,4 @@ public class HtmHandler implements Handler {
         out.flush();
     }
 
-    /**
-     * Method initHandler ...
-     */
-    private void initHandler() {
-        if(this.realPath != null) {
-            this.realPath = this.configCenter.getWebRoot();
-        }
-    }
 }
