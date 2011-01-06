@@ -28,8 +28,8 @@ public class FileEditor {
      * @throws IOException when
      */
     public void pushStream(PrintWriter out, BufferedReader in) throws IOException {
-        String line;
-        if ((line = in.readLine()) != null && "<!doctype html>".equalsIgnoreCase(line)) {
+        String line = in.readLine();
+        if (line == null || "<!doctype html>".equalsIgnoreCase(line)) {
             out.println("/*not found*/");
             in.close();
             out.flush();
