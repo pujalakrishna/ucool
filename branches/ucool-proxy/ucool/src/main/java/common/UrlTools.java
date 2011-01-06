@@ -24,10 +24,15 @@ public class UrlTools {
     public String urlFilter(String url, String env) {
         /**
          * 防止定位到本地导致自循环
-         * 还有一种可能是直接访问本地内网ip，这个没法子
          */
-        if (url.indexOf("127.0.0.1") != -1) {
-            return url.replace("127.0.0.1", "a.tbcdn.cn");
+        if(url.indexOf("127.0.0.1") != -1) {
+            if("daily".equals(env)) {
+                return url.replace("127.0.0.1", "assets.daily.taobao.net");
+            } else if("prepub".equals(env)) {
+                return url.replace("127.0.0.1", configCenter.getUcoolPrepubIp());
+            } else {
+                return url.replace("127.0.0.1", "a.tbcdn.cn");
+            }
         }
 
         if(url.indexOf(configCenter.getUcoolProxyIp()) != -1) {
