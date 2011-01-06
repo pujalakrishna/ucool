@@ -39,7 +39,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>ucoolproxy-${version}</finalName>
+        <finalName>ucoolproxy-final</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
