@@ -51,10 +51,10 @@ public class UrlExecutor {
         if (findAssetsFile(filePath)) {
             this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline), filePath);
         } else if (findCacheFile(filePath, isOnline)) {
-            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "utf-8", true, isOnline), filePath);
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
         } else {
             if (cacheUrlFile(filePath, realUrl, isOnline)) {
-                this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "utf-8", true, isOnline), filePath);
+                this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
             } else {
                 if (isDebugMode) {
                     //debug mode下如果请求-min的源文件a.js，会出现请求a.source.js的情况，到这里处理
@@ -64,7 +64,7 @@ public class UrlExecutor {
                     doUrlRuleCopy(filePath, realUrl, fullUrl, isOnline, out);
                 } else {
                     //最后的保障，如果缓存失败了，从线上取吧
-                    readUrlFile(fullUrl, out, isOnline);
+                    readUrlFile(fullUrl, out);
                 }
             }
         }
@@ -84,12 +84,12 @@ public class UrlExecutor {
         if (findAssetsFile(filePath)) {
             this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline), filePath);
         } else if (findCacheFile(filePath, isOnline)) {
-            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "utf-8", true, isOnline), filePath);
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
         } else if (cacheUrlFile(filePath, realUrl, isOnline)) {
-            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "utf-8", true, isOnline), filePath);
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
         } else {
             //最后的保障，如果缓存失败了，从线上取吧
-            readUrlFile(fullUrl, out, isOnline);
+            readUrlFile(fullUrl, out);
         }
     }
 
@@ -126,9 +126,9 @@ public class UrlExecutor {
         if (findAssetsFile(filePath)) {
             this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline), filePath);
         } else {
-            if (!readUrlFile(realUrl, out, isOnline)) {
+            if (!readUrlFile(realUrl, out)) {
                 //最后的保障，如果缓存失败了，从线上取吧
-                readUrlFile(fullUrl, out, isOnline);
+                readUrlFile(fullUrl, out);
             }
         }
     }
@@ -179,17 +179,7 @@ public class UrlExecutor {
     private boolean cacheUrlFile(String filePath, String realUrl, boolean isOnline) {
         try {
             URL url = new URL(realUrl);
-            String encoding = "utf-8";
-            if (!isOnline) {
-                //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
-//                for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
-//                    if (fullUrl.indexOf(enCodingString) != -1) {
-//                        encoding = "utf-8";
-//                        break;
-//                    }
-//                }
-                encoding = urlTools.getReadCharSet(filePath);
-            }
+            String encoding = "gbk";
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
             StringBuilder sb = new StringBuilder();
             sb.append(configCenter.getWebRoot()).append(getCacheString(isOnline)).append(filePath);
@@ -245,20 +235,10 @@ public class UrlExecutor {
      * @param out     of type PrintWriter
      * @return
      */
-    private boolean readUrlFile(String fullUrl, PrintWriter out, boolean isOnline) {
+    private boolean readUrlFile(String fullUrl, PrintWriter out) {
         try {
             URL url = new URL(fullUrl);
-            String encoding = "utf-8";
-            if (!isOnline) {
-                //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
-//                for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
-//                    if (fullUrl.indexOf(enCodingString) != -1) {
-//                        encoding = "utf-8";
-//                        break;
-//                    }
-//                }
-                encoding = urlTools.getReadCharSet(fullUrl);
-            }
+            String encoding = "gbk";
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
             fileEditor.pushStream(out, in, fullUrl, false);
             return true;

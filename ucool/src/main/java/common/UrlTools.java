@@ -33,12 +33,16 @@ public class UrlTools {
         if (isOnline) {
             for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
+                    if(configCenter.isPrepub()) {
+                        url += "?env=prepub";
+                    }
                     return url.replace(d, getUsefullIp());
                 }
             }
         } else {
             for (String d : configCenter.getUcoolDailyDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
+                    url += "?env=daily";
                     return url.replace(d, configCenter.getUcoolDailyIp());
                 }
             }
@@ -82,19 +86,5 @@ public class UrlTools {
             }
         }
         return filePath;
-    }
-
-    /**
-     * 根据url规则返回读取的字符集
-     * @param url
-     * @return
-     */
-    public String getReadCharSet(String url) {
-        String encoding = "utf-8";
-        //  在这里使用配置的文件作特殊处理，把给定的文件使用gbk编码
-        if (url.indexOf(".source.") != -1) {
-            encoding = "gbk";
-        }
-        return encoding;
     }
 }

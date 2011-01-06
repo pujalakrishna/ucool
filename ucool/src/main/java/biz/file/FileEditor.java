@@ -100,7 +100,7 @@ public class FileEditor {
         File file = new File(filePath);
         if (file.canWrite()) {
             FileOutputStream writerStream = new FileOutputStream(file);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(writerStream, "utf-8"));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(writerStream, "gbk"));
             if ((line = in.readLine()) != null && line.equals("/*not found*/")) {
                 bw.close();
                 writerStream.close();
@@ -108,9 +108,17 @@ public class FileEditor {
                 file.delete();
                 return false;
             } else {
-                bw.write(line);
-                bw.newLine();
-                bw.flush();
+                if(line != null) {
+                    bw.write(line);
+                    bw.newLine();
+                    bw.flush();
+                } else {
+                    bw.close();
+                    writerStream.close();
+                    in.close();
+                    file.delete();
+                    return false;
+                }
             }
             while ((line = in.readLine()) != null) {
                 bw.write(line);
