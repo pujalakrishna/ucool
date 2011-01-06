@@ -3,6 +3,7 @@ package web.url;
 import biz.file.FileEditor;
 import common.ConfigCenter;
 import common.PersonConfig;
+import common.UrlTools;
 
 import java.io.*;
 import java.net.URL;
@@ -21,6 +22,8 @@ public class UrlExecutor {
 
     private PersonConfig personConfig;
 
+    private UrlTools urlTools;
+
     public void setFileEditor(FileEditor fileEditor) {
         this.fileEditor = fileEditor;
     }
@@ -32,6 +35,11 @@ public class UrlExecutor {
     public void setPersonConfig(PersonConfig personConfig) {
         this.personConfig = personConfig;
     }
+
+    public void setUrlTools(UrlTools urlTools) {
+        this.urlTools = urlTools;
+    }
+
 
     /**
      * 去除request依赖的执行url rule的方法
@@ -49,22 +57,22 @@ public class UrlExecutor {
          * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
          */
         if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline), filePath);
-        } else if (findCacheFile(filePath, realUrl, isOnline, isDebugMode)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline), filePath);
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline), filePath);
+        } else if (findCacheFile(filePath, isOnline)) {
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
         } else {
             if (cacheUrlFile(filePath, realUrl, isOnline)) {
-                this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline), filePath);
+                this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
             } else {
                 if (isDebugMode) {
                     //debug mode下如果请求-min的源文件a.js，会出现请求a.source.js的情况，到这里处理
                     //如果到这里那就说明线上都没有改文件，即使返回压缩的文件也没问题，只要保证尽可能的命中cache
                     filePath = filePath.replace(".source", "");
                     realUrl = realUrl.replace(".source", "");
-                    doUrlRuleCopy(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
+                    doUrlRuleCopy(filePath, realUrl, fullUrl, isOnline, out);
                 } else {
                     //最后的保障，如果缓存失败了，从线上取吧
-                    readUrlFile(fullUrl, out, isOnline);
+                    readUrlFile(fullUrl, out);
                 }
             }
         }
@@ -74,23 +82,22 @@ public class UrlExecutor {
      * Method doUrlRule 's Copy ...
      * 为debug mode下直接访问带-min的源码而创建，例如访问kissy.js
      *
-     * @param filePath of type String
-     * @param realUrl of type String
-     * @param fullUrl of type String
-     * @param isOnline of type boolean
-     * @param isDebugMode of type boolean
-     * @param out of type PrintWriter
+     * @param filePath    of type String
+     * @param realUrl     of type String
+     * @param fullUrl     of type String
+     * @param isOnline    of type boolean
+     * @param out         of type PrintWriter
      */
-    public void doUrlRuleCopy(String filePath, String realUrl, String fullUrl, boolean isOnline, boolean isDebugMode, PrintWriter out) {
+    public void doUrlRuleCopy(String filePath, String realUrl, String fullUrl, boolean isOnline, PrintWriter out) {
         if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, false, isOnline), filePath);
-        } else if (findCacheFile(filePath, realUrl, isOnline, isDebugMode)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline), filePath);
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline), filePath);
+        } else if (findCacheFile(filePath, isOnline)) {
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
         } else if (cacheUrlFile(filePath, realUrl, isOnline)) {
-            this.fileEditor.pushFile(out, loadExistFile(filePath, true, isOnline), filePath);
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
         } else {
             //最后的保障，如果缓存失败了，从线上取吧
-            readUrlFile(fullUrl, out, isOnline);
+            readUrlFile(fullUrl, out);
         }
     }
 
@@ -127,9 +134,9 @@ public class UrlExecutor {
         if (findAssetsFile(filePath)) {
             this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline), filePath);
         } else {
-            if (!readUrlFile(realUrl, out, isOnline)) {
+            if (!readUrlFile(realUrl, out)) {
                 //最后的保障，如果缓存失败了，从线上取吧
-                readUrlFile(fullUrl, out, isOnline);
+                readUrlFile(fullUrl, out);
             }
         }
     }
@@ -155,14 +162,12 @@ public class UrlExecutor {
      * 从cache目录查找替补文件
      *
      * @param filePath    of type String
-     * @param realUrl
      * @param isOnline
-     * @param isDebugMode @return boolean
      * @return
      * @author zhangting
      * @since 2010-8-19 14:50:35
      */
-    private boolean findCacheFile(String filePath, String realUrl, boolean isOnline, Boolean isDebugMode) {
+    private boolean findCacheFile(String filePath, boolean isOnline) {
         StringBuilder sb = new StringBuilder();
         sb.append(configCenter.getWebRoot()).append(getCacheString(isOnline)).append(filePath);
         //这里如果找到了，直接返回了，下面的逻辑尽可能的少走
@@ -183,13 +188,6 @@ public class UrlExecutor {
         try {
             URL url = new URL(realUrl);
             String encoding = "gbk";
-            //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
-//            for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
-//                if (realUrl.indexOf(enCodingString) != -1) {
-//                    encoding = "utf-8";
-//                    break;
-//                }
-//            }
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
             StringBuilder sb = new StringBuilder();
             sb.append(configCenter.getWebRoot()).append(getCacheString(isOnline)).append(filePath);
@@ -204,32 +202,11 @@ public class UrlExecutor {
     }
 
     /**
-     * 加载本地文件或者缓存文件
-     *
-     * @param filePath of type String
-     * @param isCache  of type boolean
-     * @return FileInputStream
-     * @author zhangting
-     * @since 2010-8-19 15:22:02
-     */
-    private FileReader loadExistFile(String filePath, boolean isCache, boolean isOnline) {
-        String root = isCache ? getCacheString(isOnline) : personConfig.getUcoolAssetsRoot();
-        StringBuilder sb = new StringBuilder();
-        sb.append(configCenter.getWebRoot()).append(root).append(filePath);
-        try {
-            return this.fileEditor.loadFile(sb.toString());
-        } catch (FileNotFoundException e) {
-
-        }
-        return null;
-    }
-
-    /**
      * 根据编码返回新的文件流
      *
      * @param filePath of type String
      * @param encoding of type String
-     * @param isCache of type boolean
+     * @param isCache  of type boolean
      * @param isOnline of type boolean
      * @return InputStreamReader
      */
@@ -266,24 +243,14 @@ public class UrlExecutor {
      * @param out     of type PrintWriter
      * @return
      */
-    private boolean readUrlFile(String fullUrl, PrintWriter out, boolean isOnline) {
+    private boolean readUrlFile(String fullUrl, PrintWriter out) {
         try {
             URL url = new URL(fullUrl);
             String encoding = "gbk";
-            if(!isOnline) {
-                //  在这里使用配置的文件作特殊处理，把给定的文件使用utf-8编码
-                for (String enCodingString : configCenter.getUcoolAssetsEncodingCorrectStrings()) {
-                    if (fullUrl.indexOf(enCodingString) != -1) {
-                        encoding = "utf-8";
-                        break;
-                    }
-                }
-            }
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
-            fileEditor.pushStream(out, in, fullUrl);
+            fileEditor.pushStream(out, in, fullUrl, false);
             return true;
         } catch (Exception e) {
-            System.out.println("");
         }
 //        out.flush();
         return false;
