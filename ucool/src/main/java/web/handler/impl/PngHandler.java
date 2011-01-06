@@ -38,10 +38,8 @@ public class PngHandler implements Handler {
         try {
             URL url = new URL("http://"+ configCenter.getUcoolOnlineIp() + request.getRequestURI());
             BufferedInputStream in = new BufferedInputStream(url.openStream());
-            String line;
             byte[] data = new byte[4096];
-            int size = 0;
-            size = in.read(data);
+            int size = in.read(data);
             while (size != -1) {
                 bos.write(data, 0, size);
                 size = in.read(data);

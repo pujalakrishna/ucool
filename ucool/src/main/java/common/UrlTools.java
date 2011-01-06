@@ -8,8 +8,14 @@ public class UrlTools {
 
     private ConfigCenter configCenter;
 
+    private PersonConfig personConfig;
+
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
+    }
+
+    public void setPersonConfig(PersonConfig personConfig) {
+        this.personConfig = personConfig;
     }
 
     /**
@@ -33,12 +39,16 @@ public class UrlTools {
         if (isOnline) {
             for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
+                    if(personConfig.isPrepub()) {
+                        url += "?env=prepub";
+                    }
                     return url.replace(d, getUsefullIp());
                 }
             }
         } else {
             for (String d : configCenter.getUcoolDailyDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
+                    url += "?env=daily";
                     return url.replace(d, configCenter.getUcoolDailyIp());
                 }
             }
@@ -52,7 +62,7 @@ public class UrlTools {
      * @return the usefullIp (type String) of this UrlTools object.
      */
     private String getUsefullIp() {
-        return configCenter.isPrepub() ? configCenter.getUcoolPrepubIp() : configCenter.getUcoolOnlineIp();
+        return personConfig.isPrepub() ? configCenter.getUcoolPrepubIp() : configCenter.getUcoolOnlineIp();
     }
 
     /**
