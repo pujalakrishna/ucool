@@ -39,6 +39,7 @@ public class OtherHandler implements Handler {
         if (fullUrl.indexOf(".swf") != -1) {
             //哥对flash没办法，无论怎么取都无法正确展现，只好302
 //            response.sendRedirect(fullUrl);
+            response.setCharacterEncoding("gbk");
             response.setContentType("application/x-shockwave-flash");
             PrintWriter out = response.getWriter();
             try {
