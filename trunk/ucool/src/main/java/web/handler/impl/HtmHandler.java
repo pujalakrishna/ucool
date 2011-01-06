@@ -20,14 +20,7 @@ import java.net.URL;
  * @since 2010-9-23 13:34:28
  */
 public class HtmHandler implements Handler {
-
-    private String realPath;
-    private ConfigCenter configCenter;
     private UrlTools urlTools;
-
-    public void setConfigCenter(ConfigCenter configCenter) {
-        this.configCenter = configCenter;
-    }
 
     public void setUrlTools(UrlTools urlTools) {
         this.urlTools = urlTools;
@@ -43,7 +36,6 @@ public class HtmHandler implements Handler {
      */
     @Override
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        initHandler();
         String directURL = request.getRequestURL().toString();
 
         response.setCharacterEncoding("gbk");
@@ -68,12 +60,4 @@ public class HtmHandler implements Handler {
         out.flush();
     }
 
-    /**
-     * Method initHandler ...
-     */
-    private void initHandler() {
-        if(this.realPath != null) {
-            this.realPath = this.configCenter.getWebRoot();
-        }
-    }
 }

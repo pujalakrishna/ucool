@@ -46,11 +46,12 @@ public class OtherHandler implements Handler {
             fullUrl = urlTools.urlFilter(fullUrl, true);
             //哥对flash没办法，无论怎么取都无法正确展现，只好302
             //            response.sendRedirect(fullUrl);
+            response.setCharacterEncoding("gbk");
             response.setContentType("application/x-shockwave-flash");
             PrintWriter out = response.getWriter();
             try {
                 URL url = new URL(fullUrl);
-                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "utf-8"));
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "gbk"));
                 fileEditor.pushStream(out, in, null, true);
             } catch (Exception e) {
             }
