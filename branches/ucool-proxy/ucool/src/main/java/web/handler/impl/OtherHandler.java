@@ -43,7 +43,7 @@ public class OtherHandler implements Handler {
             PrintWriter out = response.getWriter();
             try {
                 URL url = new URL(fullUrl);
-                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "utf-8"));
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "gbk"));
                 fileEditor.pushStream(out, in);
             } catch (Exception e) {
             }
