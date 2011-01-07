@@ -100,7 +100,7 @@ public class AssetsHandler implements Handler {
         //尝试debug下所有的直接走source，不走cache
         //daily和预发只有一台机器，没必要走cache了
         if (!isOnline || configCenter.isPrepub()) {
-            urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, out);
+            urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
         } else {
             urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
         }

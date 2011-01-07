@@ -31,6 +31,7 @@ public class UrlTools {
             return url.replace("localhost", getUsefullIp());
         }
         if (isOnline) {
+            url = url.replace("assets.daily.taobao.net", "a.tbcdn.cn");
             for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
                     if(configCenter.isPrepub()) {
