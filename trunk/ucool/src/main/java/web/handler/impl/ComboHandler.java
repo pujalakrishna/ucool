@@ -75,7 +75,7 @@ public class ComboHandler extends AssetsHandler {
             //尝试debug下所有的直接走source，不走cache
             //daily和预发只有一台机器，没必要走cache了
             if (!isOnline || getConfigCenter().isPrepub()) {
-                getUrlExecutor().doDebugUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
+                getUrlExecutor().doDebugUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isDebugMode, isOnline, out);
             } else {
                 getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, isDebugMode, out);
             }
