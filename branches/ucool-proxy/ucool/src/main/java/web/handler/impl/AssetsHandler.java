@@ -49,7 +49,7 @@ public class AssetsHandler implements Handler {
          *  4、判断是否是线上还是daily
          */
         String fullUrl = (String) request.getAttribute("fullUrl");
-
+        String filePath = request.getRequestURI();
         response.setCharacterEncoding("gbk");
         if (fullUrl.indexOf(".css") != -1) {
             response.setContentType("text/css");
@@ -58,7 +58,7 @@ public class AssetsHandler implements Handler {
         }
         PrintWriter out = response.getWriter();
 
-        urlExecutor.doDebugUrlRule(fullUrl, out);
+        urlExecutor.doDebugUrlRule(filePath, fullUrl, out);
     }
 
 }
