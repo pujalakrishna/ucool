@@ -9,9 +9,7 @@ public class UserDO {
 
     private String hostName;
     
-    private String dir="";
-
-    private int config = 5;
+    private Long dirId;
 
     public Long getId() {
         return id;
@@ -29,43 +27,11 @@ public class UserDO {
         this.hostName = hostName;
     }
 
-    public String getDir() {
-        return dir;
+    public Long getDirId() {
+        return dirId;
     }
 
-    public void setDir(String dir) {
-        this.dir = dir;
-    }
-
-    public int getConfig() {
-        return config;
-    }
-
-    public void setConfig(int config) {
-        this.config = config;
-    }
-
-    public boolean isEnableDebug() {
-        return (config & 1) == 1;
-    }
-
-    public void setEnableDebug(boolean enableDebug) {
-        config = config | 1;
-    }
-
-    public boolean isEnablePrepub() {
-        return (config & 2) == 2;
-    }
-
-    public void setEnablePrepub(boolean enablePrepub) {
-        config = config | 2;
-    }
-
-    public boolean isEnableAssets() {
-        return (config & 4) == 4;
-    }
-
-    public void setEnableAssets(boolean enableAssets) {
-        config = config | 4;
+    public void setDirId(Long dirId) {
+        this.dirId = dirId;
     }
 }

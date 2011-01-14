@@ -1,0 +1,14 @@
+package dao;
+
+import java.util.List;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: zhangting
+ * Date: 11-1-14
+ * Time: обнГ3:44
+ * To change this template use File | Settings | File Templates.
+ */
+public interface DirDAO {
+    List<DirDO> loadAllDir();
+}

@@ -20,11 +20,11 @@ public class SpringTest {
         System.out.println(jdbcTemplate == null);
 //        String sql = "insert into user (host_name,dir, config) values (?,?,?)";
 //        if (jdbcTemplate != null) {
-//            jdbcTemplate.update(sql, new Object[]{"czy-notebook", "zhangting", 5});
+//            jdbcTemplate.update(sql, new Object[]{"czy-notebook1", "这是中文", 5});
 //        }
 
         String sql = "select * from user where host_name=?";
-        String hostName = "czy-notebook";
+        String hostName = "czy-notebook1";
         final UserDO user = new UserDO();
         if (jdbcTemplate != null) {
             jdbcTemplate.queryForObject(sql, new Object[]{hostName}, new RowMapper() {
