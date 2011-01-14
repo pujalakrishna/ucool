@@ -116,8 +116,7 @@ public class PersonConfig {
         StringBuffer sb = new StringBuffer();
         sb.append(userDO.getId()).append(":");
         sb.append(userDO.getHostName()).append(":");
-        sb.append(userDO.getDir()).append(":");
-        sb.append(userDO.getConfig()).append(":");
+        sb.append(userDO.getDirId()).append(":");
         sb.append(this.isNewUser());
         return sb.toString();
     }

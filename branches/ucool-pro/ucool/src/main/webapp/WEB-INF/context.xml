@@ -11,6 +11,7 @@
     <bean id="urlTools" class="common.UrlTools"/>
     <bean id="personConfig" class="common.PersonConfig" scope="prototype"/>
     <bean id="userDAO" class="dao.UserDAOImpl"/>
+    <bean id="dirMapping" class="common.DirMapping" />
 
     <bean id="dispatchMapping" class="common.DispatchMapping">
         <property name="mappingTable">

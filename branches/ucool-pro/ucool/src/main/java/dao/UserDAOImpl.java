@@ -18,14 +18,13 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override public UserDO getPersonInfo(String hostName) {
-        String sql = "select * from user where host_name=?";
+        String sql = "select * from user,dir where host_name=? and user.dir_id = dir.id";
         final UserDO user = new UserDO();
         this.jdbcTemplate.queryForObject(sql, new Object[]{hostName}, new RowMapper() {
             @Override public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
                 user.setId(rs.getLong("id"));
                 user.setHostName(rs.getString("host_name"));
-                user.setDir(rs.getString("dir"));
-                user.setConfig(rs.getInt("config"));
+                user.setDirId(rs.getLong("dir_id"));
                 return null;
             }
         });
@@ -33,12 +32,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override public boolean createNewUser(UserDO userDO) {
-        String sql = "insert into user (host_name,dir, config) values (?,?,?)";
-        return this.jdbcTemplate.update(sql, new Object[]{userDO.getHostName(), userDO.getDir(), 5}) > 0;
-    }
-
-    @Override public boolean updateConfig(UserDO userDO, int srcConfig) {
-        String sql = "update user set config=? where host_name=? and config=?";
-        return this.jdbcTemplate.update(sql, new Object[]{userDO.getConfig(), userDO.getHostName(), srcConfig}) > 0;
+        String sql = "insert into user (host_name, dir_id) values (?,?)";
+        return this.jdbcTemplate.update(sql, new Object[]{userDO.getHostName(), userDO.getDirId()}) > 0;
     }
 }
