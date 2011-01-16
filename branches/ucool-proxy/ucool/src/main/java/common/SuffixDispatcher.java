@@ -1,8 +1,11 @@
 package common;
 
+import biz.file.FileEditor;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -15,12 +18,24 @@ public class SuffixDispatcher {
 
     private UrlTools urlTools;
 
+    private ConfigCenter configCenter;
+
+    private FileEditor fileEditor;
+
     public void setDispatchMapping(DispatchMapping dispatchMapping) {
         this.dispatchMapping = dispatchMapping;
     }
 
     public void setUrlTools(UrlTools urlTools) {
         this.urlTools = urlTools;
+    }
+
+    public void setConfigCenter(ConfigCenter configCenter) {
+        this.configCenter = configCenter;
+    }
+
+    public void setFileEditor(FileEditor fileEditor) {
+        this.fileEditor = fileEditor;
     }
 
     /**
@@ -40,6 +55,7 @@ public class SuffixDispatcher {
 
         //assets用的最多，所以先判断
         if (fullUrl.indexOf(".js") != -1 || fullUrl.indexOf(".css") != -1) {
+            doCleanUp(request);
             this.dispatchMapping.getMapping("assets").doHandler(request, response);
         } else if (fullUrl.indexOf(".png") != -1 || fullUrl.indexOf(".gif") != -1 || fullUrl.indexOf(".ico") != -1) {
             //图片处理 目前有png,gif,ico
@@ -50,6 +66,15 @@ public class SuffixDispatcher {
         } else {
             // 其他格式的处理，目前包括swf和xml
             this.dispatchMapping.getMapping("other").doHandler(request, response);
+        }
+    }
+
+    private void doCleanUp(HttpServletRequest request) {
+        if (HttpTools.isReferClean(request) || "clean".equals(request.getParameter("op"))) {
+            File file = new File(configCenter.getWebRoot() + configCenter.getUcoolCacheRoot() + request.getRequestURI());
+            if(file.exists()) {
+                file.delete();
+            }
         }
     }
 

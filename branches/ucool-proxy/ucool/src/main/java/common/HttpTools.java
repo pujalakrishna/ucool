@@ -19,10 +19,12 @@ public class HttpTools {
         /**
          * 目前支持2种方式：?debug和debug=true
          */
-        if(refer != null && (refer.indexOf("ucool=debug") != -1)) {
-            return true;
-        }
-        return false;
+        return refer != null && (refer.indexOf("ucool=debug") != -1);
+    }
+
+    public static boolean isReferClean(HttpServletRequest request) {
+        String refer = request.getHeader("Referer");
+        return refer != null && (refer.indexOf("op=clean") != -1);
     }
 
     /**
