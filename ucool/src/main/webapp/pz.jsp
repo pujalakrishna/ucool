@@ -165,11 +165,11 @@
                         <td class="op"><a class="<%=configCenter.getStateStyle(configCenter.isEnableAssets())%>" id="enableAssets"></a></td>
                         <td class="note">使用服务器上的assets目录</td>
                     </tr>
-                    <tr>
-                        <th>RELEASE CACHE：</th>
-                        <td class="op"><input type="button" value="CLEAR" id="cleanOnlineCache"/></td>
-                        <td class="note"></td>
-                    </tr>
+                    <%--<tr>--%>
+                        <%--<th>RELEASE CACHE：</th>--%>
+                        <%--<td class="op"><input type="button" value="CLEAR" id="cleanOnlineCache"/></td>--%>
+                        <%--<td class="note"></td>--%>
+                    <%--</tr>--%>
                 </table>
             </div>
         </div>
@@ -203,23 +203,23 @@
                         <td><%=configCenter.getUcoolComboDecollator()%></td>
                     </tr>
                     <tr class="separator"><td colspan="2"></td></tr>
-                    <tr>
-                        <th>AUTO FLUSH CACHE：</th>
-                        <td><%=configCenter.getUcoolCacheAutoClean()%></td>
-                    </tr>
-                    <tr>
-                        <th>CACHE FLUSH PERIOD：</th>
-                        <td><em><%=configCenter.getUcoolCacheCleanPeriod()%></em>h</td>
-                    </tr>
+                    <%--<tr>--%>
+                        <%--<th>AUTO FLUSH CACHE：</th>--%>
+                        <%--<td><%=configCenter.getUcoolCacheAutoClean()%></td>--%>
+                    <%--</tr>--%>
+                    <%--<tr>--%>
+                        <%--<th>CACHE FLUSH PERIOD：</th>--%>
+                        <%--<td><em><%=configCenter.getUcoolCacheCleanPeriod()%></em>h</td>--%>
+                    <%--</tr>--%>
                     <tr class="separator"><td colspan="2"></td></tr>
                     <tr>
                         <th>ASSETS DIR：</th>
                         <td><%=configCenter.getUcoolAssetsRoot()%></td>
                     </tr>
-                    <tr>
-                        <th>RELEASE CACHE DIR：</th>
-                        <td><%=configCenter.getUcoolCacheRoot()%></td>
-                    </tr>
+                    <%--<tr>--%>
+                        <%--<th>RELEASE CACHE DIR：</th>--%>
+                        <%--<td><%=configCenter.getUcoolCacheRoot()%></td>--%>
+                    <%--</tr>--%>
                 </table>
             </div>
         </div>

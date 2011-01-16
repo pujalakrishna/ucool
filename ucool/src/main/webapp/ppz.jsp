@@ -5,6 +5,7 @@
 <%@ page import="common.PersonConfig" %>
 <%@ page import="biz.file.FileEditor" %>
 <%@ page import="java.util.List" %>
+<%@ page import="web.handler.impl.PersonConfigHandler" %>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -143,7 +144,8 @@
 <%
     WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext());
     ConfigCenter configCenter = (ConfigCenter) wac.getBean("configCenter");
-    PersonConfig personConfig = (PersonConfig) wac.getBean("personConfig");
+    PersonConfigHandler personConfigHandler  = (PersonConfigHandler) wac.getBean("personConfigHandler");
+    PersonConfig personConfig = personConfigHandler.doHandler(request);
     FileEditor fileEditor = (FileEditor) wac.getBean("fileEditor");
 %>
 <div id="page">
@@ -157,16 +159,24 @@
         <div class="box location">
             <div class="hd"><h3>change your location</h3></div>
             <div class="bd">
+                <select name="" id="">
                 <%
                     List<String> assetsSubDirs = fileEditor.getAssetsSubDirs();
-                    for (String assetsSubDir : assetsSubDirs) {
-                        out.println(assetsSubDir + "<br/>");
+                    if(assetsSubDirs.size() == 0) {
+                        out.print("<option>无目录供选择</option>");
+                    } else {
+                        for (String assetsSubDir : assetsSubDirs) {
+                            out.print("<option value="+assetsSubDir + ">");
+                            out.print(assetsSubDir);
+                            out.print("</option>");
+                        }
                     }
                 %>
+                </select>
                 <button>save</button>
             </div>
         </div>
-        <div class="box switch <%=personConfig.isNewUser()?"hidden":""%>">
+        <div class="box switch <%=personConfig.personConfigValid()?"":"hidden"%>">
             <div class="hd"><h3>SWITCH</h3></div>
             <div class="bd">
                 <table>
@@ -193,7 +203,7 @@
                 </table>
             </div>
         </div>
-        <div class="box <%=personConfig.isNewUser()?"hidden":""%>">
+        <div class="box <%=personConfig.personConfigValid()?"":"hidden"%>">
             <div class="hd"><h3>PROFILE</h3></div>
             <div class="bd">
                 <table>
