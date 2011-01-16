@@ -80,6 +80,7 @@ public class AssetsHandler implements Handler {
          */
         String filePath = (String) request.getAttribute("filePath");
         String realUrl = (String) request.getAttribute("realUrl");
+        realUrl = attachOper(realUrl, request);
         String fullUrl = realUrl;
         boolean isDebugMode = switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request);
         boolean isOnline = configCenter.getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
@@ -98,12 +99,25 @@ public class AssetsHandler implements Handler {
         }
         PrintWriter out = response.getWriter();
         //尝试debug下所有的直接走source，不走cache
-        //daily和预发只有一台机器，没必要走cache了
-        if (!isOnline || configCenter.isPrepub()) {
-            urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
-        } else {
-            urlExecutor.doUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
+        //线上缓存已经迁移至ucool-proxy
+        urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, isDebugMode, out);
+    }
+
+    public String attachOper(String fullUrl, HttpServletRequest request) {
+        String op = (String) request.getAttribute("op");
+        boolean referClean = HttpTools.isReferClean(request);
+        if((op!= null && !op.isEmpty()) || referClean) {
+            if(fullUrl.indexOf("?") != -1) {
+                fullUrl += "&";
+            } else {
+                fullUrl += "?";
+            }
+            if(referClean) {
+                op = "clean";
+            }
+            fullUrl += ("op="+op);
         }
+        return fullUrl;
     }
 
 }
