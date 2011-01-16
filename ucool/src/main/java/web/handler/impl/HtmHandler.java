@@ -39,16 +39,12 @@ public class HtmHandler implements Handler {
         String directURL = request.getRequestURL().toString();
 
         response.setCharacterEncoding("gbk");
-        response.setHeader("Pragma", "No-cache");//HTTP 1.1
-        response.setHeader("Cache-Control", "no-cache");//HTTP 1.0
-        response.setHeader("Expires", "0");//∑¿÷π±ªproxy
-
         PrintWriter out = response.getWriter();
 
         try {
             directURL = urlTools.urlFilter(directURL, true);
             URL url = new URL(directURL);
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "gbk"));
             String line;
             while ((line = in.readLine()) != null) {
                 out.println(line);

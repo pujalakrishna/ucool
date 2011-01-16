@@ -9,6 +9,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 /**
@@ -34,6 +36,7 @@ public class DoorFilter implements Filter {
         } else {
             String fullUrl = getFullUrl(request);
             request.setAttribute("filePath", request.getRequestURI());
+            request.setAttribute("op", request.getParameter("op"));
             if (fullUrl.indexOf(configCenter.getUcoolComboDecollator()) != -1) {
                 request.setAttribute("realUrl", fullUrl);
                 request.getRequestDispatcher("/combo").forward(request, response);
@@ -60,6 +63,11 @@ public class DoorFilter implements Filter {
             configCenter.setUcoolAssetsDebugCorrectStrings(configCenter.getUcoolAssetsDebugCorrect().split(HttpTools.filterSpecialChar(",")));
             //这几个文件走utf-8编码
             configCenter.setUcoolAssetsEncodingCorrectStrings(configCenter.getUcoolAssetsEncodingCorrect().split(HttpTools.filterSpecialChar(",")));
+
+            String myip = getMyIp();
+            if(myip != null) {
+                configCenter.setUcoolProxyIp(myip);
+            }
         }
     }
 
@@ -86,20 +94,23 @@ public class DoorFilter implements Filter {
      */
     private boolean filterDomain(HttpServletRequest request) {
         String url = request.getRequestURL().toString();
-        if(url.indexOf("localhost") != -1 || url.indexOf("127.0.0.1") != -1) {
-            return true;
+        if(url.indexOf(configCenter.getUcoolProxyIp()) != -1) {
+            return false;
         }
-        for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
-            if (url.indexOf(d) != -1) {
-                return true;
-            }
+        return true;
+    }
+
+    /**
+     * 获取本地服务器ip
+     * @return
+     */
+    private String getMyIp() {
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            return inetAddress.getHostAddress();
+        } catch (UnknownHostException e) {
         }
-        for (String d : configCenter.getUcoolDailyDomain().split(HttpTools.filterSpecialChar(","))) {
-            if (url.indexOf(d) != -1) {
-                return true;
-            }
-        }
-        return false;
+        return null;
     }
 
 }
