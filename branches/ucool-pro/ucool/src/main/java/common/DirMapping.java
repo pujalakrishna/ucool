@@ -1,10 +1,8 @@
 package common;
 
 import dao.DirDAO;
-import dao.DirDO;
-import dao.UserDAO;
+import dao.entity.DirDO;
 import org.springframework.beans.factory.InitializingBean;
-import web.handler.Handler;
 
 import java.util.HashMap;
 import java.util.List;

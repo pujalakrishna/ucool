@@ -59,6 +59,7 @@ public class ComboHandler extends AssetsHandler {
             //拼出单个url，然后的逻辑和单文件相同
             String singleFilePath = filePath + everyFile;
             String singleRealUrl = pathPrefix + everyFile;
+            singleRealUrl= attachOper(singleRealUrl, request);
             String singleFullUrl = singleRealUrl;
 
             //在debug过滤之前还要过滤时间戳
@@ -73,12 +74,8 @@ public class ComboHandler extends AssetsHandler {
             singleFullUrl = getUrlTools().urlFilter(singleFullUrl, isOnline);
 
             //尝试debug下所有的直接走source，不走cache
-            //daily和预发只有一台机器，没必要走cache了
-            if (!isOnline || getPersonConfig().isPrepub()) {
-                getUrlExecutor().doDebugUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
-            } else {
-                getUrlExecutor().doUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, isDebugMode, out);
-            }
+            //线上缓存已经迁移至ucool-proxy
+            getUrlExecutor().doDebugUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
         }
 
     }

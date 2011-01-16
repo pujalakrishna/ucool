@@ -1,10 +1,13 @@
 package dao;
 
+import dao.entity.UserDO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
@@ -18,16 +21,16 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override public UserDO getPersonInfo(String hostName) {
-        String sql = "select * from user,dir where host_name=? and user.dir_id = dir.id";
-        final UserDO user = new UserDO();
-        this.jdbcTemplate.queryForObject(sql, new Object[]{hostName}, new RowMapper() {
-            @Override public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-                user.setId(rs.getLong("id"));
-                user.setHostName(rs.getString("host_name"));
-                user.setDirId(rs.getLong("dir_id"));
-                return null;
-            }
-        });
+        String sql = "select * from user,dir where user.host_name=? and user.dir_id = dir.id";
+        UserDO user = null;
+        List perList = this.jdbcTemplate.queryForList(sql, new Object[]{hostName});
+        if(perList.size() == 1) {
+            user = new UserDO();
+            Map map = (Map) perList.get(0);
+            user.setId((Long) map.get("id"));
+            user.setHostName((String) map.get("host_name"));
+            user.setDirId((Long) map.get("dir_id"));
+        }
         return user;
     }
 

@@ -81,6 +81,8 @@ public class ConfigCenter implements InitializingBean {
     //用于debug时纠正编码
     private String ucoolAssetsEncodingCorrect;
 
+    private String ucoolProxyIp;
+
     public String getWebRoot() {
         return webRoot;
     }
@@ -256,6 +258,14 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolAssetsEncodingCorrect(String ucoolAssetsEncodingCorrect) {
         this.ucoolAssetsEncodingCorrect = ucoolAssetsEncodingCorrect;
+    }
+
+    public String getUcoolProxyIp() {
+        return ucoolProxyIp;
+    }
+
+    public void setUcoolProxyIp(String ucoolProxyIp) {
+        this.ucoolProxyIp = ucoolProxyIp;
     }
 
     /**

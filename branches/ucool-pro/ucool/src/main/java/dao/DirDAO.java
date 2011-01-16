@@ -1,5 +1,7 @@
 package dao;
 
+import dao.entity.DirDO;
+
 import java.util.List;
 
 /**

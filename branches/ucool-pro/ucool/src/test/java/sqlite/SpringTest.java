@@ -1,6 +1,6 @@
 package sqlite;
 
-import dao.UserDO;
+import dao.entity.UserDO;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,12 +31,10 @@ public class SpringTest {
                 @Override public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
                     user.setId(rs.getLong("id"));
                     user.setHostName(rs.getString("host_name"));
-                    user.setDir(rs.getString("dir"));
-                    user.setConfig(rs.getInt("config"));
                     return null;
                 }
             });
         }
-        System.out.println(user.getDir());
+        System.out.println(user.getHostName());
     }
 }

@@ -1,8 +1,9 @@
 package web.handler.impl;
 
+import common.DirMapping;
 import common.PersonConfig;
 import dao.UserDAO;
-import dao.UserDO;
+import dao.entity.UserDO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,8 @@ public class PersonConfigHandler {
 
     private PersonConfig personConfig;
 
+    private DirMapping dirMapping;
+
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
@@ -25,7 +28,11 @@ public class PersonConfigHandler {
         this.personConfig = personConfig;
     }
 
-    public void doHandler(HttpServletRequest request)
+    public void setDirMapping(DirMapping dirMapping) {
+        this.dirMapping = dirMapping;
+    }
+
+    public PersonConfig doHandler(HttpServletRequest request)
             throws IOException, ServletException {
         String configString = (String) request.getSession().getAttribute("personConfig");
         if (configString == null) {
@@ -38,6 +45,7 @@ public class PersonConfigHandler {
             UserDO personInfo = this.userDAO.getPersonInfo(remoteHost);
             if (personInfo != null) {
                 personConfig.setUserDO(personInfo);
+                personConfig.setDirDO(dirMapping.getDir(personConfig.getDirId()));
             } else {
                 //没在数据库查询到数据，肯定是新人
                 personConfig.setNewUser(true);
@@ -47,8 +55,10 @@ public class PersonConfigHandler {
         } else {
             // get session
             personConfig.parseConfigString(configString);
+            personConfig.setDirDO(dirMapping.getDir(personConfig.getDirId()));
             //TODO parse fail?
         }
+        return personConfig;
     }
 
 }

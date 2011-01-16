@@ -52,7 +52,7 @@ public class UrlExecutor {
      * @param out         of type PrintWriter
      */
     public void doUrlRule(String filePath, String realUrl, String fullUrl, boolean isOnline, boolean isDebugMode, PrintWriter out) {
-        autoCleanCache();
+//        autoCleanCache();
         /**
          * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
          */

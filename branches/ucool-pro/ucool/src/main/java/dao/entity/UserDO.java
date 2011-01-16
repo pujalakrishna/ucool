@@ -1,4 +1,4 @@
-package dao;
+package dao.entity;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
@@ -9,7 +9,7 @@ public class UserDO {
 
     private String hostName;
     
-    private Long dirId;
+    private Long dirId = 0L;
 
     public Long getId() {
         return id;
