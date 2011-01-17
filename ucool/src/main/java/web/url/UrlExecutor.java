@@ -20,103 +20,12 @@ public class UrlExecutor {
 
     private ConfigCenter configCenter;
 
-    private PersonConfig personConfig;
-
-    private UrlTools urlTools;
-
     public void setFileEditor(FileEditor fileEditor) {
         this.fileEditor = fileEditor;
     }
 
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
-    }
-
-    public void setPersonConfig(PersonConfig personConfig) {
-        this.personConfig = personConfig;
-    }
-
-    public void setUrlTools(UrlTools urlTools) {
-        this.urlTools = urlTools;
-    }
-
-
-    /**
-     * 去除request依赖的执行url rule的方法
-     *
-     * @param filePath    of type String  /p/app/tc/detail_v2.css
-     * @param realUrl     of type String   http://xxxx.css
-     * @param fullUrl     用于记录最初的url
-     * @param isOnline
-     * @param isDebugMode
-     * @param out         of type PrintWriter
-     */
-    public void doUrlRule(String filePath, String realUrl, String fullUrl, boolean isOnline, boolean isDebugMode, PrintWriter out) {
-//        autoCleanCache();
-        /**
-         * 查找本地文件，没有的话再找缓存，没有缓存的从线上下载，再走缓存。
-         */
-        if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline), filePath);
-        } else if (findCacheFile(filePath, isOnline)) {
-            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
-        } else {
-            if (cacheUrlFile(filePath, realUrl, isOnline)) {
-                this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
-            } else {
-                if (isDebugMode) {
-                    //debug mode下如果请求-min的源文件a.js，会出现请求a.source.js的情况，到这里处理
-                    //如果到这里那就说明线上都没有改文件，即使返回压缩的文件也没问题，只要保证尽可能的命中cache
-                    filePath = filePath.replace(".source", "");
-                    realUrl = realUrl.replace(".source", "");
-                    doUrlRuleCopy(filePath, realUrl, fullUrl, isOnline, out);
-                } else {
-                    //最后的保障，如果缓存失败了，从线上取吧
-                    readUrlFile(fullUrl, out);
-                }
-            }
-        }
-    }
-
-    /**
-     * Method doUrlRule 's Copy ...
-     * 为debug mode下直接访问带-min的源码而创建，例如访问kissy.js
-     *
-     * @param filePath    of type String
-     * @param realUrl     of type String
-     * @param fullUrl     of type String
-     * @param isOnline    of type boolean
-     * @param out         of type PrintWriter
-     */
-    public void doUrlRuleCopy(String filePath, String realUrl, String fullUrl, boolean isOnline, PrintWriter out) {
-        if (findAssetsFile(filePath)) {
-            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", false, isOnline), filePath);
-        } else if (findCacheFile(filePath, isOnline)) {
-            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
-        } else if (cacheUrlFile(filePath, realUrl, isOnline)) {
-            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true, isOnline), filePath);
-        } else {
-            //最后的保障，如果缓存失败了，从线上取吧
-            readUrlFile(fullUrl, out);
-        }
-    }
-
-    /**
-     * Method autoCleanCache ...
-     */
-    private void autoCleanCache() {
-        if ("true".equals(configCenter.getUcoolCacheAutoClean())) {
-            //防止并发同时进行删除
-            configCenter.setUcoolCacheAutoClean("false");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(configCenter.getLastCleanTime());
-            calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(configCenter.getUcoolCacheCleanPeriod()));
-            if (!calendar.after(Calendar.getInstance())) {
-                fileEditor.removeDirectory(configCenter.getWebRoot() + personConfig.getUcoolCacheRoot());
-                configCenter.setLastCleanTime(new Date());
-            }
-            configCenter.setUcoolCacheAutoClean("true");
-        }
     }
 
     /**

@@ -17,18 +17,12 @@ public class SuffixDispatcher {
 
     private ConfigCenter configCenter;
 
-    private PersonConfigHandler personConfigHandler;
-
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
     }
 
     public void setDispatchMapping(DispatchMapping dispatchMapping) {
         this.dispatchMapping = dispatchMapping;
-    }
-
-    public void setPersonConfigHandler(PersonConfigHandler personConfigHandler) {
-        this.personConfigHandler = personConfigHandler;
     }
 
     /**
@@ -39,7 +33,6 @@ public class SuffixDispatcher {
      */
     public void dispatch(HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
-        setPersonConfig(request);
         //配置页
         if (request.getRequestURI().equals("/pz") || request.getRequestURI().equals("/setting")) {
             String target = "ppz.jsp";
@@ -64,22 +57,6 @@ public class SuffixDispatcher {
         } else {
             // 其他格式的处理，目前包括swf和xml
             this.dispatchMapping.getMapping("other").doHandler(request, response);
-        }
-    }
-
-
-    /**
-     * 设置一下个人的配置
-     *
-     * @param request the personConfig of this SuffixDispatcher object.
-     *
-     */
-    private void setPersonConfig(HttpServletRequest request) {
-        // read person config
-        try {
-            personConfigHandler.doHandler(request);
-        } catch (IOException e) {
-        } catch (ServletException e) {
         }
     }
 

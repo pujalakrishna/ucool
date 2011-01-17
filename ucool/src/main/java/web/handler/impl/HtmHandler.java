@@ -1,6 +1,5 @@
 package web.handler.impl;
 
-import common.ConfigCenter;
 import common.UrlTools;
 import web.handler.Handler;
 
@@ -42,7 +41,7 @@ public class HtmHandler implements Handler {
         PrintWriter out = response.getWriter();
 
         try {
-            directURL = urlTools.urlFilter(directURL, true);
+            directURL = urlTools.urlFilter(directURL, true, personConfig);
             URL url = new URL(directURL);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "gbk"));
             String line;
