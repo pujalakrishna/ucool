@@ -1,6 +1,7 @@
 package dao;
 
 import dao.entity.DirDO;
+import dao.entity.UserDO;
 
 import java.util.List;
 
@@ -13,4 +14,14 @@ import java.util.List;
  */
 public interface DirDAO {
     List<DirDO> loadAllDir();
+
+    void updateConfig(UserDO userDO, int srcConfig);
+
+    DirDO getDirByName(String name);
+
+    /**
+     * Method createNewDir ...
+     * @return boolean
+     */
+    boolean createNewDir(DirDO name);
 }
