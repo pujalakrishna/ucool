@@ -60,7 +60,7 @@ public class AssetsHandler implements Handler {
         return urlTools;
     }
 
-    protected void setPersonConfigHandler(PersonConfigHandler personConfigHandler) {
+    public void setPersonConfigHandler(PersonConfigHandler personConfigHandler) {
         this.personConfigHandler = personConfigHandler;
     }
 
@@ -108,7 +108,7 @@ public class AssetsHandler implements Handler {
         PrintWriter out = response.getWriter();
         //尝试debug下所有的直接走source，不走cache
         //线上缓存已经迁移至ucool-proxy
-        urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, isOnline, out);
+        urlExecutor.doDebugUrlRule(filePath, realUrl, fullUrl, out, personConfig);
     }
 
     public String attachOper(String fullUrl, HttpServletRequest request) {

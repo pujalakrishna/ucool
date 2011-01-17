@@ -30,6 +30,7 @@
         }
         #content, #footer {
             width: 950px;
+            position:relative;
         }
         #header .top{
             width: 950px;
@@ -138,6 +139,13 @@
         .hidden {
             display:none;
         }
+        #dir-bind {
+            position:absolute;
+            border: 1px solid #000000;
+            left: 345px;
+            position: absolute;
+            top: -50px;
+        }
     </style>
 </head>
 <body>
@@ -156,10 +164,7 @@
         </div>
     </div>
     <div id="content">
-        <div class="box location">
-            <div class="hd"><h3>change your location</h3></div>
-            <div class="bd">
-                <select name="" id="">
+        <select name="dir-bind" id="dir-bind">
                 <%
                     List<String> assetsSubDirs = fileEditor.getAssetsSubDirs();
                     if(assetsSubDirs.size() == 0) {
@@ -173,9 +178,6 @@
                     }
                 %>
                 </select>
-                <button>save</button>
-            </div>
-        </div>
         <div class="box switch <%=personConfig.personConfigValid()?"":"hidden"%>">
             <div class="hd"><h3>SWITCH</h3></div>
             <div class="bd">
@@ -203,7 +205,7 @@
                 </table>
             </div>
         </div>
-        <div class="box <%=personConfig.personConfigValid()?"":"hidden"%>">
+        <div class="box">
             <div class="hd"><h3>PROFILE</h3></div>
             <div class="bd">
                 <table>
@@ -232,23 +234,19 @@
                         <th>COMBO SPLITTER£º</th>
                         <td><%=configCenter.getUcoolComboDecollator()%></td>
                     </tr>
-                    <tr class="separator"><td colspan="2"></td></tr>
-                    <tr>
-                        <th>AUTO FLUSH CACHE£º</th>
-                        <td><%=configCenter.getUcoolCacheAutoClean()%></td>
-                    </tr>
-                    <tr>
-                        <th>CACHE FLUSH PERIOD£º</th>
-                        <td><em><%=configCenter.getUcoolCacheCleanPeriod()%></em>h</td>
-                    </tr>
+                    <%--<tr class="separator"><td colspan="2"></td></tr>--%>
+                    <%--<tr>--%>
+                        <%--<th>AUTO FLUSH CACHE£º</th>--%>
+                        <%--<td><%=configCenter.getUcoolCacheAutoClean()%></td>--%>
+                    <%--</tr>--%>
+                    <%--<tr>--%>
+                        <%--<th>CACHE FLUSH PERIOD£º</th>--%>
+                        <%--<td><em><%=configCenter.getUcoolCacheCleanPeriod()%></em>h</td>--%>
+                    <%--</tr>--%>
                     <tr class="separator"><td colspan="2"></td></tr>
                     <tr>
                         <th>ASSETS DIR£º</th>
                         <td><%=configCenter.getUcoolAssetsRoot()%></td>
-                    </tr>
-                    <tr>
-                        <th>RELEASE CACHE DIR£º</th>
-                        <td><%=configCenter.getUcoolCacheRoot()%></td>
                     </tr>
                 </table>
             </div>

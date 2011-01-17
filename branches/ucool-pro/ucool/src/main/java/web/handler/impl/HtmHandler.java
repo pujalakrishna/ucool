@@ -41,7 +41,7 @@ public class HtmHandler implements Handler {
         PrintWriter out = response.getWriter();
 
         try {
-            directURL = urlTools.urlFilter(directURL, true, personConfig);
+            directURL = urlTools.urlFilter(directURL, true, null);
             URL url = new URL(directURL);
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "gbk"));
             String line;
