@@ -36,6 +36,24 @@ public class UserDAOImpl implements UserDAO {
 
     @Override public boolean createNewUser(UserDO userDO) {
         String sql = "insert into user (host_name, dir_id) values (?,?)";
-        return this.jdbcTemplate.update(sql, new Object[]{userDO.getHostName(), userDO.getDirId()}) > 0;
+        try {
+            if (this.jdbcTemplate.update(sql, new Object[]{userDO.getHostName(), userDO.getDirId()}) > 0) {
+                UserDO newUser = getPersonInfo(userDO.getHostName());
+                userDO.setId(newUser.getId());
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateDir(UserDO userDO) {
+        String sql = "update user set dir_id=? where id=?";
+        try {
+            return this.jdbcTemplate.update(sql, new Object[]{userDO.getHostName(), userDO.getDirId()}) > 0;
+        } catch (Exception e) {
+        }
+        return false;
     }
 }

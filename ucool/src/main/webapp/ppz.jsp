@@ -139,12 +139,15 @@
         .hidden {
             display:none;
         }
-        #dir-bind {
+        #dir {
             position:absolute;
-            border: 1px solid #000000;
             left: 345px;
             position: absolute;
             top: -50px;
+        }
+        #dir select {
+            border: 1px solid #000000;
+            width:150px;
         }
     </style>
 </head>
@@ -164,21 +167,24 @@
         </div>
     </div>
     <div id="content">
-        <select name="dir-bind" id="dir-bind">
+        <div id="dir">
+            <label for="dir-bind">绑定目录：</label>
+            <select name="dir-bind" id="dir-bind">
                 <%
                     List<String> assetsSubDirs = fileEditor.getAssetsSubDirs();
-                    if(assetsSubDirs.size() == 0) {
+                    if (assetsSubDirs.size() == 0) {
                         out.print("<option>无目录供选择</option>");
                     } else {
                         for (String assetsSubDir : assetsSubDirs) {
-                            out.print("<option value="+assetsSubDir + ">");
+                            out.print("<option value=" + assetsSubDir + ">");
                             out.print(assetsSubDir);
                             out.print("</option>");
                         }
                     }
                 %>
-                </select>
-        <div class="box switch <%=personConfig.personConfigValid()?"":"hidden"%>">
+            </select>
+        </div>
+        <div id="J_BoxSwitch" class="box switch <%=personConfig.personConfigValid()?"":"hidden"%>">
             <div class="hd"><h3>SWITCH</h3></div>
             <div class="bd">
                 <table>
@@ -286,6 +292,11 @@
                 DOM.toggleClass(el, 'switch-open');
             };
 
+            var _bindDir = function (pid, success, curState) {
+                //switch config
+                DOM.show('#J_BoxSwitch');
+            };
+
             return {
                 init:function() {
                     Event.on('#assetsdebugswitch', 'click', function(e) {
@@ -316,6 +327,9 @@
                             }
                         });
                     });
+                    Event.on('#dir-bind', 'change', function(e) {
+                        S.getScript("ppzbg.jsp?" + "pid=bindDir&callback=UCOOL.Pz.bindDir&dir="+S.get('#dir-bind').options[S.get('#dir-bind').selectIndex].value+"&t=" + new Date());
+                    });
                 },
 
                 change:function(pid, success, curState) {
@@ -323,6 +337,9 @@
                 },
                 doOnce:function(pid, success, time) {
                     _doOnce(pid, success, time);
+                },
+                bindDir:function(pid, success, curState) {
+                    _bindDir(pid, success, curState);
                 }
             }
         }();

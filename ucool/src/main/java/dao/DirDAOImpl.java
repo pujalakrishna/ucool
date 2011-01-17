@@ -1,6 +1,7 @@
 package dao;
 
 import dao.entity.DirDO;
+import dao.entity.UserDO;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -29,20 +30,25 @@ public class DirDAOImpl implements DirDAO, InitializingBean {
     public List<DirDO> loadAllDir() {
         final List<DirDO> list = new ArrayList<DirDO>();
         try{
-        String sql = "select * from dir";
-        jdbcTemplate.query(sql,
-                new RowCallbackHandler() {
-                    public void processRow(ResultSet rs) throws SQLException {
-                        DirDO dir = new DirDO();
-                        dir.setId(rs.getLong("id"));
-                        dir.setName(rs.getString("name"));
-                        dir.setConfig(rs.getInt("config"));
-                        list.add(dir);
-                    }
-                });
+            String sql = "select * from dir";
+            jdbcTemplate.query(sql,
+                    new RowCallbackHandler() {
+                        public void processRow(ResultSet rs) throws SQLException {
+                            DirDO dir = new DirDO();
+                            dir.setId(rs.getLong("id"));
+                            dir.setName(rs.getString("name"));
+                            dir.setConfig(rs.getInt("config"));
+                            list.add(dir);
+                        }
+                    });
         }catch (Exception e) {
         }
         return list;
+    }
+
+    @Override
+    public void updateConfig(UserDO userDO, int srcConfig) {
+        //FIXME ±‡–¥ µœ÷
     }
 
     @Override
@@ -56,5 +62,41 @@ public class DirDAOImpl implements DirDAO, InitializingBean {
         if(dirExist == 0) {
             jdbcTemplate.execute("CREATE TABLE \"dir\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"name\" VARCHAR NOT NULL , \"config\" INTEGER NOT NULL  DEFAULT 5)");
         }
+    }
+
+    public DirDO getDirByName(String name) {
+        final List<DirDO> list = new ArrayList<DirDO>();
+        try {
+            String sql = "SELECT * FROM dir where name=?";
+            jdbcTemplate.query(sql, new Object[]{name},
+                    new RowCallbackHandler() {
+                        public void processRow(ResultSet rs) throws SQLException {
+                            DirDO dir = new DirDO();
+                            dir.setId(rs.getLong("id"));
+                            dir.setName(rs.getString("name"));
+                            dir.setConfig(rs.getInt("config"));
+                            list.add(dir);
+                        }
+                    });
+            if (list.size() > 0) {
+                return list.get(0);
+            } else {
+                return null;
+            }
+        }catch (Exception e) {
+        }
+        return null;
+    }
+
+    public boolean createNewDir(DirDO dirDO) {
+        try {
+            if(jdbcTemplate.update("insert into dir(name, config) values(?, 5)", new Object[]{dirDO.getName()}) > 0) {
+                DirDO newDO = getDirByName(dirDO.getName());
+                dirDO.setId(newDO.getId());
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
     }
 }

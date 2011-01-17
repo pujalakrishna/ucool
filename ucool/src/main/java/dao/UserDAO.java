@@ -16,4 +16,6 @@ public interface UserDAO {
     UserDO getPersonInfo(String hostName);
 
     boolean createNewUser(UserDO userDO);
+
+    boolean updateDir(UserDO userDO);
 }
