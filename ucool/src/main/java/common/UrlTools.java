@@ -22,6 +22,25 @@ public class UrlTools {
      * @return String
      */
     public String urlFilter(String url, boolean isOnline, PersonConfig personConfig) {
+        if(personConfig == null) {
+            if (url.indexOf("127.0.0.1") != -1) {
+                return url.replace("127.0.0.1", configCenter.getUcoolOnlineIp());
+            }
+            if (url.indexOf("localhost") != -1) {
+                return url.replace("localhost", configCenter.getUcoolOnlineIp());
+            }
+            for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
+                if (url.indexOf(d) != -1) {
+                    return url.replace(d, configCenter.getUcoolOnlineIp());
+                }
+            }
+            for (String d : configCenter.getUcoolDailyDomain().split(HttpTools.filterSpecialChar(","))) {
+                if (url.indexOf(d) != -1) {
+                    return url.replace(d, configCenter.getUcoolOnlineIp());
+                }
+            }
+            return url;
+        }
         /**
          * 防止定位到本地导致自循环
          * 还有一种可能是直接访问本地内网ip，这个没法子

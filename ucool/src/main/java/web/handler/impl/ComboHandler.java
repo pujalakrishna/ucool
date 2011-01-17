@@ -77,7 +77,7 @@ public class ComboHandler extends AssetsHandler {
 
             //尝试debug下所有的直接走source，不走cache
             //线上缓存已经迁移至ucool-proxy
-            getUrlExecutor().doDebugUrlRule(singleFilePath, singleRealUrl, singleFullUrl, isOnline, out);
+            getUrlExecutor().doDebugUrlRule(singleFilePath, singleRealUrl, singleFullUrl, out, personConfig);
         }
 
     }

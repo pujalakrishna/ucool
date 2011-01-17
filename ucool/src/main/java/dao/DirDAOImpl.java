@@ -51,10 +51,10 @@ public class DirDAOImpl implements DirDAO, InitializingBean {
         int dirExist = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM sqlite_master where type=\'table\' and name=?", new Object[]{"dir"});
         //create table
         if(userExist == 0) {
-            jdbcTemplate.execute("CREATE TABLE \"user\" IF NOT EXISTS \"user\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"host_name\" VARCHAR NOT NULL  UNIQUE , \"dir_id\" INTEGER DEFAULT 0)");
+            jdbcTemplate.execute("CREATE TABLE \"user\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"host_name\" VARCHAR NOT NULL  UNIQUE , \"dir_id\" INTEGER DEFAULT 0)");
         }
         if(dirExist == 0) {
-            jdbcTemplate.execute("CREATE TABLE \"dir\" IF NOT EXISTS \"dir\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"name\" VARCHAR NOT NULL , \"config\" INTEGER NOT NULL  DEFAULT 5)");
+            jdbcTemplate.execute("CREATE TABLE \"dir\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"name\" VARCHAR NOT NULL , \"config\" INTEGER NOT NULL  DEFAULT 5)");
         }
     }
 }
