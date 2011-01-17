@@ -26,7 +26,7 @@ public class AssetsHandler implements Handler {
 
     private UrlTools urlTools;
 
-    private PersonConfig personConfig;
+    private PersonConfigHandler personConfigHandler;
 
     public void setConfigCenter(ConfigCenter configCenter) {
         this.configCenter = configCenter;
@@ -60,12 +60,12 @@ public class AssetsHandler implements Handler {
         return urlTools;
     }
 
-    public void setPersonConfig(PersonConfig personConfig) {
-        this.personConfig = personConfig;
+    protected void setPersonConfigHandler(PersonConfigHandler personConfigHandler) {
+        this.personConfigHandler = personConfigHandler;
     }
 
-    protected PersonConfig getPersonConfig() {
-        return personConfig;
+    protected PersonConfigHandler getPersonConfigHandler() {
+        return personConfigHandler;
     }
 
     /**
@@ -78,6 +78,7 @@ public class AssetsHandler implements Handler {
      */
     public void doHandler(HttpServletRequest request,
                           HttpServletResponse response) throws IOException, ServletException {
+        PersonConfig personConfig = personConfigHandler.doHandler(request);
         /**
          * 需要在之前做的事情:
          *  1、获取本地路径filePath和realUrl
@@ -95,8 +96,8 @@ public class AssetsHandler implements Handler {
             filePath = urlTools.debugMode(filePath, fullUrl);
             realUrl = urlTools.debugMode(realUrl, fullUrl);
         }
-        realUrl = urlTools.urlFilter(realUrl, isOnline);
-        fullUrl = urlTools.urlFilter(fullUrl, isOnline);
+        realUrl = urlTools.urlFilter(realUrl, isOnline, personConfig);
+        fullUrl = urlTools.urlFilter(fullUrl, isOnline, personConfig);
 
         response.setCharacterEncoding("gbk");
         if(filePath.indexOf(".css") != -1) {
@@ -126,5 +127,4 @@ public class AssetsHandler implements Handler {
         }
         return fullUrl;
     }
-
 }

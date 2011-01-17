@@ -1,6 +1,7 @@
 package web.handler.impl;
 
 import common.HttpTools;
+import common.PersonConfig;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ public class ComboHandler extends AssetsHandler {
      * @throws javax.servlet.ServletException when
      */
     public void doHandler(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        PersonConfig personConfig = getPersonConfigHandler().doHandler(request);
         /**
          * combo url example:
          *
@@ -70,8 +72,8 @@ public class ComboHandler extends AssetsHandler {
                 singleRealUrl = getUrlTools().debugMode(singleRealUrl, singleFullUrl);
             }
 
-            singleRealUrl = getUrlTools().urlFilter(singleRealUrl, isOnline);
-            singleFullUrl = getUrlTools().urlFilter(singleFullUrl, isOnline);
+            singleRealUrl = getUrlTools().urlFilter(singleRealUrl, isOnline, personConfig);
+            singleFullUrl = getUrlTools().urlFilter(singleFullUrl, isOnline, personConfig);
 
             //尝试debug下所有的直接走source，不走cache
             //线上缓存已经迁移至ucool-proxy

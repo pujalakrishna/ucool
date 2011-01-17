@@ -43,7 +43,7 @@ public class OtherHandler implements Handler {
             throws IOException, ServletException {
         if (request.getRequestURI().indexOf(".swf") != -1) {
             String fullUrl = (String) request.getAttribute("fullUrl");
-            fullUrl = urlTools.urlFilter(fullUrl, true);
+            fullUrl = urlTools.urlFilter(fullUrl, true, personConfig);
             //哥对flash没办法，无论怎么取都无法正确展现，只好302
             //            response.sendRedirect(fullUrl);
             response.setCharacterEncoding("gbk");
