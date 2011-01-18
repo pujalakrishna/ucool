@@ -27,9 +27,9 @@ public class UserDAOImpl implements UserDAO {
         if(perList.size() == 1) {
             user = new UserDO();
             Map map = (Map) perList.get(0);
-            user.setId((Long) map.get("id"));
+            user.setId(Long.valueOf(String.valueOf(map.get("id"))));
             user.setHostName((String) map.get("host_name"));
-            user.setDirId((Long) map.get("dir_id"));
+            user.setDirId(Long.valueOf(String.valueOf(map.get("dir_id"))));
         }
         return user;
     }
@@ -43,16 +43,19 @@ public class UserDAOImpl implements UserDAO {
                 return true;
             }
         } catch (Exception e) {
+            System.out.println(e);
         }
         return false;
     }
 
     @Override
-    public boolean updateDir(UserDO userDO) {
-        String sql = "update user set dir_id=? where id=?";
+    public boolean updateDir(UserDO userDO, Long srcDirId) {
+        String sql = "update user set dir_id=? where id=? and dir_id=?";
         try {
-            return this.jdbcTemplate.update(sql, new Object[]{userDO.getHostName(), userDO.getDirId()}) > 0;
+            this.jdbcTemplate.update(sql, new Object[]{userDO.getDirId(), userDO.getId(), srcDirId});
+            return true;
         } catch (Exception e) {
+            System.out.println(e);
         }
         return false;
     }

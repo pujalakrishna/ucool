@@ -163,20 +163,30 @@
     <div id="header">
         <div class="top">
             <h1>ucool config page</h1>
-            <a class="version" href="http://code.google.com/p/ucool">版本：0.1</a>
+            <a class="version" href="http://code.google.com/p/ucool">ucool-pro version：0.1</a>
         </div>
     </div>
     <div id="content">
         <div id="dir">
             <label for="dir-bind">绑定目录：</label>
-            <select name="dir-bind" id="dir-bind">
+            <select name="dir-bind" id="dir-bind" autocomplete="off">
                 <%
                     List<String> assetsSubDirs = fileEditor.getAssetsSubDirs();
+                    String curDirName = null;
+                    if(!personConfig.isNewUser()) {
+                        curDirName = personConfig.getDirDO().getName();
+                    } else {
+                        out.print("<option value='0' selected='selected'>无绑定目录</option>");
+                    }
                     if (assetsSubDirs.size() == 0) {
                         out.print("<option>无目录供选择</option>");
                     } else {
                         for (String assetsSubDir : assetsSubDirs) {
-                            out.print("<option value=" + assetsSubDir + ">");
+                            if(assetsSubDir.equals(curDirName)) {
+                                out.print("<option selected='selected' value=" + assetsSubDir + ">");
+                            } else {
+                                out.print("<option value=" + assetsSubDir + ">");
+                            }
                             out.print(assetsSubDir);
                             out.print("</option>");
                         }
@@ -184,6 +194,7 @@
                 %>
             </select>
         </div>
+        <div id="message"></div>
         <div id="J_BoxSwitch" class="box switch <%=personConfig.personConfigValid()?"":"hidden"%>">
             <div class="hd"><h3>SWITCH</h3></div>
             <div class="bd">
@@ -203,11 +214,11 @@
                         <td class="op"><a class="<%=configCenter.getStateStyle(personConfig.isEnableAssets())%>" id="enableAssets"></a></td>
                         <td class="note">使用服务器上的assets目录</td>
                     </tr>
-                    <tr>
-                        <th>RELEASE CACHE：</th>
-                        <td class="op"><input type="button" value="CLEAR" id="cleanOnlineCache"/></td>
-                        <td class="note"></td>
-                    </tr>
+                    <%--<tr>--%>
+                        <%--<th>RELEASE CACHE：</th>--%>
+                        <%--<td class="op"><input type="button" value="CLEAR" id="cleanOnlineCache"/></td>--%>
+                        <%--<td class="note"></td>--%>
+                    <%--</tr>--%>
                 </table>
             </div>
         </div>
@@ -251,7 +262,7 @@
                     <%--</tr>--%>
                     <tr class="separator"><td colspan="2"></td></tr>
                     <tr>
-                        <th>ASSETS DIR：</th>
+                        <th>ASSETS ROOT DIR：</th>
                         <td><%=configCenter.getUcoolAssetsRoot()%></td>
                     </tr>
                 </table>
@@ -292,9 +303,14 @@
                 DOM.toggleClass(el, 'switch-open');
             };
 
-            var _bindDir = function (pid, success, curState) {
-                //switch config
-                DOM.show('#J_BoxSwitch');
+            var _bindDir = function (pid, success, data) {
+                DOM.html('#message', "");
+                if (success === 'ok') {
+                    //switch config
+                    DOM.show('#J_BoxSwitch');
+                } else {
+                    DOM.hide('#J_BoxSwitch');
+                }
             };
 
             return {
@@ -328,7 +344,10 @@
                         });
                     });
                     Event.on('#dir-bind', 'change', function(e) {
-                        S.getScript("ppzbg.jsp?" + "pid=bindDir&callback=UCOOL.Pz.bindDir&dir="+S.get('#dir-bind').options[S.get('#dir-bind').selectIndex].value+"&t=" + new Date());
+                        DOM.hide('#J_BoxSwitch');
+                        DOM.html('#message', "<img src='http://img02.taobaocdn.com/tps/i2/T1JSdAXd0nXXXXXXXX-32-32.gif' />");
+                        var selectEl = S.get('#dir-bind');
+                        S.getScript("ppzbg.jsp?" + "pid=bindDir&callback=UCOOL.Pz.bindDir&dir="+selectEl.options[selectEl.selectedIndex].value+"&t=" + new Date());
                     });
                 },
 
@@ -338,8 +357,8 @@
                 doOnce:function(pid, success, time) {
                     _doOnce(pid, success, time);
                 },
-                bindDir:function(pid, success, curState) {
-                    _bindDir(pid, success, curState);
+                bindDir:function(pid, success, data) {
+                    _bindDir(pid, success, data);
                 }
             }
         }();

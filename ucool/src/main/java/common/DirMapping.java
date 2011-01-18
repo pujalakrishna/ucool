@@ -52,4 +52,8 @@ public class DirMapping implements InitializingBean {
     public DirDO getDir(Long did) {
         return mappingTable.get(did);
     }
+
+    public void addDir(DirDO dirDO) {
+        mappingTable.put(dirDO.getId(), dirDO);
+    }
 }
