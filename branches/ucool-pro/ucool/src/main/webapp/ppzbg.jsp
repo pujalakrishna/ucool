@@ -30,7 +30,7 @@
 
     PersonConfig personConfig = personConfigHandler.doHandler(request);
     int srcConfig = 5;
-    if(!personConfig.isNewUser()) {
+    if(personConfig.personConfigValid()) {
         srcConfig = personConfig.getDirDO().getConfig();
     }
     if (pid != null) {
@@ -59,24 +59,31 @@
             String dir = request.getParameter("dir");
             boolean op = true;
             if(dir == null || dir.isEmpty()) {
+                out.print(callback + "(\'" + pid + "\',\'error\', \'directory's name is null\');");
                 return;
             }
-            DirDO dirDO = dirDAO.getDirByName(dir);
-            if(dirDO == null) {
-                //create new dir
+            DirDO dirDO = null;
+            if("0".equals(dir)) {
                 dirDO = new DirDO();
-                dirDO.setName(dir);
-                op = dirDAO.createNewDir(dirDO);
-                if(!op) {
-                    out.print(callback + "(\'" + pid + "\',\'error\', \'create dir error\');");
-                    return;
-                }
-                if(dirDO.getId() != 0)  {
-                    //add new dir to memory
-                    DirMapping dirMapping = (DirMapping) wac.getBean("dirMapping");
-                    dirMapping.addDir(dirDO);
+            } else {
+                dirDO = dirDAO.getDirByName(dir);
+                if(dirDO == null) {
+                    //create new dir
+                    dirDO = new DirDO();
+                    dirDO.setName(dir);
+                    op = dirDAO.createNewDir(dirDO);
+                    if(!op) {
+                        out.print(callback + "(\'" + pid + "\',\'error\', \'create dir error\');");
+                        return;
+                    }
+                    if(dirDO.getId() != 0)  {
+                        //add new dir to memory
+                        DirMapping dirMapping = (DirMapping) wac.getBean("dirMapping");
+                        dirMapping.addDir(dirDO);
+                    }
                 }
             }
+
             //secord create a new user and bind dir
             Long srcDirId = personConfig.getDirId();
             personConfig.setDirDO(dirDO);
@@ -90,7 +97,7 @@
                     return;
                 }
             } else {
-                if(personConfig.getDirId() != srcDirId) {
+                if(!personConfig.getDirId().equals(srcDirId)) {
                     op = userDAO.updateDir(personConfig.getUserDO(), srcDirId);
                     if (!op) {
                         out.print(callback + "(\'" + pid + "\',\'error\', \'update config error\');");
@@ -100,7 +107,12 @@
             }
             //set session
             request.getSession().setAttribute("personConfig", personConfig.getConfigString());
-            out.print(callback + "(\'" + pid + "\',\'ok\', \'" + personConfig.getConfigString() + "\');");
+            if(personConfig.getDirId() == 0 ) {
+                //取消绑定的情况
+                out.print(callback + "(\'" + pid + "\',\'ok\', \'cancel\');");
+            } else {
+                out.print(callback + "(\'" + pid + "\',\'ok\', \'" + personConfig.getDirDO().getConfig() + "\');");
+            }
             return;
         }
 

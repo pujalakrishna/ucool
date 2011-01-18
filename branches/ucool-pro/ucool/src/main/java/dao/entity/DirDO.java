@@ -9,11 +9,11 @@ package dao.entity;
  */
 public class DirDO {
 
-    private Long id;
+    private Long id = 0L;
 
     private String name;
 
-    private int config;
+    private int config = 5;
 
     public Long getId() {
         return id;

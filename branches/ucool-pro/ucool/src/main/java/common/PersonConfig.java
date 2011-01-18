@@ -137,6 +137,6 @@ public class PersonConfig {
      * @return boolean
      */
     public boolean personConfigValid() {
-        return !isNewUser();
+        return !isNewUser() && getDirId()!=0;
     }
 }
