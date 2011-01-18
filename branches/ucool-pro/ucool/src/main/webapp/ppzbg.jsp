@@ -17,6 +17,7 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="dao.DirDAO" %>
 <%@ page import="dao.entity.DirDO" %>
+<%@ page import="common.DirMapping" %>
 <%
     WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext());
     ConfigCenter configCenter = (ConfigCenter) wac.getBean("configCenter");
@@ -28,7 +29,10 @@
     String callback = request.getParameter("callback");
 
     PersonConfig personConfig = personConfigHandler.doHandler(request);
-    int srcConfig = personConfig.getDirDO().getConfig();
+    int srcConfig = 5;
+    if(!personConfig.isNewUser()) {
+        srcConfig = personConfig.getDirDO().getConfig();
+    }
     if (pid != null) {
         String tState = null;
         if (pid.equalsIgnoreCase("assetsdebugswitch")) {
@@ -53,6 +57,7 @@
         } else if(pid.equalsIgnoreCase("bindDir")) {
             //first create a new dir
             String dir = request.getParameter("dir");
+            boolean op = true;
             if(dir == null || dir.isEmpty()) {
                 return;
             }
@@ -61,22 +66,42 @@
                 //create new dir
                 dirDO = new DirDO();
                 dirDO.setName(dir);
-                if(!dirDAO.createNewDir(dirDO)) {
+                op = dirDAO.createNewDir(dirDO);
+                if(!op) {
+                    out.print(callback + "(\'" + pid + "\',\'error\', \'create dir error\');");
                     return;
+                }
+                if(dirDO.getId() != 0)  {
+                    //add new dir to memory
+                    DirMapping dirMapping = (DirMapping) wac.getBean("dirMapping");
+                    dirMapping.addDir(dirDO);
                 }
             }
             //secord create a new user and bind dir
+            Long srcDirId = personConfig.getDirId();
             personConfig.setDirDO(dirDO);
             personConfig.getUserDO().setDirId(dirDO.getId());
             if(personConfig.isNewUser()) {
                 personConfig.setNewUser(false);
-                userDAO.createNewUser(personConfig.getUserDO());
+                //TODO session不过期，这个必须更新。。NND
+                op = userDAO.createNewUser(personConfig.getUserDO());
+                if(!op) {
+                    out.print(callback + "(\'" + pid + "\',\'error\', \'create user error\');");
+                    return;
+                }
             } else {
-                userDAO.updateDir(personConfig.getUserDO());
+                if(personConfig.getDirId() != srcDirId) {
+                    op = userDAO.updateDir(personConfig.getUserDO(), srcDirId);
+                    if (!op) {
+                        out.print(callback + "(\'" + pid + "\',\'error\', \'update config error\');");
+                        return;
+                    }
+                }
             }
             //set session
             request.getSession().setAttribute("personConfig", personConfig.getConfigString());
-            tState = "true";
+            out.print(callback + "(\'" + pid + "\',\'ok\', \'" + personConfig.getConfigString() + "\');");
+            return;
         }
 
         if (callback != null) {

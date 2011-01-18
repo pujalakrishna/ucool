@@ -17,5 +17,5 @@ public interface UserDAO {
 
     boolean createNewUser(UserDO userDO);
 
-    boolean updateDir(UserDO userDO);
+    boolean updateDir(UserDO userDO, Long srcDirId);
 }
