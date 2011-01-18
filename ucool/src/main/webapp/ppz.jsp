@@ -11,8 +11,8 @@
 <head>
     <meta charset="gbk"/>
     <title>ucool个人配置页</title>
-    <script type="text/javascript" src="http://a.tbcdn.cn/s/kissy/1.1.5/kissy-min.js"></script>
-    <link rel="stylesheet" href="http://a.tbcdn.cn/s/kissy/1.1.5/cssbase/base-min.css" />
+    <script type="text/javascript" src="http://a.tbcdn.cn/s/kissy/1.1.6/kissy-min.js"></script>
+    <link rel="stylesheet" href="http://a.tbcdn.cn/s/kissy/1.1.6/cssbase/base-min.css" />
     <style type="text/css">
         body{
             background-color:#f3f1e4;
@@ -51,7 +51,7 @@
             font-weight:normal;
         }
         #content .box {
-            margin-top:10px;
+            margin-bottom:10px;
         }
         #content .box .hd {
             color:#54a700;
@@ -140,10 +140,9 @@
             display:none;
         }
         #dir {
-            position:absolute;
             left: 345px;
             position: absolute;
-            top: -50px;
+            top: -40px;
         }
         #dir select {
             border: 1px solid #000000;
@@ -173,14 +172,11 @@
                 <%
                     List<String> assetsSubDirs = fileEditor.getAssetsSubDirs();
                     String curDirName = null;
-                    if(!personConfig.isNewUser()) {
+                    if(!personConfig.isNewUser() && personConfig.getDirId() != 0) {
                         curDirName = personConfig.getDirDO().getName();
-                    } else {
-                        out.print("<option value='0' selected='selected'>无绑定目录</option>");
                     }
-                    if (assetsSubDirs.size() == 0) {
-                        out.print("<option>无目录供选择</option>");
-                    } else {
+                    out.print("<option value='0' selected='selected'>无绑定目录</option>");
+                    if (assetsSubDirs.size() > 0) {
                         for (String assetsSubDir : assetsSubDirs) {
                             if(assetsSubDir.equals(curDirName)) {
                                 out.print("<option selected='selected' value=" + assetsSubDir + ">");
@@ -307,7 +303,9 @@
                 DOM.html('#message', "");
                 if (success === 'ok') {
                     //switch config
-                    DOM.show('#J_BoxSwitch');
+                    if(data !== 'cancel') {
+                        DOM.show('#J_BoxSwitch');
+                    }
                 } else {
                     DOM.hide('#J_BoxSwitch');
                 }
@@ -316,32 +314,16 @@
             return {
                 init:function() {
                     Event.on('#assetsdebugswitch', 'click', function(e) {
-                        var scriptNode = S.getScript("ppzbg.jsp?" + "pid=assetsdebugswitch&callback=UCOOL.Pz.change&t=" + new Date(), {
-                            success:function(){
-                                DOM.remove(scriptNode);
-                            }
-                        });
+                        S.getScript("ppzbg.jsp?" + "pid=assetsdebugswitch&callback=UCOOL.Pz.change&t=" + new Date());
                     });
                     Event.on('#cleanOnlineCache', 'click', function(e) {
-                        var scriptNode = S.getScript("ppzbg.jsp?" + "pid=cleanOnlineCache&callback=UCOOL.Pz.doOnce&t=" + new Date(), {
-                            success:function(){
-                                DOM.remove(scriptNode);
-                            }
-                        });
+                        S.getScript("ppzbg.jsp?" + "pid=cleanOnlineCache&callback=UCOOL.Pz.doOnce&t=" + new Date());
                     });
                     Event.on('#bindPrepub', 'click', function(e) {
-                        var scriptNode = S.getScript("ppzbg.jsp?" + "pid=bindPrepub&callback=UCOOL.Pz.change&t=" + new Date(), {
-                            success:function(){
-                                DOM.remove(scriptNode);
-                            }
-                        });
+                        S.getScript("ppzbg.jsp?" + "pid=bindPrepub&callback=UCOOL.Pz.change&t=" + new Date());
                     });
                     Event.on('#enableAssets', 'click', function(e) {
-                        var scriptNode = S.getScript("ppzbg.jsp?" + "pid=enableAssets&callback=UCOOL.Pz.change&t=" + new Date(), {
-                            success:function(){
-                                DOM.remove(scriptNode);
-                            }
-                        });
+                        S.getScript("ppzbg.jsp?" + "pid=enableAssets&callback=UCOOL.Pz.change&t=" + new Date());
                     });
                     Event.on('#dir-bind', 'change', function(e) {
                         DOM.hide('#J_BoxSwitch');
