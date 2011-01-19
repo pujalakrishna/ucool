@@ -45,9 +45,26 @@ public class UrlExecutor {
             this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", personConfig), filePath);
         } else {
             if (!readUrlFile(realUrl, out)) {
-                //最后的保障，如果缓存失败了，从线上取吧
-                readUrlFile(fullUrl, out);
+                if (personConfig.isUcoolAssetsDebug()) {
+                    //debug mode下如果请求-min的源文件a.js，会出现请求a.source.js的情况，到这里处理
+                    //如果到这里那就说明线上都没有改文件，即使返回压缩的文件也没问题，只要保证尽可能的命中cache
+                    filePath = filePath.replace(".source", "");
+                    realUrl = realUrl.replace(".source", "");
+                    doDebugUrlRuleCopy(filePath, realUrl, fullUrl, out, personConfig);
+                } else {
+                    //最后的保障，如果缓存失败了，从线上取吧
+                    readUrlFile(fullUrl, out);
+                }
             }
+        }
+    }
+
+    public void doDebugUrlRuleCopy(String filePath, String realUrl, String fullUrl, PrintWriter out, PersonConfig personConfig) {
+        if (findAssetsFile(filePath, personConfig)) {
+            this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", personConfig), filePath);
+        } else {
+            //最后的保障，如果缓存失败了，从线上取吧
+            readUrlFile(fullUrl, out);
         }
     }
 
@@ -104,8 +121,7 @@ public class UrlExecutor {
             URL url = new URL(fullUrl);
             String encoding = "gbk";
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), encoding));
-            fileEditor.pushStream(out, in, fullUrl, false);
-            return true;
+            return fileEditor.pushStream(out, in, fullUrl, false);
         } catch (Exception e) {
         }
 //        out.flush();

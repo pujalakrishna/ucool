@@ -55,7 +55,7 @@ public class ComboHandler extends AssetsHandler {
         PrintWriter out = response.getWriter();
 
         boolean isOnline = getConfigCenter().getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
-        boolean isDebugMode = getSwitcher().isAssetsDebugMode() || HttpTools.isReferDebug(request);
+        boolean isDebugMode = personConfig.isUcoolAssetsDebug() || HttpTools.isReferDebug(request);
         for (String everyFile : allFiles) {
             // e.g.:header/header-min.css
             //拼出单个url，然后的逻辑和单文件相同

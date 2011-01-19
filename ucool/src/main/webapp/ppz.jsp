@@ -189,8 +189,8 @@
                     }
                 %>
             </select>
+            <div id="message"></div>
         </div>
-        <div id="message"></div>
         <div id="J_BoxSwitch" class="box switch <%=personConfig.personConfigValid()?"":"hidden"%>">
             <div class="hd"><h3>SWITCH</h3></div>
             <div class="bd">
@@ -275,8 +275,8 @@
 </div>
 <script type="text/javascript">
     KISSY.ready(function(S) {
-        var Event = S.Event;
-        var DOM = S.DOM;
+        var Event = S.Event,
+        DOM = S.DOM;
         S.app('UCOOL');
         S.namespace('Pz');
 
@@ -305,9 +305,43 @@
                     //switch config
                     if(data !== 'cancel') {
                         DOM.show('#J_BoxSwitch');
+                        _updateConfig(data);
                     }
                 } else {
                     DOM.hide('#J_BoxSwitch');
+                }
+            };
+
+            var _updateConfig = function(config) {
+                S.get('#assetsdebugswitch').className='';
+                S.get('#bindPrepub').className='';
+                S.get('#enableAssets').className='';
+                if(ConfigParser.isEnableDebug(config)) {
+                    DOM.addClass('#assetsdebugswitch', 'switch-open');
+                } else {
+                    DOM.addClass('#assetsdebugswitch', 'switch-close');
+                }
+                if(ConfigParser.isEnablePrepub(config)) {
+                    DOM.addClass('#bindPrepub', 'switch-open');
+                } else {
+                    DOM.addClass('#bindPrepub', 'switch-close');
+                }
+                if(ConfigParser.isEnableAssets(config)) {
+                    DOM.addClass('#enableAssets', 'switch-open');
+                } else {
+                    DOM.addClass('#enableAssets', 'switch-close');
+                }
+            };
+
+            var ConfigParser = {
+                isEnableDebug : function(config) {
+                    return (config & 1) == 1;
+                },
+                isEnablePrepub : function(config) {
+                    return (config & 2) == 2;
+                },
+                isEnableAssets : function(config) {
+                    return (config & 4) == 4;
                 }
             };
 

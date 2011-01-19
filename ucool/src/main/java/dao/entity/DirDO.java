@@ -45,7 +45,12 @@ public class DirDO {
     }
 
     public void setEnableDebug(boolean enableDebug) {
-        config = config | 1;
+        if(enableDebug) {
+            config = config | 1<<0;
+        } else {
+            config = config & ~(1<<0);
+        }
+
     }
 
     public boolean isEnablePrepub() {
@@ -53,7 +58,11 @@ public class DirDO {
     }
 
     public void setEnablePrepub(boolean enablePrepub) {
-        config = config | 2;
+        if(enablePrepub) {
+            config = config | 1<<1;
+        } else {
+            config = config & ~(1<<1);
+        }
     }
 
     public boolean isEnableAssets() {
@@ -61,6 +70,11 @@ public class DirDO {
     }
 
     public void setEnableAssets(boolean enableAssets) {
-        config = config | 4;
+        if(enableAssets) {
+            config = config | 1<<2;
+        } else {
+            config = config & ~(1<<2);
+        }
     }
+
 }
