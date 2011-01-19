@@ -108,4 +108,15 @@ public class DirDAOImpl implements DirDAO, InitializingBean {
         }
         return false;
     }
+
+    @Override
+    public boolean deleteDir(Long dirId) {
+        try {
+            if(jdbcTemplate.update("delete from dir where id=?", new Object[]{dirId}) > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
+    }
 }
