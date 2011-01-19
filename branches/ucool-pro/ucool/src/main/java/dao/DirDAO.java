@@ -24,4 +24,6 @@ public interface DirDAO {
      * @return boolean
      */
     boolean createNewDir(DirDO name);
+
+    boolean deleteDir(Long dirId);
 }

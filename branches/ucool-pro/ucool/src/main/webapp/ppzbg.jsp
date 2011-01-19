@@ -72,6 +72,18 @@
         } else if(pid.equalsIgnoreCase("bindDir")) {
             //first create a new dir
             String dir = request.getParameter("dir");
+            if (!fileEditor.findFile(configCenter.getWebRoot() + configCenter.getUcoolAssetsRoot() + "/" + dir)) {
+                //É¾³ýÄ¿Â¼
+                if (dirDAO.deleteDir(personConfig.getDirId())) {
+                    dirMapping.removeDir(personConfig.getDirId());
+                    personConfig.getUserDO().setDirId(0L);
+                    userDAO.updateDir(personConfig.getUserDO(), personConfig.getDirDO().getId());
+                    out.print(callback + "(\'" + pid + "\',\'error\', \'dir has delete\');");
+                    //set session
+                    request.getSession().setAttribute("personConfig", personConfig.getConfigString());
+                    return;
+                }
+            }
             boolean op = true;
             if(dir == null || dir.isEmpty()) {
                 out.print(callback + "(\'" + pid + "\',\'error\', \'directory's name is null\');");

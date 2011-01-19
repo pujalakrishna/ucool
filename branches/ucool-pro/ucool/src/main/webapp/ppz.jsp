@@ -6,6 +6,9 @@
 <%@ page import="biz.file.FileEditor" %>
 <%@ page import="java.util.List" %>
 <%@ page import="web.handler.impl.PersonConfigHandler" %>
+<%@ page import="common.DirMapping" %>
+<%@ page import="dao.DirDAO" %>
+<%@ page import="dao.UserDAO" %>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -174,6 +177,20 @@
                     String curDirName = null;
                     if(!personConfig.isNewUser() && personConfig.getDirId() != 0) {
                         curDirName = personConfig.getDirDO().getName();
+                        if(!fileEditor.findFile(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot())) {
+                            //删除目录
+                            curDirName = "";
+                            DirDAO dirDAO = (DirDAO) wac.getBean("dirDAO");
+                            if(dirDAO.deleteDir(personConfig.getDirId())) {
+                                DirMapping dirMapping = (DirMapping) wac.getBean("dirMapping");
+                                dirMapping.removeDir(personConfig.getDirId());
+                                personConfig.getUserDO().setDirId(0L);
+                                UserDAO userDAO = (UserDAO) wac.getBean("userDAO");
+                                userDAO.updateDir(personConfig.getUserDO(), personConfig.getDirDO().getId());
+                                //set session
+                                request.getSession().setAttribute("personConfig", personConfig.getConfigString());
+                            }
+                        }
                     }
                     out.print("<option value='0' selected='selected'>无绑定目录</option>");
                     if (assetsSubDirs.size() > 0) {
@@ -189,7 +206,7 @@
                     }
                 %>
             </select>
-            <div id="message"></div>
+            <div id="message" style="display:none"><img src='http://img02.taobaocdn.com/tps/i2/T1JSdAXd0nXXXXXXXX-32-32.gif' /></div>
         </div>
         <div id="J_BoxSwitch" class="box switch <%=personConfig.personConfigValid()?"":"hidden"%>">
             <div class="hd"><h3>SWITCH</h3></div>
@@ -256,7 +273,6 @@
                         <%--<th>CACHE FLUSH PERIOD：</th>--%>
                         <%--<td><em><%=configCenter.getUcoolCacheCleanPeriod()%></em>h</td>--%>
                     <%--</tr>--%>
-                    <tr class="separator"><td colspan="2"></td></tr>
                     <tr>
                         <th>ASSETS ROOT DIR：</th>
                         <td><%=configCenter.getUcoolAssetsRoot()%></td>
@@ -300,7 +316,7 @@
             };
 
             var _bindDir = function (pid, success, data) {
-                DOM.html('#message', "");
+                DOM.hide('#message');
                 if (success === 'ok') {
                     //switch config
                     if(data !== 'cancel') {
@@ -361,7 +377,7 @@
                     });
                     Event.on('#dir-bind', 'change', function(e) {
                         DOM.hide('#J_BoxSwitch');
-                        DOM.html('#message', "<img src='http://img02.taobaocdn.com/tps/i2/T1JSdAXd0nXXXXXXXX-32-32.gif' />");
+                        DOM.show('#message');
                         var selectEl = S.get('#dir-bind');
                         S.getScript("ppzbg.jsp?" + "pid=bindDir&callback=UCOOL.Pz.bindDir&dir="+selectEl.options[selectEl.selectedIndex].value+"&t=" + new Date());
                     });
