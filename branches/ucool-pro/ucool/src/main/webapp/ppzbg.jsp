@@ -25,6 +25,7 @@
     PersonConfigHandler personConfigHandler = (PersonConfigHandler) wac.getBean("personConfigHandler");
     UserDAO userDAO = (UserDAO) wac.getBean("userDAO");
     DirDAO dirDAO = (DirDAO) wac.getBean("dirDAO");
+    DirMapping dirMapping = (DirMapping) wac.getBean("dirMapping");
     String pid = request.getParameter("pid");
     String callback = request.getParameter("callback");
 
@@ -36,23 +37,37 @@
     if (pid != null) {
         String tState = null;
         if (pid.equalsIgnoreCase("assetsdebugswitch")) {
-            if (personConfig.isUcoolAssetsDebug()) {
-                tState = "false";
-            } else {
-                tState = "true";
+            if (!personConfig.personConfigValid()) {
+                out.print(callback + "(\'" + pid + "\',\'error\', \'personConfig validate fail\');");
+                return;
             }
             personConfig.setUcoolAssetsDebug(!personConfig.isUcoolAssetsDebug());
-            dirDAO.updateConfig(personConfig.getUserDO(), srcConfig);
+            dirDAO.updateConfig(personConfig.getDirDO(), srcConfig);
+            //update dirmapping
+            dirMapping.getDir(personConfig.getDirId()).setConfig(personConfig.getDirDO().getConfig());
+            tState = personConfig.isUcoolAssetsDebug()?"true":"false";
         } else if (pid.equalsIgnoreCase("cleanOnlineCache")) {
             fileEditor.removeDirectory(configCenter.getWebRoot() + personConfig.getUcoolCacheRoot());
             tState = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date());
         } else if(pid.equalsIgnoreCase("bindPrepub")) {
+            if (!personConfig.personConfigValid()) {
+                out.print(callback + "(\'" + pid + "\',\'error\', \'personConfig validate fail\');");
+                return;
+            }
             personConfig.setPrepub(!personConfig.isPrepub());
-            dirDAO.updateConfig(personConfig.getUserDO(), srcConfig);
+            dirDAO.updateConfig(personConfig.getDirDO(), srcConfig);
+            //update dirmapping
+            dirMapping.getDir(personConfig.getDirId()).setConfig(personConfig.getDirDO().getConfig());
             tState = personConfig.isPrepub()?"true":"false";
         } else if(pid.equalsIgnoreCase("enableAssets")) {
+            if (!personConfig.personConfigValid()) {
+                out.print(callback + "(\'" + pid + "\',\'error\', \'personConfig validate fail\');");
+                return;
+            }
             personConfig.setEnableAssets(!personConfig.isEnableAssets());
-            dirDAO.updateConfig(personConfig.getUserDO(), srcConfig);
+            dirDAO.updateConfig(personConfig.getDirDO(), srcConfig);
+            //update dirmapping
+            dirMapping.getDir(personConfig.getDirId()).setConfig(personConfig.getDirDO().getConfig());
             tState = personConfig.isEnableAssets()?"true":"false";
         } else if(pid.equalsIgnoreCase("bindDir")) {
             //first create a new dir
@@ -78,7 +93,6 @@
                     }
                     if(dirDO.getId() != 0)  {
                         //add new dir to memory
-                        DirMapping dirMapping = (DirMapping) wac.getBean("dirMapping");
                         dirMapping.addDir(dirDO);
                     }
                 }
@@ -114,6 +128,9 @@
                 out.print(callback + "(\'" + pid + "\',\'ok\', \'" + personConfig.getDirDO().getConfig() + "\');");
             }
             return;
+        } else if(pid.equalsIgnoreCase("fuckie")) {
+            request.getSession().removeAttribute("personConfig");
+            request.getSession().invalidate();
         }
 
         if (callback != null) {

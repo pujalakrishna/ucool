@@ -20,8 +20,6 @@ public class AssetsHandler implements Handler {
 
     private ConfigCenter configCenter;
 
-    private Switcher switcher;
-
     private UrlExecutor urlExecutor;
 
     private UrlTools urlTools;
@@ -34,14 +32,6 @@ public class AssetsHandler implements Handler {
 
     protected ConfigCenter getConfigCenter() {
         return configCenter;
-    }
-
-    public void setSwitcher(Switcher switcher) {
-        this.switcher = switcher;
-    }
-
-    protected Switcher getSwitcher() {
-        return switcher;
     }
 
     public void setUrlExecutor(UrlExecutor urlExecutor) {
@@ -90,7 +80,7 @@ public class AssetsHandler implements Handler {
         String realUrl = (String) request.getAttribute("realUrl");
         realUrl = attachOper(realUrl, request);
         String fullUrl = realUrl;
-        boolean isDebugMode = switcher.isAssetsDebugMode() || HttpTools.isReferDebug(request);
+        boolean isDebugMode = personConfig.isUcoolAssetsDebug() || HttpTools.isReferDebug(request);
         boolean isOnline = configCenter.getUcoolOnlineDomain().indexOf(request.getServerName()) != -1;
         if (isDebugMode) {
             filePath = urlTools.debugMode(filePath, fullUrl);

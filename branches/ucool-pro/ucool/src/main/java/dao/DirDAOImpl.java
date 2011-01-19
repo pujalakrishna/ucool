@@ -1,7 +1,6 @@
 package dao;
 
 import dao.entity.DirDO;
-import dao.entity.UserDO;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -47,8 +46,18 @@ public class DirDAOImpl implements DirDAO, InitializingBean {
     }
 
     @Override
-    public void updateConfig(UserDO userDO, int srcConfig) {
-        //FIXME 编写实现
+    public boolean updateConfig(DirDO dirDO, int srcConfig) {
+        if(dirDO.getConfig() == srcConfig) {
+            //这里return true不知道会不会有什么问题
+            return true;
+        }
+        try {
+            if(jdbcTemplate.update("update dir set config=? where id=? and config=?", new Object[]{dirDO.getConfig(), dirDO.getId(), srcConfig}) > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
     }
 
     @Override

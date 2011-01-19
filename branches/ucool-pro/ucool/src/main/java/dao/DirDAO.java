@@ -15,7 +15,7 @@ import java.util.List;
 public interface DirDAO {
     List<DirDO> loadAllDir();
 
-    void updateConfig(UserDO userDO, int srcConfig);
+    boolean updateConfig(DirDO dirDO, int srcConfig);
 
     DirDO getDirByName(String name);
 

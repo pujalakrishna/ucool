@@ -68,7 +68,7 @@ public class PersonConfig {
 
     public String getUcoolAssetsRoot() {
         if(personConfigValid()) {
-            return dirDO.getName() + "/" + configCenter.getUcoolAssetsRoot();
+            return configCenter.getUcoolAssetsRoot() + "/" + dirDO.getName();
         } else {
             return configCenter.getUcoolAssetsRoot();
         }

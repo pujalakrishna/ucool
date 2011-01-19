@@ -21,7 +21,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override public UserDO getPersonInfo(String hostName) {
-        String sql = "select * from user,dir where user.host_name=? and user.dir_id = dir.id";
+        String sql = "select * from user where host_name=?";
         UserDO user = null;
         List perList = this.jdbcTemplate.queryForList(sql, new Object[]{hostName});
         if(perList.size() == 1) {
