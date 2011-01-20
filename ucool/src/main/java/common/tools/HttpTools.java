@@ -1,4 +1,4 @@
-package common;
+package common.tools;
 
 import javax.servlet.http.HttpServletRequest;
 

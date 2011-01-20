@@ -1,5 +1,6 @@
 package common;
 
+import common.tools.HttpTools;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Date;
@@ -82,6 +83,8 @@ public class ConfigCenter implements InitializingBean {
     private String ucoolAssetsEncodingCorrect;
 
     private String ucoolProxyIp;
+
+    private String ucoolAssetsDirectoryPrefix;
 
     public String getWebRoot() {
         return webRoot;
@@ -266,6 +269,14 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolProxyIp(String ucoolProxyIp) {
         this.ucoolProxyIp = ucoolProxyIp;
+    }
+
+    public String getUcoolAssetsDirectoryPrefix() {
+        return ucoolAssetsDirectoryPrefix;
+    }
+
+    public void setUcoolAssetsDirectoryPrefix(String ucoolAssetsDirectoryPrefix) {
+        this.ucoolAssetsDirectoryPrefix = ucoolAssetsDirectoryPrefix;
     }
 
     /**

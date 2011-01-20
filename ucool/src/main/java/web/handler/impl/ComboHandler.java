@@ -1,6 +1,6 @@
 package web.handler.impl;
 
-import common.HttpTools;
+import common.tools.HttpTools;
 import common.PersonConfig;
 
 import javax.servlet.ServletException;

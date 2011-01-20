@@ -1,6 +1,6 @@
 package web.handler.impl;
 
-import common.UrlTools;
+import common.tools.UrlTools;
 import web.handler.Handler;
 
 import javax.servlet.ServletException;

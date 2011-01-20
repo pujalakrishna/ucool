@@ -12,10 +12,6 @@ public class DispatchMapping {
     
     private Map<String, Handler> mappingTable = null;
 
-    public Map<String, Handler> getMappingTable() {
-        return mappingTable;
-    }
-
     public void setMappingTable(Map<String, Handler> mappingTable) {
         this.mappingTable = mappingTable;
     }

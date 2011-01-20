@@ -1,4 +1,7 @@
-package common;
+package common.tools;
+
+import common.ConfigCenter;
+import common.PersonConfig;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>

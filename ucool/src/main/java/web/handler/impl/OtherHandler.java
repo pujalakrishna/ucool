@@ -2,7 +2,7 @@ package web.handler.impl;
 
 import biz.file.FileEditor;
 import common.ConfigCenter;
-import common.UrlTools;
+import common.tools.UrlTools;
 import web.handler.Handler;
 
 import javax.servlet.ServletException;

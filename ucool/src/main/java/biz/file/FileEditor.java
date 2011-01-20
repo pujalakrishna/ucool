@@ -201,9 +201,22 @@ public class FileEditor {
      * @return the assetsSubDirs (type ArrayList<String>) of this FileEditor object.
      */
     public List<String> getAssetsSubDirs() {
+        return getSubDirs(this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot());
+    }
+
+    public List<String> getAssetsSubDirs(String filePath) {
+        return getSubDirs(this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot() + filePath);
+    }
+
+    /**
+     * 获取目录的子目录列表
+     *
+     * @param directoryPath of type String
+     * @return List<String>
+     */
+    public List<String> getSubDirs(String directoryPath) {
         List<String> dirList = new ArrayList<String>();
-        String filePath = this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot();
-        File assetsDir = new File(filePath);
+        File assetsDir = new File(directoryPath);
         if (!assetsDir.exists()) {
             assetsDir.mkdir();
         }
