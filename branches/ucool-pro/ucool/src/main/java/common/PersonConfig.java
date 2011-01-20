@@ -1,5 +1,6 @@
 package common;
 
+import common.tools.HttpTools;
 import dao.entity.DirDO;
 import dao.entity.UserDO;
 
@@ -86,6 +87,13 @@ public class PersonConfig {
         this.userDO = userDO;
     }
 
+    /**
+     * 判断是否是新人
+     * 这里的新人有2种可能：
+     * 1、真正的新人，没有任何目录的绑定
+     * 2、老用户，但是取消了绑定
+     * @return
+     */
     public boolean isNewUser() {
         return newUser;
     }
@@ -137,6 +145,6 @@ public class PersonConfig {
      * @return boolean
      */
     public boolean personConfigValid() {
-        return !isNewUser() && getDirId()!=0;
+        return !isNewUser() && getDirId()>0;
     }
 }

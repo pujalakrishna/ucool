@@ -9,6 +9,9 @@ package dao.entity;
  */
 public class DirDO {
 
+    /**
+     * id<0表示是取消了绑定的老用户
+     */
     private Long id = 0L;
 
     private String name;

@@ -60,4 +60,19 @@ public class DirMapping implements InitializingBean {
     public void removeDir(Long id) {
         mappingTable.remove(id);
     }
+
+    /**
+     * 根据目录名返回do， 效率不高的方法
+     *
+     * @param dirName of type String
+     * @return DirDO
+     */
+    public DirDO getDirByName(String dirName) {
+        for (DirDO dirDO : mappingTable.values()) {
+            if(dirDO.getName().equals(dirName)) {
+                return dirDO;
+            }
+        }
+        return null;
+    }
 }

@@ -9,6 +9,7 @@
 <%@ page import="common.DirMapping" %>
 <%@ page import="dao.DirDAO" %>
 <%@ page import="dao.UserDAO" %>
+<%@ page import="common.tools.DirSyncTools" %>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -160,6 +161,7 @@
     PersonConfigHandler personConfigHandler  = (PersonConfigHandler) wac.getBean("personConfigHandler");
     PersonConfig personConfig = personConfigHandler.doHandler(request);
     FileEditor fileEditor = (FileEditor) wac.getBean("fileEditor");
+    DirSyncTools dirSyncTools = (DirSyncTools) wac.getBean("dirSyncTools");
 %>
 <div id="page">
     <div id="header">
@@ -170,29 +172,20 @@
     </div>
     <div id="content">
         <div id="dir">
-            <label for="dir-bind">绑定目录：</label>
+            <label for="dir-bind">绑定根目录：</label>
             <select name="dir-bind" id="dir-bind" autocomplete="off">
                 <%
                     List<String> assetsSubDirs = fileEditor.getAssetsSubDirs();
                     String curDirName = null;
-                    if(!personConfig.isNewUser() && personConfig.getDirId() != 0) {
+                    if(!personConfig.isNewUser() && personConfig.getDirId() > 0) {
                         curDirName = personConfig.getDirDO().getName();
-                        if(!fileEditor.findFile(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot())) {
-                            //删除目录
+                        if (dirSyncTools.sync(personConfig.getDirId(), configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
+                            //set session
+                            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                             curDirName = "";
-                            DirDAO dirDAO = (DirDAO) wac.getBean("dirDAO");
-                            if(dirDAO.deleteDir(personConfig.getDirId())) {
-                                DirMapping dirMapping = (DirMapping) wac.getBean("dirMapping");
-                                dirMapping.removeDir(personConfig.getDirId());
-                                personConfig.getUserDO().setDirId(0L);
-                                UserDAO userDAO = (UserDAO) wac.getBean("userDAO");
-                                userDAO.updateDir(personConfig.getUserDO(), personConfig.getDirDO().getId());
-                                //set session
-                                request.getSession().setAttribute("personConfig", personConfig.getConfigString());
-                            }
                         }
                     }
-                    out.print("<option value='0' selected='selected'>无绑定目录</option>");
+                    out.print("<option value='-1' selected='selected'>无绑定目录</option>");
                     if (assetsSubDirs.size() > 0) {
                         for (String assetsSubDir : assetsSubDirs) {
                             if(assetsSubDir.equals(curDirName)) {

@@ -49,10 +49,10 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean updateDir(UserDO userDO, Long srcDirId) {
+    public boolean updateDir(Long userId, Long newDirId, Long srcDirId) {
         String sql = "update user set dir_id=? where id=? and dir_id=?";
         try {
-            this.jdbcTemplate.update(sql, new Object[]{userDO.getDirId(), userDO.getId(), srcDirId});
+            this.jdbcTemplate.update(sql, new Object[]{newDirId, userId, srcDirId});
             return true;
         } catch (Exception e) {
             System.out.println(e);

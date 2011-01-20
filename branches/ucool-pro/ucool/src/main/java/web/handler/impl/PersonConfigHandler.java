@@ -3,6 +3,7 @@ package web.handler.impl;
 import common.DirMapping;
 import common.PersonConfig;
 import dao.UserDAO;
+import dao.entity.DirDO;
 import dao.entity.UserDO;
 
 import javax.servlet.ServletException;
@@ -48,12 +49,17 @@ public class PersonConfigHandler {
                 //可以取消绑定目录，这里作为普通新人处理
                 if(personInfo.getDirId() == null || personInfo.getDirId() == 0L) {
                     personConfig.setNewUser(true);
+                    personConfig.setDirDO(new DirDO());
+                    //-1表示为是取消了绑定的老用户
+                    personConfig.getDirDO().setId(personConfig.getDirId());
+                } else {
+                    personConfig.setDirDO(dirMapping.getDir(personConfig.getDirId()));
                 }
-                personConfig.setDirDO(dirMapping.getDir(personConfig.getDirId()));
             } else {
                 personConfig.getUserDO().setHostName(remoteHost);
                 //没在数据库查询到数据，肯定是新人
                 personConfig.setNewUser(true);
+                personConfig.setDirDO(new DirDO());
             }
             //set session
             request.getSession().setAttribute("personConfig", personConfig.getConfigString());
