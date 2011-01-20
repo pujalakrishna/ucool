@@ -48,15 +48,6 @@ public class UrlTools {
     }
 
     /**
-     * 这个方法肯定在urlFilter这个方法之后被调用，所以线上的链接一定是有a.tbcdn.cn
-     * @param fullUrl
-     * @return
-     */
-    public boolean isOnline(String fullUrl) {
-        return fullUrl.indexOf("a.tbcdn.cn") != -1;
-    }
-
-    /**
      * 根据url规则返回读取的字符集
      * @return
      * @param fullUrl
@@ -71,5 +62,14 @@ public class UrlTools {
             }
         }
         return encoding;
+    }
+
+    /**
+     * 这个方法肯定在urlFilter这个方法之后被调用，所以线上的链接一定是有a.tbcdn.cn
+     * @param fullUrl
+     * @return
+     */
+    public boolean isOnline(String fullUrl) {
+        return fullUrl.indexOf("a.tbcdn.cn") != -1;
     }
 }
