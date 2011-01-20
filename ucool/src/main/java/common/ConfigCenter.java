@@ -83,6 +83,8 @@ public class ConfigCenter implements InitializingBean {
 
     private String ucoolProxyIp;
 
+    private String ucoolCacheEnable;
+
     public String getWebRoot() {
         return webRoot;
     }
@@ -257,6 +259,14 @@ public class ConfigCenter implements InitializingBean {
 
     public void setUcoolProxyIp(String ucoolProxyIp) {
         this.ucoolProxyIp = ucoolProxyIp;
+    }
+
+    public String getUcoolCacheEnable() {
+        return ucoolCacheEnable;
+    }
+
+    public void setUcoolCacheEnable(String ucoolCacheEnable) {
+        this.ucoolCacheEnable = ucoolCacheEnable;
     }
 
     /**

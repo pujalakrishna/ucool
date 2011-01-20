@@ -43,7 +43,7 @@ public class UrlExecutor {
      * @since 10-10-29 ионГ9:51
      */
     public void doDebugUrlRule(String filePath, String fullUrl, PrintWriter out) {
-        if(urlTools.isOnline(fullUrl)){
+        if(urlTools.isOnline(fullUrl) && configCenter.getUcoolCacheEnable().equals("true")){
             //find cache
             if (findCacheFile(filePath)) {
                 this.fileEditor.pushFileOutputStream(out, loadExistFileStream(filePath, "gbk", true), filePath);
