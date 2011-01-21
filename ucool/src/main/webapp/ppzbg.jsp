@@ -34,7 +34,7 @@
     PersonConfig personConfig = personConfigHandler.doHandler(request);
     int srcConfig = 5;
     if (personConfig.personConfigValid()) {
-        srcConfig = personConfig.getDirDO().getConfig();
+        srcConfig = personConfig.getUserDO().getConfig();
     }
     if (pid != null) {
         String tState = null;

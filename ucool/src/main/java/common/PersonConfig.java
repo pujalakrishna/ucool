@@ -12,8 +12,6 @@ public class PersonConfig {
 
     private UserDO userDO = new UserDO();
 
-    private DirDO dirDO;
-
     private ConfigCenter configCenter;
 
     public void setConfigCenter(ConfigCenter configCenter) {
@@ -25,43 +23,43 @@ public class PersonConfig {
 
     public boolean isUcoolAssetsDebug() {
         if(personConfigValid()) {
-            return this.dirDO.isEnableDebug();
+            return this.userDO.isEnableDebug();
         } else {
             return configCenter.isUcoolAssetsDebug();
         }
     }
 
     public void setUcoolAssetsDebug(boolean enableDebug) {
-        this.dirDO.setEnableDebug(enableDebug);
+        this.userDO.setEnableDebug(enableDebug);
     }
 
     public boolean isPrepub() {
         if(personConfigValid()) {
-            return this.dirDO.isEnablePrepub();
+            return this.userDO.isEnablePrepub();
         } else {
             return configCenter.isPrepub();
         }
     }
 
     public void setPrepub(boolean enablePrepub) {
-        this.dirDO.setEnablePrepub(enablePrepub);
+        this.userDO.setEnablePrepub(enablePrepub);
     }
 
     public boolean isEnableAssets() {
         if(personConfigValid()) {
-            return this.dirDO.isEnableAssets();
+            return this.userDO.isEnableAssets();
         } else {
             return configCenter.isEnableAssets();
         }
     }
 
     public void setEnableAssets(boolean enableAssets) {
-        this.dirDO.setEnableAssets(enableAssets);
+        this.userDO.setEnableAssets(enableAssets);
     }
 
     public String getUcoolCacheRoot() {
         if(personConfigValid()) {
-            return dirDO.getName() + "/" + configCenter.getUcoolCacheRoot();
+            return userDO.getName() + "/" + configCenter.getUcoolCacheRoot();
         } else {
             return configCenter.getUcoolCacheRoot();
         }
@@ -69,14 +67,10 @@ public class PersonConfig {
 
     public String getUcoolAssetsRoot() {
         if(personConfigValid()) {
-            return configCenter.getUcoolAssetsRoot() + "/" + dirDO.getName();
+            return configCenter.getUcoolAssetsRoot() + "/" + userDO.getName();
         } else {
             return configCenter.getUcoolAssetsRoot();
         }
-    }
-
-    public Long getDirId() {
-        return this.userDO.getDirId();
     }
 
     public UserDO getUserDO() {
@@ -102,14 +96,6 @@ public class PersonConfig {
         this.newUser = newUser;
     }
 
-    public DirDO getDirDO() {
-        return dirDO;
-    }
-
-    public void setDirDO(DirDO dirDO) {
-        this.dirDO = dirDO;
-    }
-
     /**
      * ½âÎöÅäÖÃ×Ö·û´®
      *
@@ -120,8 +106,9 @@ public class PersonConfig {
         String[] configStrings = configString.split(HttpTools.filterSpecialChar(":"));
         userDO.setId(Long.valueOf(configStrings[0]));
         userDO.setHostName(configStrings[1].equals("null") ? null:configStrings[1]);
-        userDO.setDirId(Long.parseLong(configStrings[2]));
-        this.setNewUser(configStrings[3].equals("true"));
+        userDO.setName(configStrings[2].equals("null") ? null:configStrings[2]);
+        userDO.setConfig(configStrings[3].equals("null") ? 5:Integer.parseInt(configStrings[3]));
+        this.setNewUser(configStrings[4].equals("true"));
     }
 
     /**
@@ -134,7 +121,8 @@ public class PersonConfig {
         StringBuffer sb = new StringBuffer();
         sb.append(userDO.getId()).append(":");
         sb.append(userDO.getHostName()).append(":");
-        sb.append(userDO.getDirId()).append(":");
+        sb.append(userDO.getName()).append(":");
+        sb.append(userDO.getConfig()).append(":");
         sb.append(this.isNewUser());
         return sb.toString();
     }
@@ -145,6 +133,6 @@ public class PersonConfig {
      * @return boolean
      */
     public boolean personConfigValid() {
-        return !isNewUser() && getDirId()>0;
+        return !isNewUser();
     }
 }
