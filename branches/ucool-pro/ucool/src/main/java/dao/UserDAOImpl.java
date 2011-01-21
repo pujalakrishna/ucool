@@ -1,6 +1,7 @@
 package dao;
 
 import dao.entity.UserDO;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
  * @since 10-12-3 ÉÏÎç12:16
  */
-public class UserDAOImpl implements UserDAO {
+public class UserDAOImpl implements UserDAO, InitializingBean {
     private JdbcTemplate jdbcTemplate;
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -29,7 +30,7 @@ public class UserDAOImpl implements UserDAO {
             Map map = (Map) perList.get(0);
             user.setId(Long.valueOf(String.valueOf(map.get("id"))));
             user.setHostName((String) map.get("host_name"));
-            user.setDirId(Long.valueOf(String.valueOf(map.get("dir_id"))));
+            user.setName((String)map.get("name"));
         }
         return user;
     }
@@ -49,14 +50,23 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean updateDir(Long userId, Long newDirId, Long srcDirId) {
-        String sql = "update user set dir_id=? where id=? and dir_id=?";
+    public boolean updateDir(Long userId, String newDir) {
+        String sql = "update user set name=? where id=?";
         try {
-            this.jdbcTemplate.update(sql, new Object[]{newDirId, userId, srcDirId});
+            this.jdbcTemplate.update(sql, new Object[]{newDir, userId});
             return true;
         } catch (Exception e) {
             System.out.println(e);
         }
         return false;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        int userExist = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM sqlite_master where type=\'table\' and name=?", new Object[]{"user"});
+        //create table
+        if(userExist == 0) {
+            jdbcTemplate.execute("CREATE TABLE \"user\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"host_name\" VARCHAR NOT NULL  UNIQUE , \"dir_id\" INTEGER DEFAULT 0, \"name\" VARCHAR NOT NULL , \"config\" INTEGER NOT NULL  DEFAULT 5)");
+        }
     }
 }

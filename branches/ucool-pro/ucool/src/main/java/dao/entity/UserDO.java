@@ -8,8 +8,11 @@ public class UserDO {
     private Long id = 0L;
 
     private String hostName;
-    
-    private Long dirId = 0L;
+
+    private String name;
+
+    private int config = 5;
+
 
     public Long getId() {
         return id;
@@ -27,11 +30,57 @@ public class UserDO {
         this.hostName = hostName;
     }
 
-    public Long getDirId() {
-        return dirId;
+    public String getName() {
+        return name;
     }
 
-    public void setDirId(Long dirId) {
-        this.dirId = dirId;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getConfig() {
+        return config;
+    }
+
+    public void setConfig(int config) {
+        this.config = config;
+    }
+
+
+    public boolean isEnableDebug() {
+        return (config & 1) == 1;
+    }
+
+    public void setEnableDebug(boolean enableDebug) {
+        if (enableDebug) {
+            config = config | 1 << 0;
+        } else {
+            config = config & ~(1 << 0);
+        }
+
+    }
+
+    public boolean isEnablePrepub() {
+        return (config & 2) == 2;
+    }
+
+    public void setEnablePrepub(boolean enablePrepub) {
+        if (enablePrepub) {
+            config = config | 1 << 1;
+        } else {
+            config = config & ~(1 << 1);
+        }
+    }
+
+    public boolean isEnableAssets() {
+        return (config & 4) == 4;
+    }
+
+    public void setEnableAssets(boolean enableAssets) {
+        if (enableAssets) {
+            config = config | 1 << 2;
+        } else {
+            config = config & ~(1 << 2);
+        }
     }
 }
