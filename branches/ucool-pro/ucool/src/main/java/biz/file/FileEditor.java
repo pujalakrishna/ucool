@@ -205,7 +205,7 @@ public class FileEditor {
     }
 
     public List<String> getAssetsSubDirs(String filePath) {
-        return getSubDirs(this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot() + filePath);
+        return getSubDirs(this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot() + "/" + filePath);
     }
 
     /**
@@ -218,7 +218,7 @@ public class FileEditor {
         List<String> dirList = new ArrayList<String>();
         File assetsDir = new File(directoryPath);
         if (!assetsDir.exists()) {
-            assetsDir.mkdir();
+            return dirList;
         }
         File[] files = assetsDir.listFiles();
         for (File file : files) {

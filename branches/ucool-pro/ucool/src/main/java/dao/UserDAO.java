@@ -17,5 +17,7 @@ public interface UserDAO {
 
     boolean createNewUser(UserDO userDO);
 
-    boolean updateDir(Long userId, String newDir);
+    boolean updateDir(Long userId, String newDir, String oldDir);
+
+    boolean updateConfig(Long userId, int newConfig, int srcConfig);
 }

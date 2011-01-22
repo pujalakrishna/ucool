@@ -1,5 +1,6 @@
 package dao;
 
+import dao.entity.DirDO;
 import dao.entity.UserDO;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,9 +37,9 @@ public class UserDAOImpl implements UserDAO, InitializingBean {
     }
 
     @Override public boolean createNewUser(UserDO userDO) {
-        String sql = "insert into user (host_name, dir_id) values (?,?)";
+        String sql = "insert into user (host_name, name, config) values (?,?,?)";
         try {
-            if (this.jdbcTemplate.update(sql, new Object[]{userDO.getHostName(), userDO.getDirId()}) > 0) {
+            if (this.jdbcTemplate.update(sql, new Object[]{userDO.getHostName(), userDO.getName(), userDO.getConfig()}) > 0) {
                 UserDO newUser = getPersonInfo(userDO.getHostName());
                 userDO.setId(newUser.getId());
                 return true;
@@ -50,13 +51,31 @@ public class UserDAOImpl implements UserDAO, InitializingBean {
     }
 
     @Override
-    public boolean updateDir(Long userId, String newDir) {
-        String sql = "update user set name=? where id=?";
+    public boolean updateDir(Long userId, String newDir, String oldDir) {
+        if(newDir.equals(oldDir)) {
+            return true;
+        }
+        String sql = "update user set name=? where id=? and name=?";
         try {
-            this.jdbcTemplate.update(sql, new Object[]{newDir, userId});
+            this.jdbcTemplate.update(sql, new Object[]{newDir, userId, oldDir});
             return true;
         } catch (Exception e) {
             System.out.println(e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateConfig(Long userId, int newConfig, int srcConfig) {
+        if (newConfig == srcConfig) {
+            //这里return true不知道会不会有什么问题
+            return true;
+        }
+        try {
+            if (jdbcTemplate.update("update user set config=? where id=? and config=?", new Object[]{newConfig, userId, srcConfig}) > 0) {
+                return true;
+            }
+        } catch (Exception e) {
         }
         return false;
     }
@@ -66,7 +85,7 @@ public class UserDAOImpl implements UserDAO, InitializingBean {
         int userExist = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM sqlite_master where type=\'table\' and name=?", new Object[]{"user"});
         //create table
         if(userExist == 0) {
-            jdbcTemplate.execute("CREATE TABLE \"user\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"host_name\" VARCHAR NOT NULL  UNIQUE , \"dir_id\" INTEGER DEFAULT 0, \"name\" VARCHAR NOT NULL , \"config\" INTEGER NOT NULL  DEFAULT 5)");
+            jdbcTemplate.execute("CREATE TABLE \"user\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"host_name\" VARCHAR NOT NULL  UNIQUE , \"name\" VARCHAR NOT NULL , \"config\" INTEGER NOT NULL  DEFAULT 5)");
         }
     }
 }

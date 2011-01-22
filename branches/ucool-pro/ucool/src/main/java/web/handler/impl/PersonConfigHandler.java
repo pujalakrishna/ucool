@@ -40,13 +40,14 @@ public class PersonConfigHandler {
             /**
              * 有2种情况：
              * 1、数据库中没有绑定的新人
-             * 2、有绑定，但是失效了的老用户
+             * 2、有绑定，但是session失效了的老用户
              */
             String remoteHost = request.getRemoteHost();
             UserDO personInfo = this.userDAO.getPersonInfo(remoteHost);
             if (personInfo != null) {
                 personConfig.setUserDO(personInfo);
             } else {
+                personConfig.setUserDO(new UserDO());
                 personConfig.getUserDO().setHostName(remoteHost);
                 //没在数据库查询到数据，肯定是新人
                 personConfig.setNewUser(true);

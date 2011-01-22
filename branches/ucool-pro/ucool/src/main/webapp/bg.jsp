@@ -26,8 +26,6 @@
     FileEditor fileEditor = (FileEditor) wac.getBean("fileEditor");
     PersonConfigHandler personConfigHandler = (PersonConfigHandler) wac.getBean("personConfigHandler");
     UserDAO userDAO = (UserDAO) wac.getBean("userDAO");
-    DirDAO dirDAO = (DirDAO) wac.getBean("dirDAO");
-    DirMapping dirMapping = (DirMapping) wac.getBean("dirMapping");
     String pid = request.getParameter("pid");
     String callback = request.getParameter("callback");
     DirSyncTools dirSyncTools = (DirSyncTools) wac.getBean("dirSyncTools");
@@ -37,5 +35,6 @@
     if (pid.equalsIgnoreCase("fuckie")) {
         request.getSession().removeAttribute("personConfig");
         request.getSession().invalidate();
+        out.print("clear your session ok");
     }
 %>
