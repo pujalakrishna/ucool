@@ -42,12 +42,11 @@ public class DirSyncTools {
     /**
      * Method sync ...
      *
-     * @param dirId of type Long 需要同步的目录id
      * @param dirPath of type String 需要同步的目录路径
      * @param personConfig of type PersonConfig
      * @return boolean
      */
-    public boolean sync(Long dirId, String dirPath, PersonConfig personConfig) {
+    public boolean sync(String dirPath, PersonConfig personConfig) {
         /**
          * 页面没刷新，目录被删除，同步有2种可能
          * 1、当前目录存在，目标目录不存在
@@ -56,13 +55,8 @@ public class DirSyncTools {
 
         if (!fileEditor.findFile(dirPath)) {
             //删除目录
-            if (dirDAO.deleteDir(dirId)) {
-                dirMapping.removeDir(dirId);
-                Long srcId = personConfig.getDirId();
-                personConfig.getUserDO().setDirId(-1L);
-                userDAO.updateDir(personConfig.getUserDO().getId(), personConfig.getDirId(), srcId);
-                return true;
-            }
+            userDAO.updateDir(personConfig.getUserDO().getId(), "", personConfig.getUserDO().getName());
+            return true;
         }
         return false;
     }

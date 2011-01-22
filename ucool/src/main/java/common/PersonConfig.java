@@ -10,7 +10,7 @@ import dao.entity.UserDO;
  */
 public class PersonConfig {
 
-    private UserDO userDO = new UserDO();
+    private UserDO userDO;
 
     private ConfigCenter configCenter;
 
@@ -104,6 +104,9 @@ public class PersonConfig {
     public void parseConfigString(String configString) {
         // set userDO
         String[] configStrings = configString.split(HttpTools.filterSpecialChar(":"));
+        if(userDO == null) {
+            userDO = new UserDO();
+        }
         userDO.setId(Long.valueOf(configStrings[0]));
         userDO.setHostName(configStrings[1].equals("null") ? null:configStrings[1]);
         userDO.setName(configStrings[2].equals("null") ? null:configStrings[2]);
@@ -133,6 +136,6 @@ public class PersonConfig {
      * @return boolean
      */
     public boolean personConfigValid() {
-        return !isNewUser();
+        return userDO!= null && !isNewUser();
     }
 }

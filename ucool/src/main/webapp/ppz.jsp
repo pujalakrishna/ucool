@@ -6,9 +6,6 @@
 <%@ page import="biz.file.FileEditor" %>
 <%@ page import="java.util.List" %>
 <%@ page import="web.handler.impl.PersonConfigHandler" %>
-<%@ page import="common.DirMapping" %>
-<%@ page import="dao.DirDAO" %>
-<%@ page import="dao.UserDAO" %>
 <%@ page import="common.tools.DirSyncTools" %>
 <!DOCTYPE HTML>
 <html>
@@ -172,28 +169,53 @@
     </div>
     <div id="content">
         <div id="dir">
-            <label for="dir-bind">绑定根目录：</label>
-            <select name="dir-bind" id="dir-bind" autocomplete="off">
+            <label for="dir-bind">绑定目录：</label>
+            <select name="root-bind" id="root-bind" autocomplete="off">
                 <%
                     List<String> assetsSubDirs = fileEditor.getAssetsSubDirs();
-                    String curDirName = null;
-                    if(!personConfig.isNewUser() && personConfig.getDirId() > 0) {
-                        curDirName = personConfig.getDirDO().getName();
-                        if (dirSyncTools.sync(personConfig.getDirId(), configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
+                    String curDirName = "";
+                    if(!personConfig.isNewUser()) {
+                        curDirName = personConfig.getUserDO().getName();
+                        if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
                             //set session
                             request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                             curDirName = "";
                         }
                     }
+                    String rootName = "", subName="";
+                    if(!curDirName.isEmpty()) {
+                        String[] dirs = curDirName.split("/");
+                        if(dirs.length > 1) {
+                            rootName = dirs[0];
+                            subName = dirs[1];
+                        }
+                    }
                     out.print("<option value='-1' selected='selected'>无绑定目录</option>");
                     if (assetsSubDirs.size() > 0) {
                         for (String assetsSubDir : assetsSubDirs) {
-                            if(assetsSubDir.equals(curDirName)) {
+                            if(assetsSubDir.equals(rootName)) {
                                 out.print("<option selected='selected' value=" + assetsSubDir + ">");
                             } else {
                                 out.print("<option value=" + assetsSubDir + ">");
                             }
                             out.print(assetsSubDir);
+                            out.print("</option>");
+                        }
+                    }
+                %>
+            </select>　/　
+            <select name="dir-bind" id="dir-bind" autocomplete="off">
+                <%
+                    List<String> subDirs = fileEditor.getAssetsSubDirs(rootName);
+                    out.print("<option value='-1' selected='selected'>无绑定子目录</option>");
+                    if (subDirs.size() > 0) {
+                        for (String subDir : subDirs) {
+                            if (subDir.equals(subName)) {
+                                out.print("<option selected='selected' value=" + subDir + ">");
+                            } else {
+                                out.print("<option value=" + subDir + ">");
+                            }
+                            out.print(subDir);
                             out.print("</option>");
                         }
                     }
@@ -208,17 +230,17 @@
                     <tr>
                         <th>DEBUG MODE：</th>
                         <td class="op"><a class="<%=configCenter.getStateStyle(personConfig.isUcoolAssetsDebug())%>" id="assetsdebugswitch"></a></td>
-                        <td class="note">切换所有js和css都显示源码</td>
+                        <td class="note">打开后切换所有js和css都显示源码</td>
                     </tr>
                     <tr>
                         <th>BIND PRE-RELEASE ENV：</th>
                         <td class="op"><a class="<%=configCenter.getStateStyle(personConfig.isPrepub())%>" id="bindPrepub"></a></td>
-                        <td class="note">切换到预发环境</td>
+                        <td class="note">打开后切换到预发环境</td>
                     </tr>
                     <tr>
                         <th>USE ASSETS：</th>
                         <td class="op"><a class="<%=configCenter.getStateStyle(personConfig.isEnableAssets())%>" id="enableAssets"></a></td>
-                        <td class="note">使用服务器上的assets目录</td>
+                        <td class="note">打开后启用服务器上的assets目录中的文件</td>
                     </tr>
                     <%--<tr>--%>
                         <%--<th>RELEASE CACHE：</th>--%>
@@ -257,15 +279,6 @@
                         <th>COMBO SPLITTER：</th>
                         <td><%=configCenter.getUcoolComboDecollator()%></td>
                     </tr>
-                    <%--<tr class="separator"><td colspan="2"></td></tr>--%>
-                    <%--<tr>--%>
-                        <%--<th>AUTO FLUSH CACHE：</th>--%>
-                        <%--<td><%=configCenter.getUcoolCacheAutoClean()%></td>--%>
-                    <%--</tr>--%>
-                    <%--<tr>--%>
-                        <%--<th>CACHE FLUSH PERIOD：</th>--%>
-                        <%--<td><em><%=configCenter.getUcoolCacheCleanPeriod()%></em>h</td>--%>
-                    <%--</tr>--%>
                     <tr>
                         <th>ASSETS ROOT DIR：</th>
                         <td><%=configCenter.getUcoolAssetsRoot()%></td>
@@ -321,6 +334,22 @@
                 }
             };
 
+            var _loadSub = function (pid, success, data) {
+                DOM.hide('#message');
+                if (success === 'ok') {
+                    var selectEl = S.get('#dir-bind');
+                    selectEl.appendChild(new Option('无绑定子目录', -1));
+                    if(data) {
+                        var subDirs = data.split(';');
+                        for (var i = 0; i < subDirs.length; i++) {
+                            selectEl.appendChild(new Option(subDirs[i], subDirs[i]));
+                        }
+                    }
+                } else {
+                    DOM.hide('#J_BoxSwitch');
+                }
+            };
+
             var _updateConfig = function(config) {
                 S.get('#assetsdebugswitch').className='';
                 S.get('#bindPrepub').className='';
@@ -368,11 +397,24 @@
                     Event.on('#enableAssets', 'click', function(e) {
                         S.getScript("ppzbg.jsp?" + "pid=enableAssets&callback=UCOOL.Pz.change&t=" + new Date());
                     });
+                    Event.on('#root-bind', 'change', function(e) {
+                        DOM.hide('#J_BoxSwitch');
+                        DOM.show('#message');
+                        S.get('#dir-bind').options.length = 0;
+                        var selectRootEl = S.get('#root-bind');
+                        var selectSubEl = S.get('#dir-bind');
+                        if(selectRootEl.options[selectRootEl.selectedIndex].value == -1) {
+                            S.getScript("ppzbg.jsp?" + "pid=bindDir&callback=UCOOL.Pz.bindDir&rootDir="+selectRootEl.options[selectRootEl.selectedIndex].value+"&subDir=-1&t=" + new Date());
+                        } else {
+                            S.getScript("ppzbg.jsp?" + "pid=loadSub&callback=UCOOL.Pz.loadSub&rootDir="+selectRootEl.options[selectRootEl.selectedIndex].value+"&t=" + new Date());
+                        }
+                    });
                     Event.on('#dir-bind', 'change', function(e) {
                         DOM.hide('#J_BoxSwitch');
                         DOM.show('#message');
-                        var selectEl = S.get('#dir-bind');
-                        S.getScript("ppzbg.jsp?" + "pid=bindDir&callback=UCOOL.Pz.bindDir&dir="+selectEl.options[selectEl.selectedIndex].value+"&t=" + new Date());
+                        var selectRootEl = S.get('#root-bind');
+                        var selectSubEl = S.get('#dir-bind');
+                        S.getScript("ppzbg.jsp?" + "pid=bindDir&callback=UCOOL.Pz.bindDir&rootDir="+selectRootEl.options[selectRootEl.selectedIndex].value+"&subDir="+selectSubEl.options[selectSubEl.selectedIndex].value+"&t=" + new Date(), null);
                     });
                 },
 
@@ -384,6 +426,9 @@
                 },
                 bindDir:function(pid, success, data) {
                     _bindDir(pid, success, data);
+                },
+                loadSub:function(pid, success, data) {
+                    _loadSub(pid, success, data);
                 }
             }
         }();

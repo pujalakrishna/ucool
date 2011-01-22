@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: czy
-  Date: 2010-9-25
-  Time: 10:10:58
-    To change this template use File | Settings | File Templates.
-  --%>
 <%@ page contentType="text/html;charset=gbk" language="java" %>
 <%@ page import="biz.file.FileEditor" %>
 <%@ page import="common.ConfigCenter" %>
@@ -15,18 +8,14 @@
 <%@ page import="web.handler.impl.PersonConfigHandler" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
-<%@ page import="dao.DirDAO" %>
-<%@ page import="dao.entity.DirDO" %>
-<%@ page import="common.DirMapping" %>
 <%@ page import="common.tools.DirSyncTools" %>
+<%@ page import="java.util.List" %>
 <%
     WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext());
     ConfigCenter configCenter = (ConfigCenter) wac.getBean("configCenter");
     FileEditor fileEditor = (FileEditor) wac.getBean("fileEditor");
     PersonConfigHandler personConfigHandler = (PersonConfigHandler) wac.getBean("personConfigHandler");
     UserDAO userDAO = (UserDAO) wac.getBean("userDAO");
-    DirDAO dirDAO = (DirDAO) wac.getBean("dirDAO");
-    DirMapping dirMapping = (DirMapping) wac.getBean("dirMapping");
     String pid = request.getParameter("pid");
     String callback = request.getParameter("callback");
     DirSyncTools dirSyncTools = (DirSyncTools) wac.getBean("dirSyncTools");
@@ -44,17 +33,16 @@
                 return;
             }
             //sync dir
-            if (dirSyncTools.sync(personConfig.getDirId(), configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
+            if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
                 //set session
                 request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                 out.print(callback + "(\'" + pid + "\',\'error\', \'directory is deleted\');");
                 return;
             }
             personConfig.setUcoolAssetsDebug(!personConfig.isUcoolAssetsDebug());
-            dirDAO.updateConfig(personConfig.getDirDO(), srcConfig);
-            //update dirmapping
-            dirMapping.getDir(personConfig.getDirId()).setConfig(personConfig.getDirDO().getConfig());
+            userDAO.updateConfig(personConfig.getUserDO().getId(), personConfig.getUserDO().getConfig(), srcConfig);
             tState = personConfig.isUcoolAssetsDebug() ? "true" : "false";
+            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
         } else if (pid.equalsIgnoreCase("cleanOnlineCache")) {
             fileEditor.removeDirectory(configCenter.getWebRoot() + personConfig.getUcoolCacheRoot());
             tState = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date());
@@ -64,84 +52,62 @@
                 return;
             }
             //sync dir
-            if (dirSyncTools.sync(personConfig.getDirId(), configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
+            if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
                 //set session
                 request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                 out.print(callback + "(\'" + pid + "\',\'error\', \'directory is deleted\');");
                 return;
             }
             personConfig.setPrepub(!personConfig.isPrepub());
-            dirDAO.updateConfig(personConfig.getDirDO(), srcConfig);
-            //update dirmapping
-            dirMapping.getDir(personConfig.getDirId()).setConfig(personConfig.getDirDO().getConfig());
+            userDAO.updateConfig(personConfig.getUserDO().getId(), personConfig.getUserDO().getConfig(), srcConfig);
             tState = personConfig.isPrepub() ? "true" : "false";
+            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
         } else if (pid.equalsIgnoreCase("enableAssets")) {
             if (!personConfig.personConfigValid()) {
                 out.print(callback + "(\'" + pid + "\',\'error\', \'personConfig validate fail\');");
                 return;
             }
             //sync dir
-            if (dirSyncTools.sync(personConfig.getDirId(), configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
+            if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
                 //set session
                 request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                 out.print(callback + "(\'" + pid + "\',\'error\', \'directory is deleted\');");
                 return;
             }
             personConfig.setEnableAssets(!personConfig.isEnableAssets());
-            dirDAO.updateConfig(personConfig.getDirDO(), srcConfig);
-            //update dirmapping
-            dirMapping.getDir(personConfig.getDirId()).setConfig(personConfig.getDirDO().getConfig());
+            userDAO.updateConfig(personConfig.getUserDO().getId(), personConfig.getUserDO().getConfig(), srcConfig);
             tState = personConfig.isEnableAssets() ? "true" : "false";
+            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
         } else if (pid.equalsIgnoreCase("bindDir")) {
-            //first create a new dir
-            String dir = request.getParameter("dir");
-
-            boolean op = true;
-            if (dir == null || dir.isEmpty()) {
-                out.print(callback + "(\'" + pid + "\',\'error\', \'directory's name is null\');");
+            //sync subDir
+            if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
+                //set session
+                request.getSession().setAttribute("personConfig", personConfig.getConfigString());
+                out.print(callback + "(\'" + pid + "\',\'error\', \'directory is deleted\');");
                 return;
             }
-            DirDO dirDO = null;
-            if ("-1".equals(dir)) {
-                dirDO = new DirDO();
-                dirDO.setId(-1L);
-            } else {
-                dirDO = dirMapping.getDirByName(dir);
-                if (dirDO == null) {
-                    //create new dir
-                    dirDO = new DirDO();
-                    dirDO.setName(dir);
-                    if(!fileEditor.findFile(configCenter.getWebRoot() + configCenter.getUcoolAssetsRoot() + "/" + dir)) {
-                        out.print(callback + "(\'" + pid + "\',\'error\', \'create dir error\');");
-                        return;
-                    }
-                    op = dirDAO.createNewDir(dirDO);
-                    if (!op) {
-                        out.print(callback + "(\'" + pid + "\',\'error\', \'create dir error\');");
-                        return;
-                    }
-                    if (dirDO.getId() != 0) {
-                        //add new dir to memory
-                        dirMapping.addDir(dirDO);
-                    }
-                } else {
-                    //sync dir
-                    if (dirSyncTools.sync(dirDO.getId(), configCenter.getWebRoot() + configCenter.getUcoolAssetsRoot() + "/" + dir, personConfig)) {
-                        out.print(callback + "(\'" + pid + "\',\'error\', \'dir has delete\');");
-                        //set session
-                        request.getSession().setAttribute("personConfig", personConfig.getConfigString());
-                        return;
-                    }
-                }
+            String rootDir = request.getParameter("rootDir");
+            String subDir = request.getParameter("subDir");
+
+            if (subDir == null || subDir.isEmpty()) {
+                out.print(callback + "(\'" + pid + "\',\'error\', \'directory name is null\');");
+                return;
+            }
+            String targetPath = rootDir + "/" + subDir;
+            if("-1".equals(rootDir) || "-1".equals(subDir)) {
+                targetPath = "";
+            }
+            //校验新目录的有效性
+            if(!fileEditor.findFile(configCenter.getWebRoot() + configCenter.getUcoolAssetsRoot() + "/" + targetPath)) {
+                out.print(callback + "(\'" + pid + "\',\'error\', \'target directory is not found，please refresh\');");
+                return;
             }
 
-            //secord create a new user and bind dir
-            Long srcDirId = personConfig.getDirId();
-            personConfig.setDirDO(dirDO);
-            personConfig.getUserDO().setDirId(dirDO.getId());
-            //personConfig.getDirId() < 0表示是取消绑定的老用户
-            if (personConfig.isNewUser() && srcDirId == 0) {
+            //secord create a new user and bind subDir
+            boolean op;
+            if (personConfig.isNewUser()) {
                 personConfig.setNewUser(false);
+                personConfig.getUserDO().setName(targetPath);
                 //TODO session不过期，这个必须更新。。NND
                 op = userDAO.createNewUser(personConfig.getUserDO());
                 if (!op) {
@@ -149,24 +115,38 @@
                     return;
                 }
             } else {
-                personConfig.setNewUser(false);
-                if (!personConfig.getDirId().equals(srcDirId)) {
-                    op = userDAO.updateDir(personConfig.getUserDO().getId(), personConfig.getDirId(), srcDirId);
-                    if (!op) {
-                        out.print(callback + "(\'" + pid + "\',\'error\', \'update config error\');");
-                        return;
-                    }
+                op = userDAO.updateDir(personConfig.getUserDO().getId(), targetPath, personConfig.getUserDO().getName());
+                personConfig.getUserDO().setName(targetPath);
+                if (!op) {
+                    out.print(callback + "(\'" + pid + "\',\'error\', \'update config error\');");
+                    return;
                 }
             }
             //set session
             request.getSession().setAttribute("personConfig", personConfig.getConfigString());
-            if (personConfig.getDirId() == -1) {
+            if (personConfig.getUserDO().getName().equals("")) {
                 //取消绑定的情况
                 out.print(callback + "(\'" + pid + "\',\'ok\', \'cancel\');");
             } else {
-                out.print(callback + "(\'" + pid + "\',\'ok\', \'" + personConfig.getDirDO().getConfig() + "\');");
+                out.print(callback + "(\'" + pid + "\',\'ok\', \'" + personConfig.getUserDO().getConfig() + "\');");
             }
             return;
+        } else if("loadSub".equals(pid)) {
+            String rootDir = request.getParameter("rootDir");
+            if(rootDir == null) {
+                out.print(callback + "(\'" + pid + "\',\'error\', \'load sub directory error\');");
+                return;
+            }
+            List<String> subDirs = fileEditor.getAssetsSubDirs(rootDir);
+            StringBuilder sb = new StringBuilder();
+            for (String subDir : subDirs) {
+                sb.append(subDir);
+                sb.append(";");
+            }
+            if(sb.length()>0) {
+                sb.deleteCharAt(sb.length()-1);
+            }
+            tState = sb.toString();
         }
 
         if (callback != null) {
