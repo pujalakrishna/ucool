@@ -9,6 +9,7 @@ import dao.entity.UserDO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
@@ -43,6 +44,8 @@ public class PersonConfigHandler {
              * 2、有绑定，但是session失效了的老用户
              */
             String remoteHost = request.getRemoteHost();
+//            InetAddress IP = InetAddress.getByName(request.getRemoteAddr());
+//            String remoteHost = IP.getHostName();
             UserDO personInfo = this.userDAO.getPersonInfo(remoteHost);
             if (personInfo != null) {
                 personConfig.setUserDO(personInfo);
