@@ -136,6 +136,6 @@ public class PersonConfig {
      * @return boolean
      */
     public boolean personConfigValid() {
-        return userDO!= null && !isNewUser();
+        return userDO!= null && !isNewUser() && userDO.getName()!= null && !userDO.getName().isEmpty();
     }
 }

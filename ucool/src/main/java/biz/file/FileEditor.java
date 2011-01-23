@@ -201,11 +201,11 @@ public class FileEditor {
      * @return the assetsSubDirs (type ArrayList<String>) of this FileEditor object.
      */
     public List<String> getAssetsSubDirs() {
-        return getSubDirs(this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot());
+        return getSubDirs(this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot(), null);
     }
 
     public List<String> getAssetsSubDirs(String filePath) {
-        return getSubDirs(this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot() + "/" + filePath);
+        return getSubDirs(this.configCenter.getWebRoot() + this.configCenter.getUcoolAssetsRoot() + "/" + filePath, configCenter.getUcoolAssetsDirectoryPrefix());
     }
 
     /**
@@ -214,7 +214,7 @@ public class FileEditor {
      * @param directoryPath of type String
      * @return List<String>
      */
-    public List<String> getSubDirs(String directoryPath) {
+    public List<String> getSubDirs(String directoryPath, String filter) {
         List<String> dirList = new ArrayList<String>();
         File assetsDir = new File(directoryPath);
         if (!assetsDir.exists()) {
@@ -223,6 +223,9 @@ public class FileEditor {
         File[] files = assetsDir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
+                if(filter != null && !file.getName().startsWith(filter)) {
+                    continue;
+                }
                 dirList.add(file.getName());
             }
         }
