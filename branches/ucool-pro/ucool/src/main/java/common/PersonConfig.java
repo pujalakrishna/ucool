@@ -1,7 +1,6 @@
 package common;
 
 import common.tools.HttpTools;
-import dao.entity.DirDO;
 import dao.entity.UserDO;
 
 /**

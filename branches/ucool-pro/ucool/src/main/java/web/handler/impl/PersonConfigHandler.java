@@ -1,15 +1,12 @@
 package web.handler.impl;
 
-import common.DirMapping;
 import common.PersonConfig;
 import dao.UserDAO;
-import dao.entity.DirDO;
 import dao.entity.UserDO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.net.InetAddress;
 
 /**
  * @author <a href="mailto:czy88840616@gmail.com">czy</a>
@@ -20,18 +17,12 @@ public class PersonConfigHandler {
 
     private PersonConfig personConfig;
 
-    private DirMapping dirMapping;
-
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
     public void setPersonConfig(PersonConfig personConfig) {
         this.personConfig = personConfig;
-    }
-
-    public void setDirMapping(DirMapping dirMapping) {
-        this.dirMapping = dirMapping;
     }
 
     public PersonConfig doHandler(HttpServletRequest request)
@@ -46,6 +37,9 @@ public class PersonConfigHandler {
             String remoteHost = request.getRemoteHost();
 //            InetAddress IP = InetAddress.getByName(request.getRemoteAddr());
 //            String remoteHost = IP.getHostName();
+            if(remoteHost == null) {
+                remoteHost = request.getRemoteAddr();
+            }
             UserDO personInfo = this.userDAO.getPersonInfo(remoteHost);
             if (personInfo != null) {
                 personConfig.setUserDO(personInfo);

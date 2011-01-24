@@ -164,7 +164,7 @@
     <div id="header">
         <div class="top">
             <h1>ucool config page</h1>
-            <a class="version" href="http://code.google.com/p/ucool">ucool-pro version£º0.1</a>
+            <a class="version" href="http://code.google.com/p/ucool">ucool-pro version£º0.1 beta</a>
         </div>
     </div>
     <div id="content">
@@ -177,6 +177,7 @@
                     if(!personConfig.isNewUser()) {
                         curDirName = personConfig.getUserDO().getName();
                         if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
+                            personConfig.getUserDO().setName("");
                             //set session
                             request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                             curDirName = "";

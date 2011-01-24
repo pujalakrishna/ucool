@@ -1,9 +1,7 @@
 package common.tools;
 
 import biz.file.FileEditor;
-import common.DirMapping;
 import common.PersonConfig;
-import dao.DirDAO;
 import dao.UserDAO;
 
 /**
@@ -19,24 +17,12 @@ public class DirSyncTools {
 
     private UserDAO userDAO;
 
-    private DirDAO dirDAO;
-
-    private DirMapping dirMapping;
-
-    public void setDirMapping(DirMapping dirMapping) {
-        this.dirMapping = dirMapping;
-    }
-
     public void setFileEditor(FileEditor fileEditor) {
         this.fileEditor = fileEditor;
     }
 
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
-    }
-
-    public void setDirDAO(DirDAO dirDAO) {
-        this.dirDAO = dirDAO;
     }
 
     /**
