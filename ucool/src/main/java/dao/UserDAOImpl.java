@@ -1,13 +1,8 @@
 package dao;
 
-import dao.entity.DirDO;
 import dao.entity.UserDO;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +27,7 @@ public class UserDAOImpl implements UserDAO, InitializingBean {
             user.setId(Long.valueOf(String.valueOf(map.get("id"))));
             user.setHostName((String) map.get("host_name"));
             user.setName((String)map.get("name"));
+            user.setConfig((Integer) map.get("config"));
         }
         return user;
     }

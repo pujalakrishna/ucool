@@ -108,11 +108,19 @@
             if (personConfig.isNewUser()) {
                 personConfig.setNewUser(false);
                 personConfig.getUserDO().setName(targetPath);
-                //TODO session不过期，这个必须更新。。NND
-                op = userDAO.createNewUser(personConfig.getUserDO());
-                if (!op) {
-                    out.print(callback + "(\'" + pid + "\',\'error\', \'create user error\');");
-                    return;
+                if(userDAO.getPersonInfo(personConfig.getUserDO().getHostName()) != null) {
+                    op = userDAO.updateDir(personConfig.getUserDO().getId(), targetPath, personConfig.getUserDO().getName());
+                    personConfig.getUserDO().setName(targetPath);
+                    if (!op) {
+                        out.print(callback + "(\'" + pid + "\',\'error\', \'update config error\');");
+                        return;
+                    }
+                } else {
+                    op = userDAO.createNewUser(personConfig.getUserDO());
+                    if (!op) {
+                        out.print(callback + "(\'" + pid + "\',\'error\', \'create user error\');");
+                        return;
+                    }
                 }
             } else {
                 op = userDAO.updateDir(personConfig.getUserDO().getId(), targetPath, personConfig.getUserDO().getName());

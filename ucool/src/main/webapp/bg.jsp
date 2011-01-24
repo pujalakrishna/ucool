@@ -17,8 +17,6 @@
 <%@ page import="org.springframework.web.context.WebApplicationContext" %>
 <%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
 <%@ page import="web.handler.impl.PersonConfigHandler" %>
-<%@ page import="dao.DirDAO" %>
-<%@ page import="common.DirMapping" %>
 <%@ page import="common.tools.DirSyncTools" %>
 <%
     WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext());
@@ -31,10 +29,19 @@
     DirSyncTools dirSyncTools = (DirSyncTools) wac.getBean("dirSyncTools");
 
     PersonConfig personConfig = personConfigHandler.doHandler(request);
-
-    if (pid.equalsIgnoreCase("fuckie")) {
-        request.getSession().removeAttribute("personConfig");
-        request.getSession().invalidate();
-        out.print("clear your session ok");
+    if (pid != null) {
+        if (pid.equalsIgnoreCase("fuckie")) {
+            request.getSession().removeAttribute("personConfig");
+            request.getSession().invalidate();
+            out.print("clear your session ok");
+        } else if(pid.equalsIgnoreCase("check")) {
+            out.println("Pc name:" + request.getRemoteHost());
+            out.println("<br/>");
+            out.println("Directory binded:" + personConfig.getUserDO().getName());
+            out.println("<br/>");
+            out.println("Directory config:" + personConfig.getUserDO().getConfig());
+            out.println("<br/>");
+        }
     }
+
 %>
