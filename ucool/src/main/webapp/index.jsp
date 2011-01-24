@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=gbk" language="java" %>
 <!DOCTYPE HTML>
 <html>
-<head><title>choose your directory</title></head>
+<head><title>ucool-pro is working</title></head>
 <body>
 ucool-pro is working!
 </body>
