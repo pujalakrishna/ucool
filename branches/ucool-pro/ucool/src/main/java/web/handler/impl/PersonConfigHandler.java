@@ -27,8 +27,8 @@ public class PersonConfigHandler {
 
     public PersonConfig doHandler(HttpServletRequest request)
             throws IOException, ServletException {
-        String configString = (String) request.getSession().getAttribute("personConfig");
-        if (configString == null) {
+//        String configString = (String) request.getSession().getAttribute("personConfig");
+//        if (configString == null) {
             /**
              * 有2种情况：
              * 1、数据库中没有绑定的新人
@@ -50,12 +50,12 @@ public class PersonConfigHandler {
                 personConfig.setNewUser(true);
             }
             //set session
-            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
-        } else {
-            // get session
-            personConfig.parseConfigString(configString);
-            //TODO parse fail?
-        }
+//            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
+//        } else {
+//            // get session
+//            personConfig.parseConfigString(configString);
+//            //TODO parse fail?
+//        }
         return personConfig;
     }
 
