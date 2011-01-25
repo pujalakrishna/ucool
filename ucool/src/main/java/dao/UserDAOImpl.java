@@ -82,6 +82,7 @@ public class UserDAOImpl implements UserDAO, InitializingBean {
         //create table
         if(userExist == 0) {
             jdbcTemplate.execute("CREATE TABLE \"user\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"host_name\" VARCHAR NOT NULL  UNIQUE , \"name\" VARCHAR NOT NULL , \"config\" INTEGER NOT NULL  DEFAULT 5)");
+            jdbcTemplate.execute("CREATE  INDEX \"main\".\"idx_hostname\" ON \"user\" (\"host_name\" ASC)");
         }
     }
 }
