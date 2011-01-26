@@ -34,15 +34,12 @@
             }
             //sync dir
             if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
-                //set session
-                request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                 out.print(callback + "(\'" + pid + "\',\'error\', \'directory is deleted\');");
                 return;
             }
             personConfig.setUcoolAssetsDebug(!personConfig.isUcoolAssetsDebug());
             userDAO.updateConfig(personConfig.getUserDO().getId(), personConfig.getUserDO().getConfig(), srcConfig);
             tState = personConfig.isUcoolAssetsDebug() ? "true" : "false";
-            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
         } else if (pid.equalsIgnoreCase("cleanOnlineCache")) {
             fileEditor.removeDirectory(configCenter.getWebRoot() + personConfig.getUcoolCacheRoot());
             tState = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date());
@@ -53,15 +50,12 @@
             }
             //sync dir
             if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
-                //set session
-                request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                 out.print(callback + "(\'" + pid + "\',\'error\', \'directory is deleted\');");
                 return;
             }
             personConfig.setPrepub(!personConfig.isPrepub());
             userDAO.updateConfig(personConfig.getUserDO().getId(), personConfig.getUserDO().getConfig(), srcConfig);
             tState = personConfig.isPrepub() ? "true" : "false";
-            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
         } else if (pid.equalsIgnoreCase("enableAssets")) {
             if (!personConfig.personConfigValid()) {
                 out.print(callback + "(\'" + pid + "\',\'error\', \'personConfig validate fail\');");
@@ -69,20 +63,15 @@
             }
             //sync dir
             if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
-                //set session
-                request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                 out.print(callback + "(\'" + pid + "\',\'error\', \'directory is deleted\');");
                 return;
             }
             personConfig.setEnableAssets(!personConfig.isEnableAssets());
             userDAO.updateConfig(personConfig.getUserDO().getId(), personConfig.getUserDO().getConfig(), srcConfig);
             tState = personConfig.isEnableAssets() ? "true" : "false";
-            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
         } else if (pid.equalsIgnoreCase("bindDir")) {
             //sync subDir
             if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
-                //set session
-                request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                 out.print(callback + "(\'" + pid + "\',\'error\', \'directory is deleted\');");
                 return;
             }
@@ -130,8 +119,6 @@
                     return;
                 }
             }
-            //set session
-            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
             if (personConfig.getUserDO().getName().equals("")) {
                 //取消绑定的情况
                 out.print(callback + "(\'" + pid + "\',\'ok\', \'cancel\');");
