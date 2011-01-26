@@ -178,8 +178,6 @@
                         curDirName = personConfig.getUserDO().getName();
                         if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
                             personConfig.getUserDO().setName("");
-                            //set session
-                            request.getSession().setAttribute("personConfig", personConfig.getConfigString());
                             curDirName = "";
                         }
                     }
