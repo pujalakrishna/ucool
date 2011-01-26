@@ -11,6 +11,8 @@
 <html>
 <head>
     <meta charset="gbk"/>
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="kiben" content="no-cache">
     <title>ucool个人配置页</title>
     <script type="text/javascript" src="http://a.tbcdn.cn/s/kissy/1.1.6/kissy-min.js"></script>
     <link rel="stylesheet" href="http://a.tbcdn.cn/s/kissy/1.1.6/cssbase/base-min.css" />
