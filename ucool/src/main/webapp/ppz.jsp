@@ -208,7 +208,7 @@
             <select name="dir-bind" id="dir-bind" autocomplete="off">
                 <%
                     List<String> subDirs = fileEditor.getAssetsSubDirs(rootName);
-                    out.print("<option value='-1' selected='selected'>无绑定子目录</option>");
+                    out.print("<option value='-1'>无绑定子目录</option>");
                     if (subDirs.size() > 0) {
                         for (String subDir : subDirs) {
                             if (subDir.equals(subName)) {
