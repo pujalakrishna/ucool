@@ -191,7 +191,7 @@
                             subName = dirs[1];
                         }
                     }
-                    out.print("<option value='-1' selected='selected'>无绑定目录</option>");
+                    out.print("<option value='-1'>无绑定目录</option>");
                     if (assetsSubDirs.size() > 0) {
                         for (String assetsSubDir : assetsSubDirs) {
                             if(assetsSubDir.equals(rootName)) {
