@@ -174,7 +174,7 @@
                 <%
                     List<String> assetsSubDirs = fileEditor.getAssetsSubDirs();
                     String curDirName = "";
-                    if(!personConfig.getUserDO().isNewUser()) {
+                    if(!personConfig.isNewUser()) {
                         curDirName = personConfig.getUserDO().getName();
                         if (dirSyncTools.sync(configCenter.getWebRoot() + personConfig.getUcoolAssetsRoot(), personConfig)) {
                             personConfig.getUserDO().setName("");

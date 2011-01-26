@@ -13,23 +13,6 @@ public class UserDO {
 
     private int config = 5;
 
-    // 如果新用户第二次过来，这个值就为 true了，这样就不用重复查询数据库了
-    private boolean newUser = false;
-
-    /**
-     * 判断是否是新人
-     * 这里的新人有2种可能：
-     * 1、真正的新人，没有任何目录的绑定
-     * 2、老用户，但是取消了绑定
-     * @return
-     */
-    public boolean isNewUser() {
-        return newUser;
-    }
-
-    public void setNewUser(boolean newUser) {
-        this.newUser = newUser;
-    }
 
     public Long getId() {
         return id;
