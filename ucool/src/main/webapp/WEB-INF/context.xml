@@ -9,7 +9,7 @@
     <bean id="switcher" class="common.Switcher"/>
     <bean id="urlExecutor" class="web.url.UrlExecutor" />
     <bean id="urlTools" class="common.tools.UrlTools"/>
-    <bean id="personConfig" class="common.PersonConfig" scope="prototype"/>
+    <bean id="personConfig" class="common.PersonConfig"/>
     <bean id="userDAO" class="dao.UserDAOImpl"/>
     <bean id="dirSyncTools" class="common.tools.DirSyncTools"/>
 

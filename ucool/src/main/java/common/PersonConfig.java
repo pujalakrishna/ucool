@@ -17,9 +17,6 @@ public class PersonConfig {
         this.configCenter = configCenter;
     }
 
-    // 如果新用户第二次过来，这个值就为 true了，这样就不用重复查询数据库了
-    private boolean newUser = false;
-
     public boolean isUcoolAssetsDebug() {
         if(personConfigValid()) {
             return this.userDO.isEnableDebug();
@@ -81,21 +78,6 @@ public class PersonConfig {
     }
 
     /**
-     * 判断是否是新人
-     * 这里的新人有2种可能：
-     * 1、真正的新人，没有任何目录的绑定
-     * 2、老用户，但是取消了绑定
-     * @return
-     */
-    public boolean isNewUser() {
-        return newUser;
-    }
-
-    public void setNewUser(boolean newUser) {
-        this.newUser = newUser;
-    }
-
-    /**
      * 解析配置字符串
      *
      * @param configString of type String
@@ -110,7 +92,7 @@ public class PersonConfig {
         userDO.setHostName(configStrings[1].equals("null") ? null:configStrings[1]);
         userDO.setName(configStrings[2].equals("null") ? null:configStrings[2]);
         userDO.setConfig(configStrings[3].equals("null") ? 5:Integer.parseInt(configStrings[3]));
-        this.setNewUser(configStrings[4].equals("true"));
+        this.getUserDO().setNewUser(configStrings[4].equals("true"));
     }
 
     /**
@@ -125,7 +107,7 @@ public class PersonConfig {
         sb.append(userDO.getHostName()).append(":");
         sb.append(userDO.getName()).append(":");
         sb.append(userDO.getConfig()).append(":");
-        sb.append(this.isNewUser());
+        sb.append(this.getUserDO().isNewUser());
         return sb.toString();
     }
 
@@ -135,6 +117,6 @@ public class PersonConfig {
      * @return boolean
      */
     public boolean personConfigValid() {
-        return userDO!= null && !isNewUser() && userDO.getName()!= null && !userDO.getName().isEmpty();
+        return userDO!= null && !this.userDO.isNewUser() && userDO.getName()!= null && !userDO.getName().isEmpty();
     }
 }

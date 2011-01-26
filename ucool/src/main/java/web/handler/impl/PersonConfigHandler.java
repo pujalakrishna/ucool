@@ -38,7 +38,7 @@ public class PersonConfigHandler {
             personConfig.setUserDO(new UserDO());
             personConfig.getUserDO().setHostName(remoteHost);
             //没在数据库查询到数据，肯定是新人
-            personConfig.setNewUser(true);
+            personConfig.getUserDO().setNewUser(true);
         }
         return personConfig;
     }
