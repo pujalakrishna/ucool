@@ -94,8 +94,8 @@
 
             //secord create a new user and bind subDir
             boolean op;
-            if (personConfig.isNewUser()) {
-                personConfig.setNewUser(false);
+            if (personConfig.getUserDO().isNewUser()) {
+                personConfig.getUserDO().setNewUser(false);
                 personConfig.getUserDO().setName(targetPath);
                 if(userDAO.getPersonInfo(personConfig.getUserDO().getHostName()) != null) {
                     op = userDAO.updateDir(personConfig.getUserDO().getId(), targetPath, personConfig.getUserDO().getName());
