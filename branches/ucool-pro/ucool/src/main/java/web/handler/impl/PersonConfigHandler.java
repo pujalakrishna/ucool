@@ -1,5 +1,6 @@
 package web.handler.impl;
 
+import common.ConfigCenter;
 import common.PersonConfig;
 import dao.UserDAO;
 import dao.entity.UserDO;
@@ -15,16 +16,25 @@ import java.io.IOException;
 public class PersonConfigHandler {
     private UserDAO userDAO;
 
-    private PersonConfig personConfig;
+    private ConfigCenter configCenter;
+
+    public void setConfigCenter(ConfigCenter configCenter) {
+        this.configCenter = configCenter;
+    }
 
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
-    public void setPersonConfig(PersonConfig personConfig) {
-        this.personConfig = personConfig;
-    }
 
+    /**
+     * Method doHandler ...
+     *
+     * @param request of type HttpServletRequest
+     * @return PersonConfig
+     * @throws IOException when
+     * @throws ServletException when
+     */
     public PersonConfig doHandler(HttpServletRequest request)
             throws IOException, ServletException {
         String remoteHost = request.getRemoteHost();
@@ -32,6 +42,8 @@ public class PersonConfigHandler {
             remoteHost = request.getRemoteAddr();
         }
         UserDO personInfo = this.userDAO.getPersonInfo(remoteHost);
+        PersonConfig personConfig = new PersonConfig();
+        personConfig.setConfigCenter(configCenter);
         if (personInfo != null) {
             personConfig.setUserDO(personInfo);
         } else {
