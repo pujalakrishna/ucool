@@ -66,8 +66,8 @@ public class UrlTools {
                         } else {
                             url += "?env=prepub";
                         }
-                        return url.replace(d, getUsefullIp(personConfig));
                     }
+                    return url.replace(d, getUsefullIp(personConfig));
                 }
             }
         } else {
