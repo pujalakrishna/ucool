@@ -60,16 +60,24 @@ public class UrlTools {
         if (isOnline) {
             for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
-                    if(personConfig.isPrepub()) {
-                        url += "?env=prepub";
+                    if (personConfig.isPrepub()) {
+                        if (url.indexOf("?") != -1) {
+                            url += "&env=prepub";
+                        } else {
+                            url += "?env=prepub";
+                        }
+                        return url.replace(d, getUsefullIp(personConfig));
                     }
-                    return url.replace(d, getUsefullIp(personConfig));
                 }
             }
         } else {
             for (String d : configCenter.getUcoolDailyDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
-                    url += "?env=daily";
+                    if (url.indexOf("?") != -1) {
+                        url += "&env=daily";
+                    } else {
+                        url += "?env=daily";
+                    }
                     return url.replace(d, configCenter.getUcoolDailyIp());
                 }
             }
