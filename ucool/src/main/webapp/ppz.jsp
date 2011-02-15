@@ -166,7 +166,7 @@
     <div id="header">
         <div class="top">
             <h1>ucool config page</h1>
-            <a class="version" href="http://code.google.com/p/ucool">ucool-pro version£º0.1 beta</a>
+            <a class="version" href="http://code.google.com/p/ucool">ucool-pro version£º0.2 beta</a>
         </div>
     </div>
     <div id="content">
