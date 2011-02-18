@@ -57,6 +57,9 @@ public class UrlTools {
         if (url.indexOf("localhost") != -1) {
             return url.replace("localhost", getUsefullIp(personConfig));
         }
+        if (url.indexOf("u.taobao.net") != -1) {
+            return url.replace("u.taobao.net", getUsefullIp(personConfig));
+        }
         if (isOnline) {
             for (String d : configCenter.getUcoolOnlineDomain().split(HttpTools.filterSpecialChar(","))) {
                 if (url.indexOf(d) != -1) {
