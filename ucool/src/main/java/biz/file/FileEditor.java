@@ -48,6 +48,9 @@ public class FileEditor {
             out.flush();
             return;
         } else {
+            if(line.charAt(0) == 65279) {
+                line = line.substring(1);
+            }
             out.println(line);
         }
         while ((line = in.readLine()) != null) {
